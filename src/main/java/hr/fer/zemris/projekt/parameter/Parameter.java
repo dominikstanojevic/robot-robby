@@ -53,7 +53,7 @@ public class Parameter {
         this.type = type;
         this.minValue = minValue;
 
-        setMaxValue(minValue);
+        setMaxValue(maxValue);
         setValue(value);
     }
 
