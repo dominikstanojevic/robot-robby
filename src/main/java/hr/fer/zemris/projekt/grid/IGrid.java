@@ -2,6 +2,7 @@ package hr.fer.zemris.projekt.grid;
 
 import hr.fer.zemris.projekt.Move;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -9,7 +10,7 @@ import java.nio.file.Path;
  * robot can walk and perform defined {@link Move}s.
  *
  * @author Kristijan Vulinovic
- * @version 1.1.1
+ * @version 1.1.2
  */
 public interface IGrid {
     /**
@@ -100,14 +101,14 @@ public interface IGrid {
      *
      * @param filePath the path to the file describing the grid.
      */
-    void readFromFile(Path filePath);
+    void readFromFile(Path filePath) throws IOException;
 
     /**
      * Writes the grid to a file.
      *
      * @param filePath the path to the file where the grid should be written.
      */
-    void writeToFile(Path filePath);
+    void writeToFile(Path filePath) throws IOException;
 
     /**
      * Creates a new copy of this grid.

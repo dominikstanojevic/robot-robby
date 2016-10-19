@@ -6,6 +6,7 @@ import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Random;
  * list is changed manually.
  *
  * @author Kristijan Vulinovic
- * @version 1.1.0
+ * @version 1.1.1
  */
 public abstract class AbstractSimulator {
     /**
@@ -99,7 +100,12 @@ public abstract class AbstractSimulator {
 
         for (int i = 0; i < n; ++i){
             grids[i] = new Grid();
-            grids[i].readFromFile(filePaths.get(i));
+
+            try {
+                grids[i].readFromFile(filePaths.get(i));
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Unable to open the given file!");
+            }
         }
     }
 
