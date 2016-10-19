@@ -10,7 +10,7 @@ import java.util.List;
  * by an algorithm.
  *
  * @author Kristijan Vulinovic
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Stats {
     /**

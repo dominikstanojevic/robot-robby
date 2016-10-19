@@ -19,7 +19,7 @@ import java.util.Random;
  * list is changed manually.
  *
  * @author Kristijan Vulinovic
- * @version 1.0.0
+ * @version 1.1.0
  */
 public abstract class AbstractSimulator {
     /**

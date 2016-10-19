@@ -4,7 +4,7 @@ package hr.fer.zemris.projekt.parameter;
  * A class representing a single parameter of an algorithm.
  *
  * @author Kristijan Vulinovic
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Parameter {
     /**
