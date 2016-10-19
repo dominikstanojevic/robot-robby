@@ -10,11 +10,11 @@ public class Parameter {
     /**
      * The default value for the minimal value.
      */
-    private static final double DEFAULT_MIN_VALUE = 0;
+    public static final double DEFAULT_MIN_VALUE = 0;
     /**
      * The default value for the maximal value.
      */
-    private static final double DEFAULT_MAX_VALUE = 100;
+    public static final double DEFAULT_MAX_VALUE = 100;
 
     /**
      * The name of this parameter.
@@ -49,6 +49,13 @@ public class Parameter {
      * @throws IllegalArgumentException if the given value is not acceptable.
      */
     public Parameter(String name, ParameterType type, double minValue, double maxValue, double value) {
+        if (name == null){
+            throw new IllegalArgumentException("The parameter name is not allowed to be null.");
+        }
+        if (type == null){
+            throw new IllegalArgumentException("The parameter type is not allowed to be null.");
+        }
+
         this.name = name;
         this.type = type;
         this.minValue = minValue;
@@ -109,7 +116,7 @@ public class Parameter {
                             + value + " but you provided " + minValue
             );
         }
-        if (minValue < maxValue){
+        if (minValue > maxValue){
             throw new IllegalArgumentException(
                     "The given minimal value is greater than the current maximal value. The current maximal value is "
                             + maxValue + " but you provided " + minValue

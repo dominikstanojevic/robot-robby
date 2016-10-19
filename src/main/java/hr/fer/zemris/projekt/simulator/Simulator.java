@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * A single threaded game simulator that is able to take a reference to an
+ * algorithm and use it to run it on multiple grids in order to generate
+ * statistics of the game.
+ *
  * @author Kristijan Vulinovic
  * @version 1.0.0
  */

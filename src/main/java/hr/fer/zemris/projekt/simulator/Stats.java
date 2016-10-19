@@ -62,6 +62,13 @@ public class Stats {
     public Stats(int movesNeeded, int bottlesCollected, int bottlesLeft, int wallsHit, int emptyPickups,
                  IGrid grid, List<Move> moves) {
 
+        if (grid == null) {
+            throw new IllegalArgumentException("The given grid is not allowed to be null.");
+        }
+        if (moves == null){
+            throw new IllegalArgumentException("The given list of moves is not allowed to be null.");
+        }
+
         this.movesNeeded = movesNeeded;
         this.bottlesCollected = bottlesCollected;
         this.bottlesLeft = bottlesLeft;

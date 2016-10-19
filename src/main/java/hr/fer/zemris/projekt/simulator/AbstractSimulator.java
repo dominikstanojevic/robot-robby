@@ -14,7 +14,7 @@ import java.util.Random;
 /**
  * Provides the functionality to run multiple simulations on a single bot and
  * return the result statistics. The simulations can be run multi threaded or
- * single threaded, depending on the algorithm needs. The simulator ensures to
+ * single threaded, depending on the implementation. The simulator ensures to
  * use the same set of grids for simulations in every call, unless the grid
  * list is changed manually.
  *
@@ -25,7 +25,7 @@ public abstract class AbstractSimulator {
     /**
      * The default maximal number of moves.
      */
-    private static final int DEFAULT_MAX_MOVES = 200;
+    public static final int DEFAULT_MAX_MOVES = 200;
 
     /**
      * An array of grids used to play the games.
