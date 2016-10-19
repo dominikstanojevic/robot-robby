@@ -9,7 +9,7 @@ import java.nio.file.Path;
  * robot can walk and perform defined {@link Move}s.
  *
  * @author Kristijan Vulinovic
- * @version 1.0.0
+ * @version 1.1.1
  */
 public interface IGrid {
     /**
@@ -85,6 +85,15 @@ public interface IGrid {
      *                 of the grid or not.
      */
     void generate(int width, int height, int numberOfBottles, boolean hasWalls);
+
+    /**
+     * Creates a new grid that is equal to the field given in the argument.
+     *
+     * @param gridField the basking matrix for the new grid.
+     * @param startRow the starting row for the robot.
+     * @param startColumn the starting column for the robot.
+     */
+    void setGrid(Field[][] gridField, int startRow, int startColumn);
 
     /**
      * Reads a grid from the file specified in the argument.
