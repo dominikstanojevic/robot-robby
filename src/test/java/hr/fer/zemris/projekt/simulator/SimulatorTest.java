@@ -4,17 +4,30 @@ import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
+import hr.fer.zemris.projekt.grid.IGrid;
+import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.Spy;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @SuppressWarnings("javadoc")
 public class SimulatorTest {
@@ -29,29 +42,32 @@ public class SimulatorTest {
         Grid grid = new Grid();
 
         Field[][] fields = new Field[][] {
-                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.BOTTLE /*start*/, Field.EMPTY},
-                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE}
-        };
+                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.BOTTLE /*start*/, Field.EMPTY },
+                { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE } };
         grid.setGrid(fields, 1, 2);
 
         Algorithm algorithm = mock(Algorithm.class);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.COLLECT);
+        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.COLLECT);
 
         //move left
         when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.LEFT);
 
         //move down
-        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE)).thenReturn(Move.DOWN);
+        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE))
+                .thenReturn(Move.DOWN);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.COLLECT);
+        when(algorithm.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.COLLECT);
 
         //do an empty pickup
-        when(algorithm.nextMove(Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.COLLECT);
+        when(algorithm.nextMove(Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.COLLECT);
 
         Simulator simulator = new Simulator(5);
         return simulator.playGame(algorithm, grid, new Random());
@@ -92,20 +108,21 @@ public class SimulatorTest {
         Grid grid = new Grid();
 
         Field[][] fields = new Field[][] {
-                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY},
-                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY/*start*/, Field.BOTTLE}
-        };
+                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY },
+                { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY/*start*/, Field.BOTTLE } };
         grid.setGrid(fields, 3, 2);
 
         Algorithm algorithm = mock(Algorithm.class);
 
         //move right
-        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.WALL)).thenReturn(Move.RIGHT);
+        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.WALL))
+                .thenReturn(Move.RIGHT);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL)).thenReturn(Move.COLLECT);
+        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL))
+                .thenReturn(Move.COLLECT);
 
         //move up
         when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL)).thenReturn(Move.UP);
@@ -152,23 +169,25 @@ public class SimulatorTest {
         Grid grid = new Grid();
 
         Field[][] fields = new Field[][] {
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY},
-                {Field.BOTTLE/*start*/, Field.BOTTLE, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY}
-        };
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.BOTTLE/*start*/, Field.BOTTLE, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY } };
         grid.setGrid(fields, 1, 0);
 
         Algorithm algorithm = mock(Algorithm.class);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY)).thenReturn(Move.COLLECT);
+        when(algorithm.nextMove(Field.BOTTLE, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.COLLECT);
 
         //move right
-        when(algorithm.nextMove(Field.EMPTY, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY)).thenReturn(Move.RIGHT);
+        when(algorithm.nextMove(Field.EMPTY, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.RIGHT);
 
         //move up
-        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.COLLECT);
+        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.COLLECT);
 
         Simulator simulator = new Simulator(5);
         return simulator.playGame(algorithm, grid, new Random());
@@ -209,17 +228,17 @@ public class SimulatorTest {
         Grid grid = new Grid();
 
         Field[][] fields = new Field[][] {
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY},
-                {Field.BOTTLE, Field.BOTTLE /*start*/, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY}
-        };
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.BOTTLE, Field.BOTTLE /*start*/, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY } };
         grid.setGrid(fields, 1, 1);
 
         Algorithm algorithm = mock(Algorithm.class);
 
         //random move
-        when(algorithm.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.SKIP_TURN);
+        when(algorithm.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.SKIP_TURN);
 
         Simulator simulator = new Simulator(5);
         return simulator.playGame(algorithm, grid, new Random());
@@ -262,17 +281,15 @@ public class SimulatorTest {
         Method method = AbstractSimulator.class.getDeclaredMethod("getRandomMove", Random.class);
         method.setAccessible(true);
 
-
-
         Map<Integer, Move> moves = new HashMap<>();
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             when(random.nextInt(4)).thenReturn(i);
 
             Move move = (Move) method.invoke(null, random);
             moves.put(i, move);
         }
 
-        for(int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1000; i++) {
             int mod = i % 4;
 
             when(random.nextInt(4)).thenReturn(mod);
@@ -280,5 +297,78 @@ public class SimulatorTest {
 
             assertEquals(moves.get(mod), move);
         }
+    }
+
+    private List<Path> getPaths() {
+        List<Path> paths = new ArrayList<>();
+        paths.add(Paths.get("src/test/files/Grid1.txt"));
+        paths.add(Paths.get("src/test/files/Grid2.txt"));
+        paths.add(Paths.get("src/test/files/Grid3.txt"));
+
+        return paths;
+    }
+
+    @Test
+    public void testLoadingGridFromFile() throws IOException {
+        Algorithm algorithm = mock(Algorithm.class);
+        when(algorithm.nextMove(Mockito.any(Field.class), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(Move.RANDOM);
+
+        Simulator simulator = new Simulator(5);
+        simulator.readGridFromFile(getPaths());
+
+        Simulator spy = Mockito.spy(simulator);
+        spy.playGames(algorithm);
+        Mockito.verify(spy, times(3)).playGame(eq(algorithm), Mockito.any(IGrid.class), Mockito.any(Random.class));
+    }
+
+    @Test
+    public void testGridGenerator() throws NoSuchFieldException, IllegalAccessException {
+        int size = 3;
+        int numberOfBottles = 10;
+        int width = 4;
+        int height = 7;
+
+        AbstractSimulator simulator = new Simulator();
+        simulator.generateGrids(size, numberOfBottles, width, height, false);
+
+        java.lang.reflect.Field field = AbstractSimulator.class.getDeclaredField("grids");
+        field.setAccessible(true);
+
+        IGrid[] grids = (IGrid[]) field.get(simulator);
+        assertEquals(3, grids.length);
+
+        for(IGrid grid : grids) {
+            assertEquals(numberOfBottles, grid.getNumberOfBottles());
+            assertEquals(width, grid.getWidth());
+            assertEquals(height, grid.getHeight());
+        }
+    }
+
+    @Test
+    public void gridSetTest() throws NoSuchFieldException, IllegalAccessException {
+        Grid grid = new Grid();
+
+        Simulator simulator = new Simulator();
+        simulator.setGrid(grid);
+
+        java.lang.reflect.Field field = AbstractSimulator.class.getDeclaredField("grids");
+        field.setAccessible(true);
+
+        IGrid[] grids = (IGrid[]) field.get(simulator);
+        assertEquals(1, grids.length);
+
+        assertEquals(grid, grids[0]);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testInvalidFile() {
+        Simulator simulator = new Simulator();
+
+        List<Path> paths = new ArrayList<>();
+        paths.add(Paths.get("ovajFileSigurnoNePostoji"));
+
+
+        simulator.readGridFromFile(paths);
     }
 }
