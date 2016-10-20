@@ -6,6 +6,10 @@ import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -140,7 +144,7 @@ public class SimulatorTest {
     @Test
     public void testSimulatorGame2WallsHit() {
         Stats stats = playSimulatorGame2();
-        assertEquals(1, stats.getWallsHit());
+        assertEquals(2, stats.getWallsHit());
     }
 
     //collects all bottles in less than max turns
@@ -249,5 +253,32 @@ public class SimulatorTest {
     public void testSimulatorGame4WallsHit() {
         Stats stats = playSimulatorGame4();
         assertEquals(0, stats.getWallsHit());
+    }
+
+    @Test
+    public void testRandomness() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Random random = mock(Random.class);
+
+        Method method = AbstractSimulator.class.getDeclaredMethod("getRandomMove", Random.class);
+        method.setAccessible(true);
+
+
+
+        Map<Integer, Move> moves = new HashMap<>();
+        for(int i = 0; i < 4; i++) {
+            when(random.nextInt(4)).thenReturn(i);
+
+            Move move = (Move) method.invoke(null, random);
+            moves.put(i, move);
+        }
+
+        for(int i = 0; i < 1000; i++) {
+            int mod = i % 4;
+
+            when(random.nextInt(4)).thenReturn(mod);
+            Move move = (Move) method.invoke(null, random);
+
+            assertEquals(moves.get(mod), move);
+        }
     }
 }

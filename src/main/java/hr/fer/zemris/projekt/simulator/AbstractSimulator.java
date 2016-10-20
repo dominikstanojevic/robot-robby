@@ -20,7 +20,7 @@ import java.util.Random;
  * list is changed manually.
  *
  * @author Kristijan Vulinovic
- * @version 1.1.1
+ * @version 1.1.2
  */
 public abstract class AbstractSimulator {
     /**
@@ -128,7 +128,7 @@ public abstract class AbstractSimulator {
      *
      * @return the random generated {@link Move}.
      */
-    private Move getRandomMove(Random rnd){
+    private static Move getRandomMove(Random rnd){
         Move nextMove = null;
 
         int moveID = rnd.nextInt(4);
