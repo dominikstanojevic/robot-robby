@@ -20,7 +20,7 @@ public class GridTest {
     public void testGeneration() {
         grid.generate(10, 15, 30, false);
 
-        assertEquals(20, grid.getNumberOfBottles());
+        assertEquals(30, grid.getNumberOfBottles());
         assertEquals(15, grid.getHeight());
         assertEquals(10, grid.getWidth());
     }
