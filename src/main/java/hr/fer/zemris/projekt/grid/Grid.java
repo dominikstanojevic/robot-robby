@@ -1,6 +1,5 @@
 package hr.fer.zemris.projekt.grid;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +9,7 @@ import java.util.Random;
 
 /**
  * @author Kristijan Vulinovic
- * @version 1.1.0
+ * @version 1.1.3
  */
 public class Grid implements IGrid {
     private Field[][] grid;
@@ -37,7 +36,7 @@ public class Grid implements IGrid {
         checkArgument(row, -1, height + 1, "row");
         checkArgument(column, -1, width + 1, "column");
 
-        if (row == 0 || column == 0 || row == height - 1 || column == width - 1){
+        if (row == -1 || column == -1 || row == height || column == width){
             return Field.WALL;
         }
 
@@ -97,6 +96,8 @@ public class Grid implements IGrid {
         }
 
         grid = new Field[height][width];
+        this.width = width;
+        this.height = height;
 
         for (int i = 0; i < height; ++i){
             for (int j = 0; j < width; ++j){
@@ -287,9 +288,7 @@ public class Grid implements IGrid {
         Field[][] newField = new Field[height][width];
 
         for (int i = 0; i < height; ++i){
-            for (int j = 0; j < width; ++j){
-                newField[i][j] = grid[i][j];
-            }
+            System.arraycopy(grid[i], 0, newField[i], 0, width);
         }
 
         newGrid.setGrid(newField, startY, startX);

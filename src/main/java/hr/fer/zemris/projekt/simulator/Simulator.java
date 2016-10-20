@@ -1,6 +1,7 @@
 package hr.fer.zemris.projekt.simulator;
 
 import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.grid.IGrid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Random;
  * statistics of the game.
  *
  * @author Kristijan Vulinovic
- * @version 1.0.0
+ * @version 1.0.1
  */
 public class Simulator extends AbstractSimulator {
     /**
@@ -42,8 +43,8 @@ public class Simulator extends AbstractSimulator {
 
             List<Stats> stats = new ArrayList<>();
 
-            for (int i = 0; i < grids.length; ++i){
-                stats.add(playGame(robot, grids[i], rnd));
+            for (IGrid grid : grids) {
+                stats.add(playGame(robot, grid, rnd));
             }
 
             return stats;

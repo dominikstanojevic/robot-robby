@@ -16,7 +16,7 @@ import java.util.concurrent.*;
  * algorithm nexMove calls.
  *
  * @author Kristijan Vulinovic
- * @version 1.0.0
+ * @version 1.0.2
  */
 public class MultithreadedSimulator extends AbstractSimulator {
     private ExecutorService pool;
@@ -32,13 +32,10 @@ public class MultithreadedSimulator extends AbstractSimulator {
         super(maxMoves);
 
         int numberOfCores = Runtime.getRuntime().availableProcessors();
-        pool = Executors.newFixedThreadPool(numberOfCores, new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                t.setDaemon(true);
-                return t;
-            }
+        pool = Executors.newFixedThreadPool(numberOfCores, r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
         });
     }
 
@@ -58,8 +55,8 @@ public class MultithreadedSimulator extends AbstractSimulator {
         }
         Random rnd = new Random();
         List<Future<Stats>> results = new ArrayList<>();
-        for (int i = 0; i < grids.length; ++i){
-            PlayGame job = new PlayGame(robot, grids[i], rnd);
+        for (IGrid grid : grids) {
+            PlayGame job = new PlayGame(robot, grid, rnd);
             results.add(pool.submit(job));
         }
 
