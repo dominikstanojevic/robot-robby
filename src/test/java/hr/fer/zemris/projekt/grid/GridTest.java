@@ -3,7 +3,6 @@ package hr.fer.zemris.projekt.grid;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.omg.CORBA.Environment;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -195,10 +194,8 @@ public class GridTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testReadNullFile(){
-        Path filePath = null;
-
         try {
-            grid.readFromFile(filePath);
+            grid.readFromFile(null);
         } catch (IOException e) {
             e.printStackTrace();
         }

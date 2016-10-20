@@ -5,36 +5,56 @@ import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
-import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
+// Parametrized test class which tests both the Simulator and MultithreadedSimulator
 @SuppressWarnings("javadoc")
+@RunWith(value = Parameterized.class)
 public class SimulatorTest {
+
+    private Function<Integer, AbstractSimulator> simulatorConstructor;
+    private Supplier<AbstractSimulator> defaultConstructor;
+
+    public SimulatorTest(Function<Integer, AbstractSimulator> simulatorConstructor, Supplier<AbstractSimulator> defaultConstructor) {
+        this.simulatorConstructor = simulatorConstructor;
+        this.defaultConstructor = defaultConstructor;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList( new Object[][] {
+                {(Function<Integer, AbstractSimulator>) Simulator::new, (Supplier<AbstractSimulator>) Simulator::new},
+                {(Function<Integer, AbstractSimulator>) MultithreadedSimulator::new, (Supplier<AbstractSimulator>) MultithreadedSimulator::new}
+        });
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSimulatorConstructorWithNegativeMoves() {
-        new Simulator(-2);
+        simulatorConstructor.apply(-2);
     }
 
     // 2 pickups and 1 empty pickups, along with moving down and left
@@ -69,7 +89,7 @@ public class SimulatorTest {
         when(algorithm.nextMove(Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
-        Simulator simulator = new Simulator(5);
+        AbstractSimulator simulator = simulatorConstructor.apply(5);
         return simulator.playGame(algorithm, grid, new Random());
     }
 
@@ -130,7 +150,7 @@ public class SimulatorTest {
         //move right
         when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.EMPTY)).thenReturn(Move.RIGHT);
 
-        Simulator simulator = new Simulator(5);
+        AbstractSimulator simulator = simulatorConstructor.apply(5);
         return simulator.playGame(algorithm, grid, new Random());
     }
 
@@ -189,7 +209,7 @@ public class SimulatorTest {
         when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
-        Simulator simulator = new Simulator(5);
+        AbstractSimulator simulator = simulatorConstructor.apply(5);
         return simulator.playGame(algorithm, grid, new Random());
     }
 
@@ -240,7 +260,7 @@ public class SimulatorTest {
         when(algorithm.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.SKIP_TURN);
 
-        Simulator simulator = new Simulator(5);
+        AbstractSimulator simulator = simulatorConstructor.apply(5);
         return simulator.playGame(algorithm, grid, new Random());
     }
 
@@ -314,10 +334,10 @@ public class SimulatorTest {
         when(algorithm.nextMove(Mockito.any(Field.class), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Move.RANDOM);
 
-        Simulator simulator = new Simulator(5);
+        AbstractSimulator simulator = simulatorConstructor.apply(5);
         simulator.readGridFromFile(getPaths());
 
-        Simulator spy = Mockito.spy(simulator);
+        AbstractSimulator spy = Mockito.spy(simulator);
         spy.playGames(algorithm);
         Mockito.verify(spy, times(3)).playGame(eq(algorithm), Mockito.any(IGrid.class), Mockito.any(Random.class));
     }
@@ -329,7 +349,7 @@ public class SimulatorTest {
         int width = 4;
         int height = 7;
 
-        AbstractSimulator simulator = new Simulator();
+        AbstractSimulator simulator = defaultConstructor.get();
         simulator.generateGrids(size, numberOfBottles, width, height, false);
 
         java.lang.reflect.Field field = AbstractSimulator.class.getDeclaredField("grids");
@@ -349,7 +369,7 @@ public class SimulatorTest {
     public void gridSetTest() throws NoSuchFieldException, IllegalAccessException {
         Grid grid = new Grid();
 
-        Simulator simulator = new Simulator();
+        AbstractSimulator simulator = defaultConstructor.get();
         simulator.setGrid(grid);
 
         java.lang.reflect.Field field = AbstractSimulator.class.getDeclaredField("grids");
@@ -363,7 +383,7 @@ public class SimulatorTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidFile() {
-        Simulator simulator = new Simulator();
+        AbstractSimulator simulator = defaultConstructor.get();
 
         List<Path> paths = new ArrayList<>();
         paths.add(Paths.get("ovajFileSigurnoNePostoji"));
