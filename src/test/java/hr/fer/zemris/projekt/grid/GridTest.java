@@ -4,7 +4,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("javadoc")
 public class GridTest {
@@ -20,7 +21,7 @@ public class GridTest {
     public void testGeneration() {
         grid.generate(10, 15, 30, false);
 
-        assertEquals(20, grid.getNumberOfBottles());
+        assertEquals(30, grid.getNumberOfBottles());
         assertEquals(15, grid.getHeight());
         assertEquals(10, grid.getWidth());
     }
@@ -57,7 +58,7 @@ public class GridTest {
         grid.generate(10, 10, 20, false);
 
         grid.setField(3, 3, Field.EMPTY);
-        assertEquals(Field.BOTTLE, grid.getField(3, 3));
+        assertEquals(Field.EMPTY, grid.getField(3, 3));
 
         grid.setField(8, 6, Field.BOTTLE);
         assertEquals(Field.BOTTLE, grid.getField(8, 6));
