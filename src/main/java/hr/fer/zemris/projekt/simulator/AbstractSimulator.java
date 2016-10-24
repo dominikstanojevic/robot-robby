@@ -1,7 +1,7 @@
 package hr.fer.zemris.projekt.simulator;
 
-import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.Move;
+import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
@@ -20,7 +20,7 @@ import java.util.Random;
  * list is changed manually.
  *
  * @author Kristijan Vulinovic
- * @version 1.1.2
+ * @version 1.1.3
  */
 public abstract class AbstractSimulator {
     /**
@@ -93,19 +93,16 @@ public abstract class AbstractSimulator {
      * defined by the files.
      *
      * @param filePaths list of file paths containing the grid definitions.
+     * @throws IOException if an I/O error occurs when reading from one
+     *                     of the files
      */
-    public void readGridFromFile(List<Path> filePaths){
+    public void readGridFromFile(List<Path> filePaths) throws IOException {
         int n = filePaths.size();
         grids = new Grid[n];
 
         for (int i = 0; i < n; ++i){
             grids[i] = new Grid();
-
-            try {
-                grids[i].readFromFile(filePaths.get(i));
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Unable to open the given file!");
-            }
+            grids[i].readFromFile(filePaths.get(i));
         }
     }
 

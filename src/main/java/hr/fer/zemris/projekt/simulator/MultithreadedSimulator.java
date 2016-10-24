@@ -6,7 +6,11 @@ import hr.fer.zemris.projekt.grid.IGrid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * A multi threaded game simulator that is able to take a reference to an
@@ -19,6 +23,10 @@ import java.util.concurrent.*;
  * @version 1.0.2
  */
 public class MultithreadedSimulator extends AbstractSimulator {
+
+    /**
+     * Thread pool used for paralleling the simulation.
+     */
     private ExecutorService pool;
 
     /**

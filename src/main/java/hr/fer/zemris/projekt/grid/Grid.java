@@ -9,16 +9,38 @@ import java.util.Random;
 
 /**
  * @author Kristijan Vulinovic
- * @version 1.1.3
+ * @version 1.2.0
  */
 public class Grid implements IGrid {
+
+    /**
+     * 2D array representing the field.
+     */
     private Field[][] grid;
+
+    /**
+     * Width of the field.
+     */
     private int width;
+
+    /**
+     * Height of the field.
+     */
     private int height;
 
+    /**
+     * X coordinate of the starting position.
+     */
     private int startX;
+
+    /**
+     * Y coordinate of the starting position.
+     */
     private int startY;
 
+    /**
+     * Number of bottles on the grid.
+     */
     private int numberOfBottles;
 
     @Override
@@ -155,7 +177,7 @@ public class Grid implements IGrid {
 
         List<String> lines = Files.readAllLines(filePath);
         if (lines.size() < 2){
-            throw new IllegalArgumentException("The given file is not valid.");
+            throw new GridFormatException("The given file is not valid.");
         }
 
         parseSize(lines.remove(0));
@@ -175,14 +197,14 @@ public class Grid implements IGrid {
         str = str.trim();
         String[] numbers = str.split(" ");
         if (numbers.length != 2){
-            throw new IllegalArgumentException("The size should define two arguments, the height and width!");
+            throw new GridFormatException("The size should define two arguments, the height and width!");
         }
 
         try {
             this.width = Integer.parseInt(numbers[0]);
             this.height = Integer.parseInt(numbers[1]);
         } catch (NumberFormatException e){
-            throw new IllegalArgumentException("Unable to parse the file!", e);
+            throw new GridFormatException("Unable to parse the file!", e);
         }
     }
 
@@ -195,14 +217,14 @@ public class Grid implements IGrid {
         str = str.trim();
         String[] numbers = str.split(" ");
         if (numbers.length != 2){
-            throw new IllegalArgumentException("The size should define two arguments, the height and width!");
+            throw new GridFormatException("The size should define two arguments, the height and width!");
         }
 
         try {
             this.startX = Integer.parseInt(numbers[0]);
             this.startY = Integer.parseInt(numbers[1]);
         } catch (NumberFormatException e){
-            throw new IllegalArgumentException("Unable to parse the file!", e);
+            throw new GridFormatException("Unable to parse the file!", e);
         }
     }
 
@@ -214,7 +236,7 @@ public class Grid implements IGrid {
      */
     private void parseGrid(List<String> lines){
         if (lines.size() != height){
-            throw new IllegalArgumentException("The given file is not valid!");
+            throw new GridFormatException("The given file is not valid!");
         }
 
         grid = new Field[height][width];
@@ -222,7 +244,7 @@ public class Grid implements IGrid {
         for (String line : lines){
             line = line.trim();
             if (line.length() != width){
-                throw new IllegalArgumentException("The given file is not valid!");
+                throw new GridFormatException("The given file is not valid!");
             }
 
             int column = 0;
@@ -238,7 +260,7 @@ public class Grid implements IGrid {
                         grid[row][column] = Field.WALL;
                         break;
                     default:
-                        throw new IllegalArgumentException("The given file format is invalid.");
+                        throw new GridFormatException("The given file format is invalid.");
                 }
                 column++;
             }

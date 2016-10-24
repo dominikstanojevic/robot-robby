@@ -382,7 +382,7 @@ public class SimulatorTest {
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testInvalidFile() {
+    public void testInvalidFile() throws IOException {
         AbstractSimulator simulator = defaultConstructor.get();
 
         List<Path> paths = new ArrayList<>();
