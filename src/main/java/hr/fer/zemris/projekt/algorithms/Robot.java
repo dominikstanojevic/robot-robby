@@ -3,6 +3,17 @@ package hr.fer.zemris.projekt.algorithms;
 import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.grid.Field;
 
+/**
+ * <p>Represents an implementation of Robby the Robot's brain. The robot implementation
+ * can be asked for it's next move depending on it's current surrounding using the
+ * {@link Robot#nextMove(Field, Field, Field, Field, Field) nextMove} method.</p>
+ *
+ * <p>This implementation of the robot's mind can range from being a single chromosome
+ * in a genetic algorithm to a neural network, or any other robot training algorithm.</p>
+ *
+ * @author Leon Luttenberger
+ * @version 1.0.0
+ */
 public interface Robot {
 
     /**

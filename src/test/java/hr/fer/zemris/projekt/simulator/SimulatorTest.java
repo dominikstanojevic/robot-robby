@@ -1,7 +1,6 @@
 package hr.fer.zemris.projekt.simulator;
 
 import hr.fer.zemris.projekt.Move;
-import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;

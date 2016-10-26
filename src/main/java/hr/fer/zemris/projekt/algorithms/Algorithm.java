@@ -7,12 +7,18 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Defines a basic set of functionality that every algorithm should follow in
- * order to be able to play games on the simulator. Provides the functionality
- * to play a single move and to set the parameters for the algorithm.
+ * <p>Defines a basic set of functionality that every {@link Robot} training
+ * algorithm should implement in order to be used properly from the program.</p>
+ * <p>The needed functionality is the following:</p>
+ * <ul>
+ *     <li>Parsing it's appropriate {@code Robot} from a file.</li>
+ *     <li>Writing it's appropriate {@code Robot} to a file.</li>
+ *     <li>Setting {@link Parameter parameters} for the algorithm.</li>
+ *     <li>Retrieving the list of {@link Parameter parameters}.</li>
+ * </ul>
  *
- * @author Kristijan Vulinovic
- * @version 1.0.1
+ * @author Kristijan Vulinovic, Leon Luttenberger
+ * @version 1.1.0
  */
 public interface Algorithm {
 
