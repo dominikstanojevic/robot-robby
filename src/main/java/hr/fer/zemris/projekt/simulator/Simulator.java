@@ -1,6 +1,6 @@
 package hr.fer.zemris.projekt.simulator;
 
-import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.IGrid;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class Simulator extends AbstractSimulator {
     }
 
     @Override
-    public List<Stats> playGames(Algorithm robot) {
+    public List<Stats> playGames(Robot robot) {
         {
             if (grids == null){
                 throw new IllegalStateException("There are no defined grids for this simulation.");

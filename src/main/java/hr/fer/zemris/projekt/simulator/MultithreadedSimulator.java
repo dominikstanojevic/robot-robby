@@ -1,6 +1,6 @@
 package hr.fer.zemris.projekt.simulator;
 
-import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.IGrid;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class MultithreadedSimulator extends AbstractSimulator {
     }
 
     @Override
-    public List<Stats> playGames(Algorithm robot) {
+    public List<Stats> playGames(Robot robot) {
         if (grids == null){
             throw new IllegalStateException("There are no defined grids for this simulation.");
         }
@@ -88,9 +88,9 @@ public class MultithreadedSimulator extends AbstractSimulator {
      */
     private class PlayGame implements Callable<Stats>{
         /**
-         * The algorithm that should be used to play the game.
+         * The robot playing the game.
          */
-        private Algorithm robot;
+        private Robot robot;
         /**
          * The grid that should be used to play the game on.
          */
@@ -107,7 +107,7 @@ public class MultithreadedSimulator extends AbstractSimulator {
          * @param grid The grid that should be used to play the game on.
          * @param rnd Random number generator used to get a random move.
          */
-        public PlayGame(Algorithm robot, IGrid grid, Random rnd){
+        public PlayGame(Robot robot, IGrid grid, Random rnd){
             this.robot = robot;
             this.grid = grid;
             this.rnd = rnd;

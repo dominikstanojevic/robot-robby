@@ -2,6 +2,7 @@ package hr.fer.zemris.projekt.simulator;
 
 import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
@@ -68,29 +69,29 @@ public class SimulatorTest {
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE } };
         grid.setGrid(fields, 1, 2);
 
-        Algorithm algorithm = mock(Algorithm.class);
+        Robot robot = mock(Robot.class);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+        when(robot.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
         //move left
-        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.LEFT);
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.LEFT);
 
         //move down
-        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE))
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE))
                 .thenReturn(Move.DOWN);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+        when(robot.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
         //do an empty pickup
-        when(algorithm.nextMove(Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+        when(robot.nextMove(Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
         AbstractSimulator simulator = simulatorConstructor.apply(5);
-        return simulator.playGame(algorithm, grid, new Random());
+        return simulator.playGame(robot, grid, new Random());
     }
 
     @Test
@@ -134,24 +135,24 @@ public class SimulatorTest {
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY/*start*/, Field.BOTTLE } };
         grid.setGrid(fields, 3, 2);
 
-        Algorithm algorithm = mock(Algorithm.class);
+        Robot robot = mock(Robot.class);
 
         //move right
-        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.WALL))
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.WALL))
                 .thenReturn(Move.RIGHT);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL))
+        when(robot.nextMove(Field.BOTTLE, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL))
                 .thenReturn(Move.COLLECT);
 
         //move up
-        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL)).thenReturn(Move.UP);
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL)).thenReturn(Move.UP);
 
         //move right
-        when(algorithm.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.EMPTY)).thenReturn(Move.RIGHT);
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.EMPTY)).thenReturn(Move.RIGHT);
 
         AbstractSimulator simulator = simulatorConstructor.apply(5);
-        return simulator.playGame(algorithm, grid, new Random());
+        return simulator.playGame(robot, grid, new Random());
     }
 
     @Test
@@ -195,22 +196,22 @@ public class SimulatorTest {
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY } };
         grid.setGrid(fields, 1, 0);
 
-        Algorithm algorithm = mock(Algorithm.class);
+        Robot robot = mock(Robot.class);
 
         //collect
-        when(algorithm.nextMove(Field.BOTTLE, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
+        when(robot.nextMove(Field.BOTTLE, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
         //move right
-        when(algorithm.nextMove(Field.EMPTY, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
+        when(robot.nextMove(Field.EMPTY, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.RIGHT);
 
         //move up
-        when(algorithm.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+        when(robot.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
         AbstractSimulator simulator = simulatorConstructor.apply(5);
-        return simulator.playGame(algorithm, grid, new Random());
+        return simulator.playGame(robot, grid, new Random());
     }
 
     @Test
@@ -254,14 +255,14 @@ public class SimulatorTest {
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY } };
         grid.setGrid(fields, 1, 1);
 
-        Algorithm algorithm = mock(Algorithm.class);
+        Robot robot = mock(Robot.class);
 
         //random move
-        when(algorithm.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+        when(robot.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.SKIP_TURN);
 
         AbstractSimulator simulator = simulatorConstructor.apply(5);
-        return simulator.playGame(algorithm, grid, new Random());
+        return simulator.playGame(robot, grid, new Random());
     }
 
     @Test
@@ -330,16 +331,16 @@ public class SimulatorTest {
 
     @Test
     public void testLoadingGridFromFile() throws IOException {
-        Algorithm algorithm = mock(Algorithm.class);
-        when(algorithm.nextMove(Mockito.any(Field.class), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+        Robot robot = mock(Robot.class);
+        when(robot.nextMove(Mockito.any(Field.class), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Move.RANDOM);
 
         AbstractSimulator simulator = simulatorConstructor.apply(5);
         simulator.readGridFromFile(getPaths());
 
         AbstractSimulator spy = Mockito.spy(simulator);
-        spy.playGames(algorithm);
-        Mockito.verify(spy, times(3)).playGame(eq(algorithm), Mockito.any(IGrid.class), Mockito.any(Random.class));
+        spy.playGames(robot);
+        Mockito.verify(spy, times(3)).playGame(eq(robot), Mockito.any(IGrid.class), Mockito.any(Random.class));
     }
 
     @Test

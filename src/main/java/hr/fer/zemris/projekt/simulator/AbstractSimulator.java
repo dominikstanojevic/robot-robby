@@ -1,7 +1,7 @@
 package hr.fer.zemris.projekt.simulator;
 
 import hr.fer.zemris.projekt.Move;
-import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
@@ -61,11 +61,11 @@ public abstract class AbstractSimulator {
     /**
      * Plays games on every defined grid.
      *
-     * @param robot the {@link Algorithm} that will be executed.
+     * @param robot the {@link Robot} being tested
      *
      * @return a List of {@link Stats} describing every game played.
      */
-    public abstract List<Stats> playGames(Algorithm robot);
+    public abstract List<Stats> playGames(Robot robot);
 
     /**
      * Generates the given amount of random new grids. The parameters specify
@@ -148,17 +148,17 @@ public abstract class AbstractSimulator {
     }
 
     /**
-     * Calculates the next move for the given {@link Algorithm} on the given
+     * Calculates the next move for the given {@link Robot} on the given
      * {@link IGrid}, from the current column and row.
      *
-     * @param robot the {@link Algorithm} that should be used to get the next move.
+     * @param robot the {@link Robot} who's being asked for his next move
      * @param grid the current grid.
      * @param row the current row.
      * @param column the current column.
      *
      * @return the {@link Move} that the robot should make.
      */
-    private Move getNextMove(Algorithm robot, IGrid grid, int row, int column){
+    private Move getNextMove(Robot robot, IGrid grid, int row, int column){
         Field current = grid.getField(row, column);
         Field left = grid.getField(row, column - 1);
         Field right = grid.getField(row, column + 1);
@@ -171,13 +171,13 @@ public abstract class AbstractSimulator {
     /**
      * Plays one game on the given grid. The game is executed without interrupting.
      *
-     * @param robot the {@link Algorithm} that should be executed.
+     * @param robot the {@link Robot} being tested
      * @param originalGrid the {@link IGrid} that should be used to play the game.
      * @param rnd a random number generator, used to play a random move.
      *
      * @return a {@link Stats} object describing every detail about the game.
      */
-    protected Stats playGame(Algorithm robot, IGrid originalGrid, Random rnd){
+    protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd){
         IGrid grid = originalGrid.copy();
 
         int moveNumber = 0;

@@ -4,17 +4,17 @@ import hr.fer.zemris.projekt.grid.GridFormatException;
 
 /**
  * Exception thrown when an application attempts to convert the contents of a file or string into the
- * appropriate {@link Algorithm} implementation, but the file/string does not have the appropriate format.
+ * appropriate {@link Robot} implementation, but the file/string does not have the appropriate format.
  *
  * @author Leon Luttenberger
  * @version 1.0.0
  */
-public class AlgorithmFormatException extends IllegalArgumentException {
+public class RobotFormatException extends IllegalArgumentException {
 
     /**
-     * Constructs a {@link AlgorithmFormatException} with the default message.
+     * Constructs a {@link RobotFormatException} with the default message.
      */
-    public AlgorithmFormatException() {
+    public RobotFormatException() {
     }
 
     /**
@@ -22,7 +22,7 @@ public class AlgorithmFormatException extends IllegalArgumentException {
      *
      * @param message message of the exception
      */
-    public AlgorithmFormatException(String message) {
+    public RobotFormatException(String message) {
         super(message);
     }
 
@@ -33,7 +33,7 @@ public class AlgorithmFormatException extends IllegalArgumentException {
      * @param message message of the exception
      * @param cause   cause of the exception
      */
-    public AlgorithmFormatException(String message, Throwable cause) {
+    public RobotFormatException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -43,7 +43,7 @@ public class AlgorithmFormatException extends IllegalArgumentException {
      *
      * @param cause cause of the exception
      */
-    public AlgorithmFormatException(Throwable cause) {
+    public RobotFormatException(Throwable cause) {
         super(cause);
     }
 }
