@@ -5,6 +5,9 @@ import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
+import hr.fer.zemris.projekt.observer.Observable;
+import hr.fer.zemris.projekt.observer.Observer;
+import hr.fer.zemris.projekt.observer.observations.RobotActionTaken;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,16 +16,20 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Provides the functionality to run multiple simulations on a single bot and
+ * <p>Provides the functionality to run multiple simulations on a single bot and
  * return the result statistics. The simulations can be run multi threaded or
  * single threaded, depending on the implementation. The simulator ensures to
  * use the same set of grids for simulations in every call, unless the grid
- * list is changed manually.
+ * list is changed manually.</p>
  *
- * @author Kristijan Vulinovic
+ * <p>This simulator also represents the subject in the observer design pattern.
+ * Observers can be notified whenever a move is made.</p>
+ *
+ * @author Kristijan Vulinovic, Leon Luttenberger
  * @version 1.1.3
  */
-public abstract class AbstractSimulator {
+public abstract class AbstractSimulator implements Observable<RobotActionTaken> {
+
     /**
      * The default maximal number of moves.
      */
@@ -228,6 +235,8 @@ public abstract class AbstractSimulator {
             int newX = x + xMove;
             int newY = y + yMove;
 
+            notifyListeners(originalGrid, nextMove, x, y, newX, newY);
+
             if (grid.getField(newX, newY) == Field.WALL){
                 wallsHit++;
             } else {
@@ -241,5 +250,55 @@ public abstract class AbstractSimulator {
         int bottlesCollected = originalGrid.getNumberOfBottles() - bottlesLeft;
 
         return new Stats(moveNumber, bottlesCollected, bottlesLeft, wallsHit, emptyPickups, originalGrid, moves);
+    }
+
+    /**
+     * List of observers.
+     */
+    private List<Observer<RobotActionTaken>> observers;
+
+    /**
+     * Notifies the listeners with a {@link RobotActionTaken} object only if somebody is observing this
+     * object.
+     * @param grid grid that the move was taken on
+     * @param move move taken
+     * @param oldX previous X coordinate of the robot
+     * @param oldY previous Y coordinate of the robot
+     * @param newX current X coordinate of the robot
+     * @param newY current Y coordinate of the robot
+     */
+    private void notifyListeners(IGrid grid, Move move, int oldX, int oldY, int newX, int newY) {
+        if (observers == null || observers.isEmpty()) {
+            return;
+        }
+
+        this.fire(new RobotActionTaken(grid, move, oldX, oldY, newX, newY));
+    }
+
+    @Override
+    public void addObserver(Observer<RobotActionTaken> observer) {
+        if (observers == null) {
+            observers = new ArrayList<>();
+        }
+
+        observers = new ArrayList<>(observers);
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer<RobotActionTaken> observer) {
+        if (observers != null) {
+            observers = new ArrayList<>();
+            observers.remove(observer);
+        }
+    }
+
+    @Override
+    public void fire(RobotActionTaken observation) {
+        if (observers != null) {
+            for (Observer<RobotActionTaken> observer : observers) {
+                observer.observationMade(this, observation);
+            }
+        }
     }
 }
