@@ -4,7 +4,6 @@ import hr.fer.zemris.projekt.parameter.Parameter;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * <p>Defines a basic set of functionality that every {@link Robot} training
@@ -46,19 +45,25 @@ public interface Algorithm {
     void writeSolutionToFile(Path filePath, Robot robot) throws IOException;
 
     /**
-     * Returns a list of {@link Parameter}s that are used by this algorithm.
-     * Every parameter in the list contains the value that was set for the
-     * algorithm, or a default value if nothing was specified.
+     * Returns the default {@link Parameters parameters} for this algorithm.
+     * Note that this method should return a copy of the parameters,
+     * as the default values should not be changed.
      *
-     * @return a list of all {@link Parameter}s used by the algorithm.
+     * @return the default {@link Parameters parameters} for this algorithm
      */
-    List<Parameter> getParameterList();
+    Parameters<? extends Algorithm> getDefaultParameters();
 
     /**
-     * Changes the value of the parameter used by the algorithm to the one in
-     * the argument.
+     * Runs the algorithm with the specified parameters.
      *
-     * @param parameter the {@link Parameter} with the new value.
+     * @param parameters parameters to run the algorithm with
      */
-    void setParameter(Parameter parameter);
+    void run(Parameters<? extends Algorithm> parameters);
+
+    /**
+     * Runs the algorithm with the default parameters.
+     */
+    default void run() {
+        this.run(getDefaultParameters());
+    }
 }

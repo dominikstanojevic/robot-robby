@@ -74,9 +74,9 @@ public class Grid implements IGrid {
             throw new IllegalArgumentException("The field is not allowed to be null!");
         }
 
-        if (grid[row][column].equals(Field.BOTTLE) && !newField.equals(Field.BOTTLE)){
+        if (grid[row][column] == Field.BOTTLE && newField != Field.BOTTLE){
             numberOfBottles--;
-        } else if(!grid[row][column].equals(Field.BOTTLE) && newField.equals(Field.BOTTLE)){
+        } else if(grid[row][column] != Field.BOTTLE && newField == Field.BOTTLE){
             numberOfBottles++;
         }
         grid[row][column] = newField;
@@ -136,7 +136,7 @@ public class Grid implements IGrid {
             int row = rnd.nextInt(height);
             int column = rnd.nextInt(width);
 
-            if (grid[row][column].equals(Field.EMPTY)){
+            if (grid[row][column] == Field.EMPTY){
                 grid[row][column] = Field.BOTTLE;
                 bottlesPlaced++;
             }
@@ -339,7 +339,7 @@ public class Grid implements IGrid {
 
         for (int i = 0; i < height; ++i){
             for (int j = 0; j < width; ++j){
-                if (grid[i][j].equals(Field.BOTTLE)){
+                if (grid[i][j] == Field.BOTTLE){
                     bottleCount++;
                 }
             }
