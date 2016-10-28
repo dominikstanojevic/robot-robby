@@ -1,6 +1,7 @@
 package hr.fer.zemris.projekt.algorithms;
 
 import hr.fer.zemris.projekt.parameter.Parameter;
+import hr.fer.zemris.projekt.parameter.Parameters;
 
 import java.io.IOException;
 import java.nio.file.Path;

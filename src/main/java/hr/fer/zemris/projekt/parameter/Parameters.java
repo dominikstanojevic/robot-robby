@@ -1,6 +1,6 @@
-package hr.fer.zemris.projekt.algorithms;
+package hr.fer.zemris.projekt.parameter;
 
-import hr.fer.zemris.projekt.parameter.Parameter;
+import hr.fer.zemris.projekt.algorithms.Algorithm;
 
 import java.util.Set;
 
