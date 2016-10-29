@@ -1,6 +1,6 @@
 \documentclass[times, utf8, numeric]{fer}
 \usepackage{booktabs}
- \usepackage{url}
+\usepackage{url}
 
 \begin{document}
 
@@ -33,6 +33,30 @@
 
 \tableofcontents
 
+\pagebreak
+
+\section{Opis projekta}
+
+Ovaj projekt bavi se izradom "mozga" jednostavnog robota. Ideja robota, originalno nazvanog Robby, preuzeta je iz knjige Complexity: A Guided Tour autorice Melanie Mitchell. Robby živi u dvodimenzionalnom svijetu unutar kojeg su razbacane limenke i njegova je osnovna zadaća sakupiti ih ove limenke kako bi očistio svoj svijet. No, Robby ima ograničenu bateriju što znači da mu je na raspolaganju ograničen unutar jedne sesije čišćenja. Stoga je potrebno pažljivo odabrati koje će akcije robot izvoditi kako bi sakupio što više limenki prije nego što ostane bez baterije.
+\vspace{1ex}\\ 
+Svijet u kojem Robby živi pravokutnog je oblika i okružen je zidovima kroz koje robot ne može proći. Podijeljen je u ćelije po kojima se Robby može kretati. Na svakoj od ćelija može se nalaziti najviše jedna limenka. Unutar svih rubnih ćelija nalaze se zidovi i na njima ne mogu biti limenke. Robot se na početku svake sesije nalazi u jednoj nasumce odabranoj ćeliji. Ima unaprijed određen broj poteza koje može izvesti u jedno sesiji čišćenja i u svakom potezu može poduzeti jednu od sedam ponuđenih akcija: pomakni se jedu ćeliju sjeverno, južno, istočno ili zapadno, pokupi limenku s trenutne ćelije, nemoj učiniti ništa ili poduzmi nasumičnu akciju.  
+\vspace{1ex}\\
+No, Robby nema mogućnost pamćenja. Može donjeti odluku o tome koju će akciju poduzeti samo na temelju trenutne percepcije. U svakom trenutku robot vidi sadržaj ukupno pet ćelija: ćelije na kojoj stoji te ćelija koje su sjeverno, južno, istočno i zapadno od njega. Cilj ovog projekta je uporabom različitih algoritama pronaći što bolju strategiju odabira robotovog sljedećeg poteza na temelju sadržaja ovih pet ćelija.
+\vspace{1ex}\\
+Mozak robota razvija se sljedećim pristupima:
+\begin{itemize}
+	\item izravnim kodiranjem percepcija-akcija koje se uči genetskim algoritmom;
+	\item unaprijednom umjetnom neuronskom mrežom koja se uči evolucijskim algoritmom;
+	\item Elmannovom umjetnom neuronskom mrežom koja se uči evolucijskim algoritmom;
+	\item genetskim programiranjem;
+	\item podržanim učenjem.
+\end{itemize}
+\vspace{1ex}
+Navedeni pristupi trebaju način procjene kvalitete strategije robota, stoga je potrebno izgraditi simulator. U okviru projekta izađuju se dva simulatora: negrafički i grafički. Negrafički simulator služi za simulaciju ponašanja robota s ciljem dobovanja statističkih podataka o sesijama čišćenja za potrebe algoritama koji razvijaju strategije robota. Grafički simulator ima grafičko sučelje koje omogućava animirani prikaz rada robota koji slijedi odabranu strategiju na mapi.
+\vspace{1ex}\\
+U okviru projekta realizira se i grafičko sučelje kroz koje je moguće trenirati mozak robota odabranim pristupom. Za svaki je pristup moguće podesiti njemu odgovarajuće parametre te pratiti napredak učenja robota kroz izvođenje algoritma. Strategiju kojom treniranje rezultira moguće je pohraniti u datoteku. Također je moguće učitati prethodno pohranjenu strategiju i prikazati njezino ponašanje na raznim mapama u simulatoru.
+\\
+Svi segmenti projekta izrađuju se u programskom jeziku Java.
 
 \bibliography{literatura}
 \bibliographystyle{fer}
