@@ -1,11 +1,10 @@
 \documentclass[times, utf8, numeric]{fer}
 \usepackage{booktabs}
 \usepackage{url}
+\usepackage{float}
+
 
 \begin{document}
-
-% Literatura
-\nocite{*}
 
 \begin{titlepage}
 	\centering
@@ -24,19 +23,26 @@
 	\vfill
 	Mentor:\par
 	Doc. dr. sc. Marko \textsc{Čupić}
-
+	\vfill	
+	Verzija: 1.0
 	\vfill
 
 % Bottom of the page
 	{\large \today\par}
 \end{titlepage}
 
+\pagebreak
 \tableofcontents
 
 \pagebreak
+\pagenumbering{arabic}
+
+\chapter{Informacije o projektu}
+\section{Puni naziv projekta}
+
+\section{Skraćeni naziv projekta}
 
 \section{Opis projekta}
-
 Ovaj projekt bavi se izradom "mozga" jednostavnog robota. Ideja robota, originalno nazvanog Robby, preuzeta je iz knjige Complexity: A Guided Tour autorice Melanie Mitchell. Robby živi u dvodimenzionalnom svijetu unutar kojeg su razbacane limenke i njegova je osnovna zadaća sakupiti ih ove limenke kako bi očistio svoj svijet. No, Robby ima ograničenu bateriju što znači da mu je na raspolaganju ograničen unutar jedne sesije čišćenja. Stoga je potrebno pažljivo odabrati koje će akcije robot izvoditi kako bi sakupio što više limenki prije nego što ostane bez baterije.
 \vspace{1ex}\\ 
 Svijet u kojem Robby živi pravokutnog je oblika i okružen je zidovima kroz koje robot ne može proći. Podijeljen je u ćelije po kojima se Robby može kretati. Na svakoj od ćelija može se nalaziti najviše jedna limenka. Unutar svih rubnih ćelija nalaze se zidovi i na njima ne mogu biti limenke. Robot se na početku svake sesije nalazi u jednoj nasumce odabranoj ćeliji. Ima unaprijed određen broj poteza koje može izvesti u jedno sesiji čišćenja i u svakom potezu može poduzeti jednu od sedam ponuđenih akcija: pomakni se jedu ćeliju sjeverno, južno, istočno ili zapadno, pokupi limenku s trenutne ćelije, nemoj učiniti ništa ili poduzmi nasumičnu akciju.  
@@ -58,7 +64,48 @@ U okviru projekta realizira se i grafičko sučelje kroz koje je moguće trenira
 \\
 Svi segmenti projekta izrađuju se u programskom jeziku Java.
 
-\bibliography{literatura}
-\bibliographystyle{fer}
+\section{Cilj projekta}
+
+\section{Voditelj studentskog tima}
+Voditelj: Dominik Stanojević
+
+\section{Rezultati}
+\section{Slični projekti}
+
+\chapter{Organizacija projekta}
+\section{Resursi}
+\section{Glavni rizici}
+\section{Smanjivanje rizika}
+
+\section{Glavne faze projekta}
+\begin{enumerate}
+  \item Preliminarni dogovori i dizajn sustava
+  \item Izrada simulatora
+  \item Izrada algoritama
+  \item Izrada korisničkog sučelja
+  \item Izrada web stranice projekta
+\end{enumerate}
+
+\section{Struktura raspodijeljenog posla}
+
+\section{Kontrolne točke}
+\begin{table}[H]
+\centering
+ \begin{tabular}{||c c c c||} 
+ \hline
+ Kontrolne točke & Planirani datum & Realizirani datum & Status projekta \\ [0.5ex] 
+ \hline\hline
+ Izrada simulatora & 20.10.2016. & 20.10.2016. & Simulator izrađen \\ 
+ Prva verzija projektnog plana & 07.11.2016. &  &  \\
+ Izrada algoritama & 02.01.2016. &  &  \\
+ \begin{tabular}{@{}c@{}}Izrada korisničkog sučelja \\ Druga verzija projektnog plana \\ Tehnička dokumentacija  \end{tabular} & 09.01.2016. &   &\\
+ Završetak izrade web-stranice & 16.01.2016. &  &  \\
+ \hline
+ \end{tabular}
+\end{table}
+
+
+\section{Gantogram}
+\section{Zapisnici sastanaka}
 
 \end{document}
