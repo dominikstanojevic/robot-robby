@@ -1,39 +1,27 @@
 package hr.fer.zemris.projekt.algorithms;
 
-import hr.fer.zemris.projekt.Move;
-import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.parameter.Parameter;
+import hr.fer.zemris.projekt.parameter.Parameters;
+import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 
+import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 /**
- * Defines a basic set of functionality that every algorithm should follow in
- * order to be able to play games on the simulator. Provides the functionality
- * to play a single move and to set the parameters for the algorithm.
+ * <p>Defines a basic set of functionality that every {@link Robot} training
+ * algorithm should implement in order to be used properly from the program.</p>
+ * <p>The needed functionality is the following:</p>
+ * <ul>
+ *     <li>Parsing it's appropriate {@code Robot} from a file.</li>
+ *     <li>Writing it's appropriate {@code Robot} to a file.</li>
+ *     <li>Setting {@link Parameter parameters} for the algorithm.</li>
+ *     <li>Retrieving the list of {@link Parameter parameters}.</li>
+ * </ul>
  *
- * @author Kristijan Vulinovic
- * @version 1.0.0
+ * @author Kristijan Vulinovic, Leon Luttenberger
+ * @version 1.1.1
  */
 public interface Algorithm {
-    /**
-     * Calculates what move to play in the situation described by the arguments.
-     *
-     * @param current a {@link Field} describing the field in the grid where the
-     *                robot is standing right now.
-     * @param left a {@link Field} describing the field on the left side to the
-     *             robot.
-     * @param right a {@link Field} describing the field on the right side to the
-     *             robot.
-     * @param up a {@link Field} describing the field on the upper side to the
-     *             robot.
-     * @param down a {@link Field} describing the field on the down side to the
-     *             robot.
-     *
-     * @return a {@link Move} that defines what the robot should do in the
-     * current situation.
-     */
-    Move nextMove(Field current, Field left, Field right, Field up, Field down);
 
     /**
      * Reads all the information about the algorithm from a file. The file can
@@ -41,8 +29,13 @@ public interface Algorithm {
      *
      * @param filePath The path of the file that contains the information for
      *                 this algorithm.
+     * @return the robot created from the data in the file.
+     * @throws IOException              if an I/O error is encountered when reading from the
+     *                                  file
+     * @throws RobotFormatException if the algorithm parameters are written
+     *                                  in an incorrect format
      */
-    void readParametersFromFile(Path filePath);
+    Robot readSolutionFromFile(Path filePath) throws IOException;
 
     /**
      * Writes the current information about the algorithm to the file specified
@@ -50,23 +43,33 @@ public interface Algorithm {
      * generations of the algorithm.
      *
      * @param filePath The path to the file where the information should be written.
+     * @throws IOException if an I/O error is encountered when writing to a file
      */
-    void writeParametersToPath(Path filePath);
+    void writeSolutionToFile(Path filePath, Robot robot) throws IOException;
 
     /**
-     * Returns a list of {@link Parameter}s that are used by this algorithm.
-     * Every parameter in the list contains the value that was set for the
-     * algorithm, or a default value if nothing was specified.
+     * Returns the default {@link Parameters parameters} for this algorithm.
+     * Note that this method should return a copy of the parameters,
+     * as the default values should not be changed.
      *
-     * @return a list of all {@link Parameter}s used by the algorithm.
+     * @return the default {@link Parameters parameters} for this algorithm
      */
-    List<Parameter> getParameterList();
+    Parameters<? extends Algorithm> getDefaultParameters();
 
     /**
-     * Changes the value of the parameter used by the algorithm to the one in
-     * the argument.
+     * Runs the algorithm with the specified parameters.
      *
-     * @param parameter the {@link Parameter} with the new value.
+     * @param simulator  simulator to test the results on
+     * @param parameters parameters to run the algorithm with
      */
-    void setParameter(Parameter parameter);
+    void run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters);
+
+    /**
+     * Runs the algorithm with the default parameters.
+     *
+     * @param simulator simulator to test the results on
+     */
+    default void run(AbstractSimulator simulator) {
+        this.run(simulator, getDefaultParameters());
+    }
 }

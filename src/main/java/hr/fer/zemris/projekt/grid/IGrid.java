@@ -10,7 +10,7 @@ import java.nio.file.Path;
  * robot can walk and perform defined {@link Move}s.
  *
  * @author Kristijan Vulinovic
- * @version 1.1.2
+ * @version 1.1.3
  */
 public interface IGrid {
     /**
@@ -22,7 +22,7 @@ public interface IGrid {
 
     /**
      * Returns the height of the grid.
-     * @return
+     * @return the height of the grid
      */
     int getHeight();
 
@@ -59,6 +59,14 @@ public interface IGrid {
      * @return the index of the current column of the robot on the grid.
      */
     int getCurrentColumn();
+
+    /**
+     * Sets the starting position of the robot.
+     *
+     * @param row    index of the row to position the robot on
+     * @param column index of the column to position the robot on
+     */
+    void setStartingPosition(int row, int column);
 
     /**
      * Returns true if the grid still has uncollected bottles in it,
@@ -100,6 +108,8 @@ public interface IGrid {
      * Reads a grid from the file specified in the argument.
      *
      * @param filePath the path to the file describing the grid.
+     * @throws IOException if an I/O error occurs when reading from the file.
+     * @throws GridFormatException if the file is written in an incorrect format
      */
     void readFromFile(Path filePath) throws IOException;
 
@@ -107,6 +117,7 @@ public interface IGrid {
      * Writes the grid to a file.
      *
      * @param filePath the path to the file where the grid should be written.
+     * @throws IOException if an I/O error occurs when reading from the file.
      */
     void writeToFile(Path filePath) throws IOException;
 

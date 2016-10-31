@@ -1,10 +1,13 @@
 package hr.fer.zemris.projekt.simulator;
 
-import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.Move;
+import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
+import hr.fer.zemris.projekt.observer.Observable;
+import hr.fer.zemris.projekt.observer.Observer;
+import hr.fer.zemris.projekt.observer.observations.RobotActionTaken;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,16 +16,20 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Provides the functionality to run multiple simulations on a single bot and
+ * <p>Provides the functionality to run multiple simulations on a single bot and
  * return the result statistics. The simulations can be run multi threaded or
  * single threaded, depending on the implementation. The simulator ensures to
  * use the same set of grids for simulations in every call, unless the grid
- * list is changed manually.
+ * list is changed manually.</p>
  *
- * @author Kristijan Vulinovic
- * @version 1.1.2
+ * <p>This simulator also represents the subject in the observer design pattern.
+ * Observers can be notified whenever a move is made.</p>
+ *
+ * @author Kristijan Vulinovic, Leon Luttenberger
+ * @version 1.1.3
  */
-public abstract class AbstractSimulator {
+public abstract class AbstractSimulator implements Observable<RobotActionTaken> {
+
     /**
      * The default maximal number of moves.
      */
@@ -61,11 +68,11 @@ public abstract class AbstractSimulator {
     /**
      * Plays games on every defined grid.
      *
-     * @param robot the {@link Algorithm} that will be executed.
+     * @param robot the {@link Robot} being tested
      *
      * @return a List of {@link Stats} describing every game played.
      */
-    public abstract List<Stats> playGames(Algorithm robot);
+    public abstract List<Stats> playGames(Robot robot);
 
     /**
      * Generates the given amount of random new grids. The parameters specify
@@ -93,19 +100,16 @@ public abstract class AbstractSimulator {
      * defined by the files.
      *
      * @param filePaths list of file paths containing the grid definitions.
+     * @throws IOException if an I/O error occurs when reading from one
+     *                     of the files
      */
-    public void readGridFromFile(List<Path> filePaths){
+    public void readGridFromFile(List<Path> filePaths) throws IOException {
         int n = filePaths.size();
         grids = new Grid[n];
 
         for (int i = 0; i < n; ++i){
             grids[i] = new Grid();
-
-            try {
-                grids[i].readFromFile(filePaths.get(i));
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Unable to open the given file!");
-            }
+            grids[i].readFromFile(filePaths.get(i));
         }
     }
 
@@ -151,17 +155,17 @@ public abstract class AbstractSimulator {
     }
 
     /**
-     * Calculates the next move for the given {@link Algorithm} on the given
+     * Calculates the next move for the given {@link Robot} on the given
      * {@link IGrid}, from the current column and row.
      *
-     * @param robot the {@link Algorithm} that should be used to get the next move.
+     * @param robot the {@link Robot} who's being asked for his next move
      * @param grid the current grid.
      * @param row the current row.
      * @param column the current column.
      *
      * @return the {@link Move} that the robot should make.
      */
-    private Move getNextMove(Algorithm robot, IGrid grid, int row, int column){
+    private Move getNextMove(Robot robot, IGrid grid, int row, int column){
         Field current = grid.getField(row, column);
         Field left = grid.getField(row, column - 1);
         Field right = grid.getField(row, column + 1);
@@ -174,13 +178,13 @@ public abstract class AbstractSimulator {
     /**
      * Plays one game on the given grid. The game is executed without interrupting.
      *
-     * @param robot the {@link Algorithm} that should be executed.
+     * @param robot the {@link Robot} being tested
      * @param originalGrid the {@link IGrid} that should be used to play the game.
      * @param rnd a random number generator, used to play a random move.
      *
      * @return a {@link Stats} object describing every detail about the game.
      */
-    protected Stats playGame(Algorithm robot, IGrid originalGrid, Random rnd){
+    protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd){
         IGrid grid = originalGrid.copy();
 
         int moveNumber = 0;
@@ -231,6 +235,9 @@ public abstract class AbstractSimulator {
             int newX = x + xMove;
             int newY = y + yMove;
 
+            // notify listeners, if there are any
+            notifyListeners(originalGrid, nextMove, x, y, newX, newY);
+
             if (grid.getField(newX, newY) == Field.WALL){
                 wallsHit++;
             } else {
@@ -244,5 +251,55 @@ public abstract class AbstractSimulator {
         int bottlesCollected = originalGrid.getNumberOfBottles() - bottlesLeft;
 
         return new Stats(moveNumber, bottlesCollected, bottlesLeft, wallsHit, emptyPickups, originalGrid, moves);
+    }
+
+    /**
+     * List of observers.
+     */
+    private List<Observer<RobotActionTaken>> observers;
+
+    /**
+     * Notifies the listeners with a {@link RobotActionTaken} object only if somebody is observing this
+     * object.
+     * @param grid grid that the move was taken on
+     * @param move move taken
+     * @param oldX previous X coordinate of the robot
+     * @param oldY previous Y coordinate of the robot
+     * @param newX current X coordinate of the robot
+     * @param newY current Y coordinate of the robot
+     */
+    private void notifyListeners(IGrid grid, Move move, int oldX, int oldY, int newX, int newY) {
+        if (observers == null || observers.isEmpty()) {
+            return;
+        }
+
+        this.fire(new RobotActionTaken(grid, move, oldX, oldY, newX, newY));
+    }
+
+    @Override
+    public void addObserver(Observer<RobotActionTaken> observer) {
+        if (observers == null) {
+            observers = new ArrayList<>();
+        }
+
+        observers = new ArrayList<>(observers);
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer<RobotActionTaken> observer) {
+        if (observers != null) {
+            observers = new ArrayList<>();
+            observers.remove(observer);
+        }
+    }
+
+    @Override
+    public void fire(RobotActionTaken observation) {
+        if (observers != null) {
+            for (Observer<RobotActionTaken> observer : observers) {
+                observer.observationMade(this, observation);
+            }
+        }
     }
 }
