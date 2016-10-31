@@ -2,6 +2,7 @@ package hr.fer.zemris.projekt.algorithms;
 
 import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.Parameters;
+import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -57,14 +58,17 @@ public interface Algorithm {
     /**
      * Runs the algorithm with the specified parameters.
      *
+     * @param simulator  simulator to test the results on
      * @param parameters parameters to run the algorithm with
      */
-    void run(Parameters<? extends Algorithm> parameters);
+    void run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters);
 
     /**
      * Runs the algorithm with the default parameters.
+     *
+     * @param simulator simulator to test the results on
      */
-    default void run() {
-        this.run(getDefaultParameters());
+    default void run(AbstractSimulator simulator) {
+        this.run(simulator, getDefaultParameters());
     }
 }

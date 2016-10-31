@@ -35,19 +35,17 @@ public class Simulator extends AbstractSimulator {
 
     @Override
     public List<Stats> playGames(Robot robot) {
-        {
-            if (grids == null){
-                throw new IllegalStateException("There are no defined grids for this simulation.");
-            }
-            Random rnd = new Random();
-
-            List<Stats> stats = new ArrayList<>();
-
-            for (IGrid grid : grids) {
-                stats.add(playGame(robot, grid, rnd));
-            }
-
-            return stats;
+        if (grids == null){
+            throw new IllegalStateException("There are no defined grids for this simulation.");
         }
+        Random rnd = new Random();
+
+        List<Stats> stats = new ArrayList<>();
+
+        for (IGrid grid : grids) {
+            stats.add(playGame(robot, grid, rnd));
+        }
+
+        return stats;
     }
 }

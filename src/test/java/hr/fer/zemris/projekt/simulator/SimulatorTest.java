@@ -59,7 +59,7 @@ public class SimulatorTest {
 
     // 2 pickups and 1 empty pickups, along with moving down and left
     private Stats playSimulatorGame1() {
-        Grid grid = new Grid();
+        IGrid grid = new Grid();
 
         Field[][] fields = new Field[][] {
                 { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
@@ -125,7 +125,7 @@ public class SimulatorTest {
 
     // 1 collection, hits a wall and moves right and up
     private Stats playSimulatorGame2() {
-        Grid grid = new Grid();
+        IGrid grid = new Grid();
 
         Field[][] fields = new Field[][] {
                 { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
@@ -186,7 +186,7 @@ public class SimulatorTest {
 
     //collects all bottles in less than max turns
     private Stats playSimulatorGame3() {
-        Grid grid = new Grid();
+        IGrid grid = new Grid();
 
         Field[][] fields = new Field[][] {
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
@@ -245,7 +245,7 @@ public class SimulatorTest {
 
     //skip all the turns
     private Stats playSimulatorGame4() {
-        Grid grid = new Grid();
+        IGrid grid = new Grid();
 
         Field[][] fields = new Field[][] {
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
@@ -367,7 +367,7 @@ public class SimulatorTest {
 
     @Test
     public void gridSetTest() throws NoSuchFieldException, IllegalAccessException {
-        Grid grid = new Grid();
+        IGrid grid = new Grid();
 
         AbstractSimulator simulator = defaultConstructor.get();
         simulator.setGrid(grid);

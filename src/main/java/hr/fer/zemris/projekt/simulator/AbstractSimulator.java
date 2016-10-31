@@ -184,7 +184,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      *
      * @return a {@link Stats} object describing every detail about the game.
      */
-    protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd){
+    public Stats playGame(Robot robot, IGrid originalGrid, Random rnd){
         IGrid grid = originalGrid.copy();
 
         int moveNumber = 0;
@@ -235,6 +235,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
             int newX = x + xMove;
             int newY = y + yMove;
 
+            // notify listeners, if there are any
             notifyListeners(originalGrid, nextMove, x, y, newX, newY);
 
             if (grid.getField(newX, newY) == Field.WALL){
