@@ -61,6 +61,14 @@ public interface IGrid {
     int getCurrentColumn();
 
     /**
+     * Sets the starting position of the robot.
+     *
+     * @param row    index of the row to position the robot on
+     * @param column index of the column to position the robot on
+     */
+    void setStartingPosition(int row, int column);
+
+    /**
      * Returns true if the grid still has uncollected bottles in it,
      * false otherwise.
      *

@@ -93,6 +93,15 @@ public class Grid implements IGrid {
     }
 
     @Override
+    public void setStartingPosition(int row, int column) {
+        checkArgument(row, 0, height, "row");
+        checkArgument(column, 0, width, "column");
+
+        startX = column;
+        startY = row;
+    }
+
+    @Override
     public boolean hasBottlesLeft() {
         return getNumberOfBottles() != 0;
     }

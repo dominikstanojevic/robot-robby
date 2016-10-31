@@ -307,4 +307,35 @@ public class GridTest {
     public void testCustomNullGrid() {
         grid.setGrid(null, 0, 0);
     }
+
+    @Test
+    public void testSetStartingPosition() {
+        Field[][] fields = new Field[][] {
+                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE},
+                {Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL},
+                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY}
+        };
+        int row = 0;
+        int column = 0;
+        grid.setGrid(fields, row, column);
+
+        grid.setStartingPosition(2, 3);
+
+        assertEquals(2, grid.getCurrentRow());
+        assertEquals(3, grid.getCurrentColumn());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIllegalStartingPosition() {
+        Field[][] fields = new Field[][] {
+                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE},
+                {Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL},
+                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY}
+        };
+        int row = 0;
+        int column = 0;
+        grid.setGrid(fields, row, column);
+
+        grid.setStartingPosition(2, 4);
+    }
 }

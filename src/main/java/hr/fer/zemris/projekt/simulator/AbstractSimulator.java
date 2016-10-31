@@ -184,7 +184,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      *
      * @return a {@link Stats} object describing every detail about the game.
      */
-    public Stats playGame(Robot robot, IGrid originalGrid, Random rnd){
+    protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd){
         IGrid grid = originalGrid.copy();
 
         int moveNumber = 0;
