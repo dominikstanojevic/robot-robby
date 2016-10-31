@@ -9,6 +9,7 @@ import hr.fer.zemris.projekt.grid.IGrid;
  * as well as the previous and current positions of the robot.
  *
  * @author Leon Luttenberger
+ * @version 1.0.0
  */
 public class RobotActionTaken {
 

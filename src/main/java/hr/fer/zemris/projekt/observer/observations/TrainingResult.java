@@ -5,6 +5,7 @@ package hr.fer.zemris.projekt.observer.observations;
  * this might represent the fitness of the best individual in a generation.
  *
  * @author Leon Luttenberger
+ * @version 1.0.0
  */
 public class TrainingResult {
 

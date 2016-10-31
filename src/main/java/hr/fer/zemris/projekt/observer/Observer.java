@@ -8,6 +8,7 @@ package hr.fer.zemris.projekt.observer;
  *
  * @param <T> type in which observations will be received
  * @author Leon Luttenberger
+ * @version 1.0.0
  */
 public interface Observer<T> {
 

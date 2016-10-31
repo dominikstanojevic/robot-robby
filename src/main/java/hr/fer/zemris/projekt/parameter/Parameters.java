@@ -12,6 +12,7 @@ import java.util.Set;
  *
  * @param <T> {@link Algorithm} implementation
  * @author Leon Luttenberger
+ * @version 1.0.0
  */
 public interface Parameters<T extends Algorithm> {
 

@@ -14,8 +14,9 @@ import java.util.List;
  * best result from the latest complete iteration of the algorithm.
  *
  * @author Leon Luttenberger
+ * @version 1.0.1
  */
-public abstract class ObservableAlgorithm implements Observable<TrainingResult> {
+public abstract class ObservableAlgorithm implements Observable<TrainingResult>, Algorithm {
 
     /**
      * List of observers.

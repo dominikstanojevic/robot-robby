@@ -19,7 +19,7 @@ import java.nio.file.Path;
  * </ul>
  *
  * @author Kristijan Vulinovic, Leon Luttenberger
- * @version 1.1.0
+ * @version 1.1.1
  */
 public interface Algorithm {
 
@@ -29,6 +29,7 @@ public interface Algorithm {
      *
      * @param filePath The path of the file that contains the information for
      *                 this algorithm.
+     * @return the robot created from the data in the file.
      * @throws IOException              if an I/O error is encountered when reading from the
      *                                  file
      * @throws RobotFormatException if the algorithm parameters are written

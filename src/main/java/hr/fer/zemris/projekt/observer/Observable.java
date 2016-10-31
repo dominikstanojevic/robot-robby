@@ -6,6 +6,7 @@ package hr.fer.zemris.projekt.observer;
  * @param <T> type representing the observation
  *
  * @author Leon Luttenberger
+ * @version 1.0.0
  */
 public interface Observable<T> {
 
