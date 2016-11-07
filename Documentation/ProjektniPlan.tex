@@ -2,7 +2,8 @@
 \usepackage{booktabs}
 \usepackage{url}
 \usepackage{float}
-
+\usepackage{pdfpages}
+\usepackage{hyperref}
 
 \begin{document}
 
@@ -74,8 +75,95 @@ Voditelj: Dominik Stanojević
 
 \chapter{Organizacija projekta}
 \section{Resursi}
+U sklopu ovog projekta bit će korišteni sljedeći resursi:
+\begin{enumerate}
+	\item \begin{flushleft}\textbf{Ljudski resursi.}\end{flushleft}
+	Projekt će izvoditi tim od pet studenata FER-a čije su informacije navedene u tablici ljudskih resursa (tablica 			\ref{table:ljudstvo}).
+	
+	\begin{table}[H]
+	\centering
+ 	\begin{tabular}{|l l l|} 
+ 	\hline
+ 	Ime i prezime & E-mail adresa & Napomena\\ [0.5ex] 
+	\hline
+ 	Leon Luttenberger & \href{mailto:leon.luttenberger@fer.hr}{leon.luttenberger@fer.hr} & \\
+ 	Domagoj Pluščec & \href{mailto:domagoj.pluscec@fer.hr}{domagoj.pluscec@fer.hr} & \\
+ 	Dominik Stanojević & \href{mailto:dominik.stanojevic@fer.hr}{dominik.stanojevic@fer.hr} & 
+ 	voditelj projektnog tima\\
+ 	Dunja Vesinger & \href{mailto:dunja.vesinger@fer.hr}{dunja.vesinger@fer.hr} & \\
+ 	Kristijan Vulinović & \href{mailto:kristijan.vulinovic@fer.hr}{kristijan.vulinovic@fer.hr} & \\
+ 	\hline
+ 	\end{tabular}
+ 	\caption{Ljudski resursi}
+	\label{table:ljudstvo}
+	\end{table}
+	
+	\item \begin{flushleft}\textbf{ Materijalni resursi:} \end{flushleft}
+	\begin{enumerate}
+		\item \begin{flushleft}\textbf{Računalni resursi}\end{flushleft}
+		Studenti uključeni u projekt koristit će svoja i fakultetska računala kako bi ostvarili projekt.
+		
+		\item \begin{flushleft}\textbf{Programski alati}\end{flushleft}
+		U sklopu projekta koristit će se sustav za upravljanje izvornim kodom Git te Internet spremište 				Github. Za potrebe pisanja programskog koda sudionici će koristiti razvojne okoline Eclipse i IntelliJ IDEA. Za komunikaciju unutar tima koristit ćemo web alat za timsku komunikaciju Slack te za potrebe 	praćenja napretka projekta koristit ćemo alat za praćenje napretka Trello.
+\end{enumerate}
+\end{enumerate}
+
 \section{Glavni rizici}
+U tablici rizika (tablica \ref{table:glavni}) navedeni su rizici i njihove važnosti za izvedbu projekta.
+
+\begin{table}[H]
+	\centering
+ 	\begin{tabular}{|l l l|} 
+ 	\hline
+ 	Identifikator rizika & Rizik & Razina rizika\\ [0.5ex] 
+	\hline
+ 	R1 & \begin{tabular}{@{}l@{}}Nedostupnost jednog ili više članova  \\ 
+ 		tima u nekoj fazi projekta.\end{tabular} & visoka\\
+ 	R2 & Odstupanje od zadanih rokova. & visoka\\
+ 	R3 & \begin{tabular}{@{}l@{}}Tehničke pogreške \\ 
+ 		(npr. slučajno brisanje lokalno spremljenih podataka)\end{tabular}& srednja\\
+ 	R4 & Nedostatak komunikacije među članovima & srednja\\
+ 	R5 & Pogrešno razumijevanje zadanog zadatka& srednja\\
+ 	R6 & Pogrešna implementacija podzadatka & srednja\\
+ 	R7 & \begin{tabular}{@{}l@{}}Rizici pri službenoj predaji dokumenta  \\ 
+ 		(npr. nedostupnost web sjedišta fer.hr)\end{tabular}& niska\\
+ 	R8 & Nedostatak znanja za izradu određenog zadatka & niska\\
+ 	\hline
+ 	\end{tabular}
+ 	\caption{Glavni rizici}
+	\label{table:glavni}
+	\end{table}
+
 \section{Smanjivanje rizika}
+Tablica dana u nastavku prikazuje postupke za smanjivanje rizika (tablica \ref{table:smanjivanje}).
+\begin{table}[H]
+	\centering
+ 	\begin{tabular}{|l l|} 
+ 	\hline
+ 	Rizik & Postupci smanjivanja rizika\\ [0.5ex] 
+	\hline
+ 	R1 & \begin{tabular}{@{}l@{}}Članovi tima trebaju obavljati svoje obaveze unutar minimalnog\\ 									dogovorenog roka.\\
+ 		Članovi svoju nedostupnost trebaju najaviti ostalim članovima tima.\\\end{tabular}\\ \hline
+ 	R2 & \begin{tabular}{@{}l@{}}Određivanje više kontrolnih točaka.\\ 
+ 		 Korištenje alata za praćenje napretka.\\
+ 		 Stvaranje internih rokova prije službenih rokova.\\\end{tabular}\\ \hline
+ 	R3 & \begin{tabular}{@{}l@{}}Redovita pohrana podataka na zajednički github repozitorij.\\ 
+ 		Spremanje više kopija podataka.\end{tabular}\\ \hline
+ 	R4 & \begin{tabular}{@{}l@{}}Redovita pohrana podataka na zajednički github repozitorij.\\ 
+ 		Spremanje više kopija podataka.\end{tabular}\\ \hline
+ 	R5 & \begin{tabular}{@{}l@{}}Redovita diskusija unutar tima. \\ 
+ 		Provjera razumijevanja zadanog zadatka s mentorom.\end{tabular}\\ \hline
+ 	R6 & \begin{tabular}{@{}l@{}}Izrada testova za koje su poznati ulazni i izlazni podaci.\\ 
+ 		Provjera međurezultata i konačnih rezultata projekta.\end{tabular}\\ \hline
+ 	R7 & \begin{tabular}{@{}l@{}}Završetak projekta prije službenog roka za predaju. \\ 
+ 		Osigurati dostupnost podataka koje je potrebno predati svim članovima tima.\end{tabular}\\ \hline
+ 	R8 & \begin{tabular}{@{}l@{}}Svaki član tima treba na vrijeme proučiti svoj zadatak i proučiti literaturu.\\ 
+ 		Konzultacije s ostalim članovima tima te mentorom.\end{tabular}\\
+ 	\hline
+ 	\end{tabular}
+ 	\caption{Postupci smanjivanja rizika}
+	\label{table:smanjivanje}
+	\end{table}
 
 \section{Glavne faze projekta}
 \begin{enumerate}
@@ -87,25 +175,49 @@ Voditelj: Dominik Stanojević
 \end{enumerate}
 
 \section{Struktura raspodijeljenog posla}
+\begin{figure}[H]
+\includegraphics[scale=0.55]{WBS.pdf}
+\caption{Struktura raspodijeljenog posla}
+\end{figure}
 
+ 
 \section{Kontrolne točke}
 \begin{table}[H]
 \centering
- \begin{tabular}{||c c c c||} 
+ \begin{tabular}{||l c c c||} 
  \hline
  Kontrolne točke & Planirani datum & Realizirani datum & Status projekta \\ [0.5ex] 
  \hline\hline
  Izrada simulatora & 20.10.2016. & 20.10.2016. & Simulator izrađen \\ 
- Prva verzija projektnog plana & 07.11.2016. &  &  \\
+ Prva verzija projektnog plana & 07.11.2016. &  07.11.2016. &  Projektni plan usvojen\\
  Izrada algoritama & 02.01.2016. &  &  \\
- \begin{tabular}{@{}c@{}}Izrada korisničkog sučelja \\ Druga verzija projektnog plana \\ Tehnička dokumentacija  \end{tabular} & 09.01.2016. &   &\\
+ \begin{tabular}{@{}l@{}}Izrada korisničkog sučelja \\ Druga verzija projektnog plana \\ Tehnička dokumentacija  \end{tabular} & 09.01.2016. &   &\\
  Završetak izrade web-stranice & 16.01.2016. &  &  \\
  \hline
  \end{tabular}
+ \caption{Kontrolne točke projekta}
 \end{table}
 
 
 \section{Gantogram}
+\begin{figure}[H]
+\includegraphics[scale=0.57]{ProjektVremenski.pdf}
+\caption{Gantogram}
+\end{figure}
+
 \section{Zapisnici sastanaka}
+\begin{table}[H]
+\centering
+ \begin{tabular}{||c c c||} 
+ \hline
+ Datum & Prisutni & Zaključci\\ [0.5ex] 
+ \hline\hline
+ 14.10.2016. & svi članovi tima & Inicijalni sastanak, raspodijela poslova\\
+ 17.10.2016. & svi članovi tima & Dogovor oko izrade simulatora\\
+ 07.11.2016. & svi članovi tima & Prihvaćena prva verzija projektnog plana\\
+ \hline
+ \end{tabular}
+ \caption{Zapisi sastanaka}
+\end{table}
 
 \end{document}
