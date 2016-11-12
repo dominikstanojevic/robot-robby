@@ -4,6 +4,7 @@
 \usepackage{float}
 \usepackage{pdfpages}
 \usepackage{hyperref}
+\usepackage{pdflscape}
 
 \begin{document}
 
@@ -40,8 +41,10 @@
 
 \chapter{Informacije o projektu}
 \section{Puni naziv projekta}
+Kompleksnost sustava: Izgradnja mozga jednostavnog robota Robbyja.
 
 \section{Skraćeni naziv projekta}
+Robot Robby
 
 \section{Opis projekta}
 Ovaj projekt bavi se izradom "mozga" jednostavnog robota. Ideja robota, originalno nazvanog Robby, preuzeta je iz knjige Complexity: A Guided Tour autorice Melanie Mitchell. Robby živi u dvodimenzionalnom svijetu unutar kojeg su razbacane limenke i njegova je osnovna zadaća sakupiti ih ove limenke kako bi očistio svoj svijet. No, Robby ima ograničenu bateriju što znači da mu je na raspolaganju ograničen unutar jedne sesije čišćenja. Stoga je potrebno pažljivo odabrati koje će akcije robot izvoditi kako bi sakupio što više limenki prije nego što ostane bez baterije.
@@ -66,12 +69,22 @@ U okviru projekta realizira se i grafičko sučelje kroz koje je moguće trenira
 Svi segmenti projekta izrađuju se u programskom jeziku Java.
 
 \section{Cilj projekta}
+Upoznati se s:
+\begin{itemize}
+	\item problemom kompleksnosti sustava
+	\item granicom između jedostavnog i kompleksnog
+	\item različitim tehnikama učenja i njihovim implementacijama
+\end{itemize}
 
 \section{Voditelj studentskog tima}
 Voditelj: Dominik Stanojević
 
 \section{Rezultati}
 \section{Slični projekti}
+\begin{enumerate}
+\item \begin{flushleft} \textbf{Melanie Mitchell: Complexity: A Guided Tour}\end{flushleft} 
+Djelo koje služi kao podloga ovog projekta. Djelo koje se bavi problematikom kompleksnosti te se daje primjer jednostavnog mozga robota Robbyja. Robot je treniran genetskim algoritmom uz izravnog kodiranje akcija. Ovaj projekt koristeći i druge, ranije navedene, tehnike nadovezuje se na ovaj rad.
+\end{enumerate}
 
 \chapter{Organizacija projekta}
 \section{Resursi}
@@ -118,22 +131,23 @@ U tablici rizika (tablica \ref{table:glavni}) navedeni su rizici i njihove važn
  	Identifikator rizika & Rizik & Razina rizika\\ [0.5ex] 
 	\hline
  	R1 & \begin{tabular}{@{}l@{}}Nedostupnost jednog ili više članova  \\ 
- 		tima u nekoj fazi projekta.\end{tabular} & visoka\\
- 	R2 & Odstupanje od zadanih rokova. & visoka\\
- 	R3 & \begin{tabular}{@{}l@{}}Tehničke pogreške \\ 
- 		(npr. slučajno brisanje lokalno spremljenih podataka)\end{tabular}& srednja\\
- 	R4 & Nedostatak komunikacije među članovima & srednja\\
- 	R5 & Pogrešno razumijevanje zadanog zadatka& srednja\\
- 	R6 & Pogrešna implementacija podzadatka & srednja\\
+ 		tima u nekoj fazi projekta.\end{tabular} & visoka\\ \hline
+ 	R2 & Odstupanje od zadanih rokova. & visoka\\ \hline
+ 	R3 & \begin{tabular}{@{}l@{}}Tehničke pogreške \\
+ 		(npr. slučajno brisanje lokalno spremljenih podataka)\end{tabular}& srednja\\ \hline
+ 	R4 & Nedostatak komunikacije među članovima & srednja\\ \hline
+ 	R5 & Pogrešno razumijevanje zadanog zadatka& srednja\\ \hline
+ 	R6 & Pogrešna implementacija podzadatka & srednja\\ \hline
  	R7 & \begin{tabular}{@{}l@{}}Rizici pri službenoj predaji dokumenta  \\ 
- 		(npr. nedostupnost web sjedišta fer.hr)\end{tabular}& niska\\
- 	R8 & Nedostatak znanja za izradu određenog zadatka & niska\\
+ 		(npr. nedostupnost web sjedišta fer.hr)\end{tabular}& niska\\ \hline
+ 	R8 & Nedostatak znanja za izradu određenog zadatka & niska\\ \hline
  	\hline
  	\end{tabular}
  	\caption{Glavni rizici}
 	\label{table:glavni}
 	\end{table}
 
+\pagebreak
 \section{Smanjivanje rizika}
 Tablica dana u nastavku prikazuje postupke za smanjivanje rizika (tablica \ref{table:smanjivanje}).
 \begin{table}[H]
@@ -165,18 +179,25 @@ Tablica dana u nastavku prikazuje postupke za smanjivanje rizika (tablica \ref{t
 	\label{table:smanjivanje}
 	\end{table}
 
+\pagebreak
 \section{Glavne faze projekta}
 \begin{enumerate}
-  \item Preliminarni dogovori i dizajn sustava
-  \item Izrada simulatora
-  \item Izrada algoritama
-  \item Izrada korisničkog sučelja
-  \item Izrada web stranice projekta
+  \item \begin{flushleft} \textbf{Preliminarni dogovori i dizajn sustava} \end{flushleft}
+  	Upoznavanje s temom i literaturom. Dogovor oko raspodijele poslova. Dizajniranje sustava i njegovih komponenti: sučelja simulatora, korisničkog sučelja te sučelja algoritma.   
+  \item \begin{flushleft} \textbf{{Izrada simulatora}} \end{flushleft}
+  Izrada jednodretvenog i višedretvenog simulatora. Testiranje.
+  \item \begin{flushleft} \textbf{Izrada algoritama} \end{flushleft}
+  Članovi projektnog tima paralelno izrađuju ranije opisane algoritme. Testiranje algoritama. Itegracija sa 
+  simulatorom te testiranje.
+  \item \begin{flushleft} \textbf{Izrada korisničkog sučelja} \end{flushleft}
+  Izrada grafičkog korisničkog sučelja. Testiranje. Integracija i testiranje s postojećim sustavom. 
+  \item \begin{flushleft} \textbf{Izrada web stranice projekta} \end{flushleft}
+  Izrada web stranice projekta.
 \end{enumerate}
 
 \section{Struktura raspodijeljenog posla}
 \begin{figure}[H]
-\includegraphics[scale=0.55]{WBS.pdf}
+\includegraphics[scale=0.4]{WBS.pdf}
 \caption{Struktura raspodijeljenog posla}
 \end{figure}
 
@@ -198,12 +219,13 @@ Tablica dana u nastavku prikazuje postupke za smanjivanje rizika (tablica \ref{t
  \caption{Kontrolne točke projekta}
 \end{table}
 
-
+\begin{landscape}
 \section{Gantogram}
 \begin{figure}[H]
-\includegraphics[scale=0.57]{ProjektVremenski.pdf}
+\includegraphics[scale=0.725]{ProjektVremenski.pdf}
 \caption{Gantogram}
 \end{figure}
+\end{landscape}
 
 \section{Zapisnici sastanaka}
 \begin{table}[H]
