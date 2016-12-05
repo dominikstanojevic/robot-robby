@@ -1,5 +1,6 @@
 package hr.fer.zemris.projekt.algorithms.neural;
 
+import org.apache.commons.math3.exception.DimensionMismatchException;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -32,5 +33,29 @@ public class Utils {
         }
 
         return new ArrayRealVector(vector);
+    }
+
+    public static RealVector map(RealVector vector, ActivationFunction function) {
+        double[] result = new double[vector.getDimension()];
+
+        for(int i = 0, n = vector.getDimension(); i < n; i++) {
+            result[i] = function.valueAt(vector.getEntry(i));
+        }
+
+        return new ArrayRealVector(result);
+    }
+
+    public static RealVector ebeMultiply(RealVector firstVector, RealVector secondVector) {
+        if (firstVector.getDimension() != secondVector.getDimension()) {
+            throw new DimensionMismatchException(secondVector.getDimension(), firstVector.getDimension());
+        }
+
+        double[] result = new double[firstVector.getDimension()];
+
+        for(int i = 0; i < result.length; i++) {
+            result[i] = firstVector.getEntry(i) * secondVector.getEntry(i);
+        }
+
+        return new ArrayRealVector(result);
     }
 }
