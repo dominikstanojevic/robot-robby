@@ -8,6 +8,19 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Random;
 
+/**
+ * <p>Implementation of the {@link Robot} class, specialized for training in a
+ * {@link GeneticAlgorithm genetic algorithm}. In this implementation, each action
+ * is coded directly for a specified environment.</p>
+ *
+ * <p>Due to it's use in a genetic algorithm, this class contains methods for mutating
+ * and crossing over. The crossover operator is a
+ * <a href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover">
+ * single-point crossover</a> operator, while the mutation operator chooses one {@link Move}
+ * in the chromosome at random, and randomizes it's value.</p>
+ *
+ * @author Leon Luttenberger
+ */
 public class Chromosome implements Robot, Serializable {
 
     /**

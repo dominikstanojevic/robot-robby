@@ -9,8 +9,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Implementation of the {@link Parameters} interface for use with the {@link GeneticAlgorithm}.
- * //TODO describe them
+ * <p>Implementation of the {@link Parameters} interface for use with the
+ * {@link GeneticAlgorithm}.</p>
+ * <p>The available parameters are the following:
+ * <ul>
+ *     <li>Max generations - the number of generation for that the {@code GA}
+ *     should run for</li>
+ *     <li>Population size - the number of individuals in the population</li>
+ *     <li>Elitism ratio - the percentage of the best individuals from the previous
+ *     generation which should remain in the next generation</li>
+ *     <li>Tournament size - the size of the tournament, which is used for selecting
+ *     which parents should be used in the crossover operation</li>
+ * </ul></p>
  *
  * @author Leon Luttenberger
  */

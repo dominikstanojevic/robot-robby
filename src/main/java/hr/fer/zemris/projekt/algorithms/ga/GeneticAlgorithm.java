@@ -14,6 +14,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * <p>A generational genetic algorithm which is used to trained Robby the Robot,
+ * which uses elitism, single-point crossovers along with guaranteed mutations
+ * for each child.</p>
+ *
+ * <p>This class is also an {@link ObservableAlgorithm}, which allow it's generational
+ * results to be accessible by the caller.</p>
+ *
+ * @author Leon Luttenberger
+ */
 public class GeneticAlgorithm extends ObservableAlgorithm {
 
     /**

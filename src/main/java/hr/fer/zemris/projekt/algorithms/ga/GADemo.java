@@ -10,6 +10,15 @@ import hr.fer.zemris.projekt.simulator.MultithreadedSimulator;
 import hr.fer.zemris.projekt.simulator.Simulator;
 import hr.fer.zemris.projekt.simulator.Stats;
 
+/**
+ * Demo program for the {@link GeneticAlgorithm}. The algorithm is run
+ * with it's default parameters, while the {@link Simulator} is run with
+ * 100 10x10 grids, 200 moves, 50 bottles. After the algorithm has run it's
+ * course, the resulting {@link Robot}'s actions on a newly generated
+ * map are printed onto the standard output.
+ *
+ * @author Leon Luttenberger
+ */
 public final class GADemo {
 
     /** Number of grids to test the robot on. */

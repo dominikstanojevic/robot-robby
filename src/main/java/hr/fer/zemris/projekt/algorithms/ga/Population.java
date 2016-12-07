@@ -5,6 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Represents a population of {@link Chromosome chromosomes}. Provides
+ * methods required for generating a randomized population, retrieving
+ * the best individual and evolving the population into the next generation.
+ */
 public class Population implements Iterable<Chromosome> {
 
     /** {@link Random} object. */
