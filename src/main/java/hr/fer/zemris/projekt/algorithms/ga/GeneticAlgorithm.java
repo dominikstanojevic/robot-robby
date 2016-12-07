@@ -8,6 +8,9 @@ import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Stats;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -20,12 +23,18 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
 
     @Override
     public Robot readSolutionFromFile(Path filePath) throws IOException {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(filePath))) {
+            return (Robot) ois.readObject();
+        } catch (ClassNotFoundException | ClassCastException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void writeSolutionToFile(Path filePath, Robot robot) throws IOException {
-        throw new UnsupportedOperationException("Method not implemented yet.");
+        try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(filePath))) {
+            oos.writeObject(robot);
+        }
     }
 
     @Override
@@ -34,13 +43,14 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
     }
 
     @Override
-    public void run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
+    public Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
         if (!(parameters instanceof GAParameters)) {
             throw new IllegalArgumentException("Wrong parameters instance.");
         }
 
         GAParameters gaParameters = (GAParameters) parameters;
 
+        // load parameters
         int populationSize = (int) gaParameters.populationSize.getValue();
         int maxGenerations = (int) gaParameters.maxGenerations.getValue();
         double elitismRatio = gaParameters.elitismRatio.getValue();
@@ -57,10 +67,14 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
 
             this.notifyListeners(best.getFitness());
         }
+
+        return population.getBest();
     }
 
     /**
-     * Iterates through the population and calculates the fitness for each individual.
+     * Iterates through the population and calculates the fitness for each individual. After the evaluation
+     * is done, the list is then sorted.
+     *
      * @param simulator simulator for evaluating the individuals
      * @param population population to evaluate
      */
@@ -83,9 +97,11 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         double fitness = 0;
 
         for (Stats stat : stats) {
-            fitness += stat.getBottlesCollected() * 10;
-            fitness -= stat.getEmptyPickups() * 5;
-            fitness -= stat.getWallsHit() * 5;
+            double max = (stat.getBottlesCollected() + stat.getBottlesLeft()) * 2;
+
+            fitness += stat.getBottlesCollected() * 2 / max;
+            fitness -= stat.getEmptyPickups() / max;
+            fitness -= stat.getWallsHit() / max;
         }
 
         return fitness / stats.size();
