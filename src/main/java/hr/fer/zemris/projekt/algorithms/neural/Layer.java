@@ -1,9 +1,11 @@
 package hr.fer.zemris.projekt.algorithms.neural;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -20,6 +22,9 @@ public class Layer {
     private RealMatrix weights;
 
     public Layer(int size, ActivationFunction function) {
+        if (size < 1) {
+            throw new NeuralNetworkException("Layer should have at lease one neuron.");
+        }
         Objects.requireNonNull(function, "Activation function cannot be null.");
 
         values = new ArrayRealVector(size);
@@ -47,12 +52,13 @@ public class Layer {
         values = input;
     }
 
-    RealVector calculateOutput() {
-        if (context != null) {
-            values = values.add(context.getValues());
+    public RealVector calculateOutput() {
+        RealVector result;
+        if (previous == null) {
+            result = values;
+        } else {
+            result = Utils.map(values, activationFunction);
         }
-
-        RealVector result = Utils.map(values, activationFunction);
 
         if (context != null) {
             context.copyValues(result);
@@ -66,6 +72,9 @@ public class Layer {
 
     private void fire(RealVector result) {
         Objects.requireNonNull(result, "Result vector cannot be null.");
+
+        result = new ArrayRealVector(result, new ArrayRealVector(new double[] { 1 }));
+
         for (int i = 0, n = next.numberOfNeurons(); i < n; i++) {
             RealVector weightsForNeuron = weights.getColumnVector(i);
 
@@ -99,7 +108,8 @@ public class Layer {
     public void setNext(Layer layer) {
         Objects.requireNonNull(layer, "Layer cannot be null.");
 
-        setNext(layer, Utils.createRandomMatrix(values.getDimension(), layer.numberOfNeurons(), -1, 1));
+        //number of neurons + one weight for bias neuron
+        setNext(layer, Utils.createRandomMatrix(values.getDimension() + 1, layer.numberOfNeurons(), -1, 1));
     }
 
     public void setPrevious(Layer layer) {
@@ -122,5 +132,62 @@ public class Layer {
 
     public boolean isOutput() {
         return next == null;
+    }
+
+    public void setWeightMatrix(RealMatrix weights) {
+        this.weights = weights;
+    }
+
+    public void setWeightMatrix(double[] weights) {
+        int m = this.weights.getRowDimension();
+        int n = this.weights.getColumnDimension();
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                this.weights.setEntry(i, j, weights[i * n + j]);
+            }
+        }
+
+        if (context != null) {
+            context.setWeights(Arrays.copyOfRange(weights, m * n, weights.length));
+        }
+    }
+
+    public int numberOfWeights() {
+        if (weights == null) {
+            return 0;
+        }
+
+        int total = weights.getColumnDimension() * weights.getRowDimension();
+        if (context != null) {
+            total += context.numberOfWeights();
+        }
+
+        return total;
+    }
+
+    public void clearContext() {
+        if (context != null) {
+            context.clear();
+        }
+    }
+
+    public double[] getWeights() {
+        double[] weights = new double[numberOfWeights()];
+
+        int m = this.weights.getRowDimension();
+        int n = this.weights.getColumnDimension();
+
+        for (int i = 0; i < m; i++) {
+            RealVector row = this.weights.getRowVector(i);
+            System.arraycopy(row, 0, weights, i * n, n);
+        }
+
+        if (context != null) {
+            double[] contextWeights = context.getWeights().toArray();
+            System.arraycopy(contextWeights, 0, weights, m * n, contextWeights.length);
+        }
+
+        return weights;
     }
 }

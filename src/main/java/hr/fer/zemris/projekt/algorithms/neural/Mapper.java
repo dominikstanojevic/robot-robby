@@ -98,7 +98,7 @@ public class Mapper {
         return position + mapped.length;
     }
 
-    public Mapper getInstance() {
+    public static Mapper getInstance() {
         return INSTANCE;
     }
 }

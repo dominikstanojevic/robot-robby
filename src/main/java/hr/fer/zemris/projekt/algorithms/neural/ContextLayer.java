@@ -22,4 +22,20 @@ public class ContextLayer {
     RealVector getValues() {
         return Utils.ebeMultiply(values, weights);
     }
+
+    public void clear() {
+        values = new ArrayRealVector(new double[values.getDimension()]);
+    }
+
+    public int numberOfWeights() {
+        return weights.getDimension();
+    }
+
+    public void setWeights(double[] weights) {
+        this.weights = new ArrayRealVector(weights);
+    }
+
+    public RealVector getWeights() {
+        return weights;
+    }
 }
