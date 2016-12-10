@@ -9,6 +9,7 @@ import hr.fer.zemris.projekt.algorithms.neural.NeuralNetworkException;
 import hr.fer.zemris.projekt.grid.Field;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -88,5 +89,22 @@ public class ElmanNeuralNetwork implements Robot {
         }
 
         return weights;
+    }
+
+    public int getNumberOfWeights() {
+        return numberOfWeights;
+    }
+
+    public void setWeights(double[] weights) {
+        int startPosition = 0;
+
+        for (int i = 0, n = layers.length - 1; i < n; i++) {
+            int numberOfWeights = layers[i].numberOfWeights();
+
+            double[] weightsForLayer = Arrays.copyOfRange(weights, startPosition, startPosition + numberOfWeights);
+            startPosition += numberOfWeights;
+
+            layers[i].setWeightMatrix(weightsForLayer);
+        }
     }
 }

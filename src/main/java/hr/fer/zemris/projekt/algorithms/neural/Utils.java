@@ -7,12 +7,13 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Dominik on 4.12.2016..
  */
 public class Utils {
-    public static final Random RANDOM = new Random();
+    public static final Random RANDOM = ThreadLocalRandom.current();
 
     public static RealMatrix createRandomMatrix(int rows, int columns, double lowerBound, double upperBound) {
         double[][] matrix = new double[rows][columns];
