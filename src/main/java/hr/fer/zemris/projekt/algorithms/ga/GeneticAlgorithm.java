@@ -12,7 +12,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * <p>A generational genetic algorithm which is used to trained Robby the Robot,
@@ -59,6 +66,7 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         }
 
         GAParameters gaParameters = (GAParameters) parameters;
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         // load parameters
         int populationSize = (int) gaParameters.populationSize.getValue();
@@ -67,17 +75,18 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         int tournamentSize = (int) gaParameters.tournamentSize.getValue();
 
         Population population = Population.generatePopulation(populationSize);
-        evaluatePopulation(simulator, population);
+        evaluatePopulation(simulator, population, pool);
 
         for (int i = 1; i <= maxGenerations; i++) {
             population.evolve(elitismRatio, tournamentSize);
-            evaluatePopulation(simulator, population);
+            evaluatePopulation(simulator, population, pool);
 
             Chromosome best = population.getBest();
 
             this.notifyListeners(best.getFitness());
         }
 
+        pool.shutdown();
         return population.getBest();
     }
 
@@ -88,10 +97,27 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
      * @param simulator simulator for evaluating the individuals
      * @param population population to evaluate
      */
-    private void evaluatePopulation(AbstractSimulator simulator, Population population) {
+    private void evaluatePopulation(AbstractSimulator simulator, Population population, ExecutorService pool) {
+        List<Future<List<Stats>>> results = new ArrayList<>();
         for (Chromosome chromosome : population) {
-            List<Stats> stats = simulator.playGames(chromosome);
-            chromosome.setFitness(calculateFitness(stats));
+            Callable<List<Stats>> job = () -> simulator.playGames(chromosome);
+            results.add(pool.submit(job));
+        }
+
+        Iterator<Future<List<Stats>>> resultsIter = results.iterator();
+        Iterator<Chromosome> chromosomeIter = population.iterator();
+
+        while (chromosomeIter.hasNext()) {
+            Future<List<Stats>> job = resultsIter.next();
+            Chromosome chromosome = chromosomeIter.next();
+
+            try {
+                List<Stats> stats = job.get();
+                chromosome.setFitness(calculateFitness(stats));
+
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         population.sort();
@@ -103,7 +129,7 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
      * @param stats list of {@link Stats} for each cleaning session
      * @return fitness of the individual in question
      */
-    private double calculateFitness(List<Stats> stats) {
+    public static double calculateFitness(List<Stats> stats) {
         double fitness = 0;
 
         for (Stats stat : stats) {

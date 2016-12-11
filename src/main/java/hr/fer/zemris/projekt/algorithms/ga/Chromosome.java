@@ -194,12 +194,15 @@ public class Chromosome implements Robot, Serializable {
      * @return index of the specified {@code Field}
      */
     private int indexOf(Field field) {
-        for (int i = 0; i < FIELDS.length; i++) {
-            if (field == FIELDS[i]) {
-                return i;
-            }
+        switch (field) {
+            case EMPTY:
+                return 0;
+            case BOTTLE:
+                return 1;
+            case WALL:
+                return 2;
+            default:
+                throw new IllegalArgumentException("Unknown move type: " + field);
         }
-
-        throw new IllegalArgumentException("Unknown field: " + field.name());
     }
 }

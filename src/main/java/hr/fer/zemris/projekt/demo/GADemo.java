@@ -1,14 +1,20 @@
-package hr.fer.zemris.projekt.algorithms.ga;
+package hr.fer.zemris.projekt.demo;
 
+import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
-import hr.fer.zemris.projekt.grid.Grid;
+import hr.fer.zemris.projekt.algorithms.ga.GeneticAlgorithm;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.TrainingResult;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
-import hr.fer.zemris.projekt.simulator.MultithreadedSimulator;
 import hr.fer.zemris.projekt.simulator.Simulator;
 import hr.fer.zemris.projekt.simulator.Stats;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Demo program for the {@link GeneticAlgorithm}. The algorithm is run
@@ -52,7 +58,7 @@ public final class GADemo {
      *             will be static.</li>
      *             </ul>
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         int mapGenerationFrequency;
 
         if (args.length == 1) {
@@ -61,62 +67,24 @@ public final class GADemo {
             mapGenerationFrequency = 0;
         }
 
-        AbstractSimulator simulator = new MultithreadedSimulator(MAX_MOVES);
+        GeneticAlgorithm algorithm = new GeneticAlgorithm();
+        AbstractSimulator simulator = new Simulator(MAX_MOVES);
+        Robot best = train(algorithm, simulator, mapGenerationFrequency);
 
-        Robot best = train(simulator, mapGenerationFrequency);
+        testOn1000Maps(simulator, best);
 
-        simulator = new Simulator(MAX_MOVES);
-        simulator.addObserver((sender, observation) -> {
-            switch (observation.getMove()) {
-                    case UP:
-                        System.out.println(
-                                "Moved up to: " + observation.getCurrentRow()
-                                        + " " + observation.getCurrentColumn()
-                        );
-                        break;
-                    case DOWN:
-                        System.out.println(
-                                "Moved down to: " + observation.getCurrentRow()
-                                        + " " + observation.getCurrentColumn()
-                        );
-                        break;
-                    case LEFT:
-                        System.out.println(
-                                "Moved left to: " + observation.getCurrentRow()
-                                        + " " + observation.getCurrentColumn()
-                        );
-                        break;
-                    case RIGHT:
-                        System.out.println(
-                                "Moved right to: " + observation.getCurrentRow()
-                                        + " " + observation.getCurrentColumn()
-                        );
-                        break;
-                    case RANDOM:
-                        System.out.println(
-                                "Random move to: " + observation.getCurrentRow()
-                                        + " " + observation.getCurrentColumn()
-                        );
-                        break;
-                    case SKIP_TURN:
-                        System.out.println("Skipped turn");
-                        break;
-                    case COLLECT:
-                        System.out.println("Collected bottle at: " + observation.getCurrentColumn() + observation.getCurrentRow());
-                        break;
-            }
-        });
-        Grid grid = new Grid();
-        grid.generate(WIDTH, HEIGHT, NUMBER_OF_BOTTLES, HAS_WALLS);
+        Scanner scanner = new Scanner(System.in);
 
-//        System.out.println(grid.toString());
+        System.out.println("Would you like to save robot? y/n");
+        String response = scanner.nextLine();
 
-        simulator.setGrid(grid);
-        Stats stats = simulator.playGames(best).get(0);
+        if (response.toLowerCase().equals("y")) {
+            System.out.println("File path: ");
+            Path path = Paths.get(scanner.nextLine());
 
-        System.out.println("Bottles collected: " + stats.getBottlesCollected());
-        System.out.println("Empty pickups: " + stats.getEmptyPickups());
-        System.out.println("Walls hit: " + stats.getWallsHit());
+            algorithm.writeSolutionToFile(path, best);
+            System.out.println("Robot saved to " + path.toAbsolutePath());
+        }
     }
 
     /**
@@ -125,10 +93,8 @@ public final class GADemo {
      * @param mapGenerationFrequency how often the maps are to be regenerated
      * @return best {@link Robot} from the genetic algorithm
      */
-    private static Robot train(AbstractSimulator simulator, int mapGenerationFrequency) {
+    private static Robot train(ObservableAlgorithm algorithm, AbstractSimulator simulator, int mapGenerationFrequency) {
         simulator.generateGrids(NUMBER_OF_GRIDS, NUMBER_OF_BOTTLES, WIDTH, HEIGHT, HAS_WALLS);
-
-        GeneticAlgorithm algorithm = new GeneticAlgorithm();
 
         algorithm.addObserver(new Observer<TrainingResult>() {
 
@@ -151,4 +117,14 @@ public final class GADemo {
 
         return algorithm.run(simulator);
     }
+
+    private static void testOn1000Maps(AbstractSimulator simulator, Robot robot) {
+        simulator.generateGrids(1000, NUMBER_OF_BOTTLES, WIDTH, HEIGHT, HAS_WALLS);
+
+        List<Stats> stats = simulator.playGames(robot);
+        double fitness = GeneticAlgorithm.calculateFitness(stats);
+
+        System.out.println(fitness);
+    }
+
 }
