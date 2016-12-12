@@ -133,7 +133,7 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
 
     @Override
     public Set<Parameter> getParameters() {
-        return new HashSet<>(Arrays.asList(maxGenerations, populationSize, elitismRatio));
+        return new HashSet<>(Arrays.asList(maxGenerations, populationSize, elitismRatio, tournamentSize));
     }
 
     /**
