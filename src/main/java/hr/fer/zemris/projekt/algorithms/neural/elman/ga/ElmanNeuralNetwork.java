@@ -82,7 +82,7 @@ public class ElmanNeuralNetwork implements Robot {
         double[] weights = new double[numberOfWeights];
 
         int start = 0;
-        for(Layer layer : layers) {
+        for (Layer layer : layers) {
             double[] layerWeights = layer.getWeights();
             System.arraycopy(layerWeights, 0, weights, start, layerWeights.length);
             start += layerWeights.length;

@@ -1,6 +1,5 @@
 package hr.fer.zemris.projekt.algorithms.neural;
 
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
@@ -12,6 +11,8 @@ import java.util.Objects;
  * Created by Dominik on 5.12.2016..
  */
 public class Layer {
+    private static final ArrayRealVector BIAS_NEURON = new ArrayRealVector(new double[]{1});
+
     private RealVector values;
     private ActivationFunction activationFunction;
 
@@ -54,6 +55,11 @@ public class Layer {
 
     public RealVector calculateOutput() {
         RealVector result;
+
+        if (context != null) {
+            values = values.add(context.getValues());
+        }
+
         if (previous == null) {
             result = values;
         } else {
@@ -73,7 +79,7 @@ public class Layer {
     private void fire(RealVector result) {
         Objects.requireNonNull(result, "Result vector cannot be null.");
 
-        result = new ArrayRealVector(result, new ArrayRealVector(new double[] { 1 }));
+        result = new ArrayRealVector(result, BIAS_NEURON);
 
         for (int i = 0, n = next.numberOfNeurons(); i < n; i++) {
             RealVector weightsForNeuron = weights.getColumnVector(i);
@@ -179,7 +185,7 @@ public class Layer {
         int n = this.weights.getColumnDimension();
 
         for (int i = 0; i < m; i++) {
-            RealVector row = this.weights.getRowVector(i);
+            double[] row = this.weights.getRow(i);
             System.arraycopy(row, 0, weights, i * n, n);
         }
 

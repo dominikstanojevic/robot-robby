@@ -23,16 +23,13 @@ public class GAParameters implements Parameters<GA> {
     public static final int DEFAULT_TOURNAMENT_SIZE = 3;
 
     public static final String SELECTION_PROBABILITY = "selectionProbability";
-    public static final double DEFAULT_SELECTION_PROBABILITY = 1;
+    public static final double DEFAULT_SELECTION_PROBABILITY = 0.9;
 
     public static final String ALPHA = "alpha";
     public static final double DEFAULT_ALPHA = 0.5;
 
-    public static final String MUTATION_RANGE = "mutationRange";
-    public static final double DEFAULT_MUTATION_RANGE = 2;
-
     public static final String MUTATION_RATE = "mutationRate";
-    public static final double DEFAULT_MUTATION_RATE = 0.15;
+    public static final double DEFAULT_MUTATION_RATE = 0.5;
 
     public static final String REFRESH_RATE = "refreshRate";
     public static final double DEFAULT_REFRESH_RATE = 0.01;
@@ -45,7 +42,6 @@ public class GAParameters implements Parameters<GA> {
                 DEFAULT_TOURNAMENT_SIZE));
         parameters.add(new Parameter(SELECTION_PROBABILITY, ParameterType.DOUBLE, 0, 1, DEFAULT_SELECTION_PROBABILITY));
         parameters.add(new Parameter(ALPHA, ParameterType.DOUBLE, 0, 5, DEFAULT_ALPHA));
-        parameters.add(new Parameter(MUTATION_RANGE, ParameterType.DOUBLE, 0, 5, DEFAULT_MUTATION_RANGE));
         parameters.add(new Parameter(MUTATION_RATE, ParameterType.DOUBLE, 0, 1, DEFAULT_MUTATION_RATE));
         parameters.add(new Parameter(REFRESH_RATE, ParameterType.DOUBLE, 0, 1, DEFAULT_REFRESH_RATE));
     }

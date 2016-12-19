@@ -21,9 +21,9 @@ public class Mapper {
 
     static {
         code = new HashMap<>();
-        code.put(Field.BOTTLE, new double[] { 1, 0, 0 });
-        code.put(Field.EMPTY, new double[] { 0, 1, 0 });
-        code.put(Field.WALL, new double[] { 0, 0, 1 });
+        code.put(Field.BOTTLE, new double[] { 1, -1, -1 });
+        code.put(Field.EMPTY, new double[] { -1, 1, -1 });
+        code.put(Field.WALL, new double[] { -1, -1, 1 });
 
     }
 

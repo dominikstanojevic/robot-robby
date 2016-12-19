@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
@@ -66,7 +64,7 @@ public class GA extends ObservableAlgorithm {
         this.simulator = simulator;
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
         network = ThreadLocal.withInitial(() -> new ElmanNeuralNetwork(new int[] {
-                15, 15, 7 }, new ActivationFunction[] { ActivationFunction.SIGMOID, ActivationFunction.SIGMOID }));
+                15, 15, 7 }, new ActivationFunction[] { ActivationFunction.HYP_TAN, ActivationFunction.HYP_TAN }));
         int chromosomeSize = network.get().getNumberOfWeights();
 
         //loading parameters
@@ -75,15 +73,15 @@ public class GA extends ObservableAlgorithm {
         int tournamentSize = (int) parameters.getParameter(GAParameters.TOURNAMENT_SIZE).getValue();
         double selectionProbability = parameters.getParameter(GAParameters.SELECTION_PROBABILITY).getValue();
         double alpha = parameters.getParameter(GAParameters.ALPHA).getValue();
-        double mutationRange = parameters.getParameter(GAParameters.MUTATION_RANGE).getValue();
-        double mutationRate = parameters.getParameter(GAParameters.MUTATION_RATE).getValue();
+        double sigma = parameters.getParameter(GAParameters.MUTATION_RATE).getValue();
         double refreshRate = parameters.getParameter(GAParameters.REFRESH_RATE).getValue();
 
         List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
 
         for (int i = 0; i < maxGenerations; i++) {
+
             if (i % 100 == 0) {
-                simulator.generateGrids(100, 50, 10, 10, false);
+                simulator.generateGrids(100, 10, 10, false);
             }
             evaluatePopulation(population, pool);
 
@@ -95,15 +93,34 @@ public class GA extends ObservableAlgorithm {
             newPopulation.add(population.get(0));
             newPopulation.add(population.get(1));
 
-            while (newPopulation.size() < populationSize) {
-                Pair parents = selectParents(population, tournamentSize, selectionProbability);
+            double steps = (populationSize - newPopulation.size()) / 2.;
+            List<Callable<Pair>> callables = new ArrayList<>();
+            List<Chromosome> old = population;
+            Callable<Pair> callable = () -> {
+                Pair parents = selectParents(old, tournamentSize, selectionProbability);
                 Pair children = crossover(parents, alpha);
 
-                mutate(children.first, mutationRate, mutationRange);
-                mutate(children.second, mutationRate, mutationRange);
+                mutate(children.first, sigma);
+                mutate(children.second, sigma);
 
-                newPopulation.add(children.first);
-                newPopulation.add(children.second);
+                return children;
+            };
+
+            for (int j = 0; j < steps; j++) {
+                callables.add(callable);
+            }
+
+            try {
+                List<Future<Pair>> newPop = pool.invokeAll(callables);
+                for (Future<Pair> children : newPop) {
+                    Pair c = children.get();
+                    newPopulation.add(c.first);
+                    newPopulation.add(c.second);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
 
             population = newPopulation;
@@ -112,23 +129,31 @@ public class GA extends ObservableAlgorithm {
         population = sortPopulation(population);
         Chromosome best = population.get(0);
 
-        simulator.generateGrids(1000, 50, 10, 10, false);
+        simulator.generateGrids(1000, 10, 10, false);
         evaluateSolution(best);
         System.out.println(best);
 
         pool.shutdown();
     }
 
+    private int generateNumberOfBottles() {
+        int bottles = (int) Utils.RANDOM.nextGaussian() * 15 + 50;
+        return Math.max(1, Math.min(bottles, 100));
+    }
+
     private void printBest(List<Chromosome> population, int iteration) {
-        if(iteration % 10 == 0) {
+        if (iteration % 10 == 0) {
             System.out.println("Iteration " + iteration + ", " + population.get(0).toString());
         }
     }
 
-    private void mutate(Chromosome child, double mutationRate, double mutationRange) {
+    private void mutate(Chromosome child, double sigma) {
         double[] chromosome = child.getWeights();
+
         for (int i = 0; i < chromosome.length; i++) {
-            chromosome[i] += Utils.RANDOM.nextGaussian() * 0.5;
+           if(Utils.RANDOM.nextDouble() <= 0.1) {
+               chromosome[i] += Utils.RANDOM.nextGaussian() * sigma;
+           }
         }
     }
 
@@ -139,7 +164,7 @@ public class GA extends ObservableAlgorithm {
         double[] firstChild = new double[firstParent.length];
         double[] secondChild = new double[secondParent.length];
 
-        for(int i = 0; i < firstChild.length; i++) {
+        for (int i = 0; i < firstChild.length; i++) {
             double min = Math.min(firstParent[i], secondParent[i]);
             double max = Math.max(firstParent[i], secondParent[i]);
             double delta = max - min;
@@ -171,28 +196,6 @@ public class GA extends ObservableAlgorithm {
             }
         }
         chosen = sortPopulation(chosen);
-
-        Map<Chromosome, Double> probabilities = new LinkedHashMap<>();
-        probabilities.put(chosen.get(0), selectionProbability);
-
-        double total = selectionProbability;
-        double rest = 1 - selectionProbability;
-        for (int i = 1, n = chosen.size() - 1; i < n; i++) {
-            double probability = selectionProbability * Math.pow(rest, i);
-            probabilities.put(chosen.get(i), probability);
-            total += probability;
-        }
-
-        probabilities.put(chosen.get(chosen.size() - 1), 1 - total);
-
-        double random = Utils.RANDOM.nextDouble();
-        total = 0;
-        for(Map.Entry<Chromosome, Double> entry : probabilities.entrySet()) {
-            total += entry.getValue();
-            if (random <= total) {
-                return entry.getKey();
-            }
-        }
 
         return chosen.get(0);
     }
@@ -231,7 +234,8 @@ public class GA extends ObservableAlgorithm {
     private double processStats(List<Stats> stats) {
         double total = 0;
         for (Stats stat : stats) {
-            total += 10 * stat.getBottlesCollected() - 1 * stat.getEmptyPickups() - 5 * stat.getWallsHit();
+            total += (10. * stat.getBottlesCollected() - 1 * stat.getEmptyPickups() - 5 * stat.getWallsHit()) /
+                     (10 * (stat.getBottlesCollected() + stat.getBottlesLeft()));
         }
 
         return total / stats.size();

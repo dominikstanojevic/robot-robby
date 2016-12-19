@@ -39,7 +39,7 @@ public class Utils {
     public static RealVector map(RealVector vector, ActivationFunction function) {
         double[] result = new double[vector.getDimension()];
 
-        for(int i = 0, n = vector.getDimension(); i < n; i++) {
+        for (int i = 0, n = vector.getDimension(); i < n; i++) {
             result[i] = function.valueAt(vector.getEntry(i));
         }
 
@@ -48,12 +48,12 @@ public class Utils {
 
     public static RealVector ebeMultiply(RealVector firstVector, RealVector secondVector) {
         if (firstVector.getDimension() != secondVector.getDimension()) {
-            throw new DimensionMismatchException(secondVector.getDimension(), firstVector.getDimension());
+            throw new DimensionMismatchException(firstVector.getDimension(), secondVector.getDimension());
         }
 
         double[] result = new double[firstVector.getDimension()];
 
-        for(int i = 0; i < result.length; i++) {
+        for (int i = 0; i < result.length; i++) {
             result[i] = firstVector.getEntry(i) * secondVector.getEntry(i);
         }
 
