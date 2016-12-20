@@ -33,4 +33,11 @@ public interface Robot {
      * current situation.
      */
     Move nextMove(Field current, Field left, Field right, Field up, Field down);
+
+    /**
+     * Returns the standardized fitness value for the {@code Robot}.
+     *
+     * @return the standardized fitness value for the {@code Robot}
+     */
+    double standardizedFitness();
 }
