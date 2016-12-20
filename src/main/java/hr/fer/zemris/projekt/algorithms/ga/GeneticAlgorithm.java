@@ -105,11 +105,9 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         }
 
         Iterator<Future<List<Stats>>> resultsIter = results.iterator();
-        Iterator<Chromosome> chromosomeIter = population.iterator();
 
-        while (chromosomeIter.hasNext()) {
+        for (Chromosome chromosome : population) {
             Future<List<Stats>> job = resultsIter.next();
-            Chromosome chromosome = chromosomeIter.next();
 
             try {
                 List<Stats> stats = job.get();
@@ -133,11 +131,11 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         double fitness = 0;
 
         for (Stats stat : stats) {
-            double max = (stat.getBottlesCollected() + stat.getBottlesLeft()) * 2;
+            double max = (stat.getBottlesCollected() + stat.getBottlesLeft()) * 10;
 
-            fitness += stat.getBottlesCollected() * 2 / max;
+            fitness += stat.getBottlesCollected() * 10 / max;
             fitness -= stat.getEmptyPickups() / max;
-            fitness -= stat.getWallsHit() / max;
+            fitness -= stat.getWallsHit() * 5 / max;
         }
 
         return fitness / stats.size();

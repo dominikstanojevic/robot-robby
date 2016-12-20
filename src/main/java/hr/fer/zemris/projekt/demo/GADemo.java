@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -27,14 +28,14 @@ import java.util.Scanner;
  */
 public final class GADemo {
 
+    /** {@link Random} object. */
+    private static final Random RANDOM = new Random();
+
     /** Number of grids to test the robot on. */
     private static final int NUMBER_OF_GRIDS = 100;
 
     /** Number of moves to test the robot with. */
     private static final int MAX_MOVES = 200;
-
-    /** Number of bottles to spawn on the grid. */
-    private static final int NUMBER_OF_BOTTLES = 50;
 
     /** Width of the grid. */
     private static final int WIDTH = 10;
@@ -94,7 +95,7 @@ public final class GADemo {
      * @return best {@link Robot} from the genetic algorithm
      */
     private static Robot train(ObservableAlgorithm algorithm, AbstractSimulator simulator, int mapGenerationFrequency) {
-        simulator.generateGrids(NUMBER_OF_GRIDS, NUMBER_OF_BOTTLES, WIDTH, HEIGHT, HAS_WALLS);
+        simulator.generateGrids(NUMBER_OF_GRIDS, (int) (RANDOM.nextGaussian() * 10 + 50), WIDTH, HEIGHT, HAS_WALLS);
 
         algorithm.addObserver(new Observer<TrainingResult>() {
 
@@ -110,7 +111,7 @@ public final class GADemo {
                 }
 
                 if (regenMaps && generation % mapGenerationFrequency == 0) {
-                    simulator.generateGrids(NUMBER_OF_GRIDS, NUMBER_OF_BOTTLES, WIDTH, HEIGHT, HAS_WALLS);
+                    simulator.generateGrids(NUMBER_OF_GRIDS, (int) (RANDOM.nextGaussian() * 10 + 50), WIDTH, HEIGHT, HAS_WALLS);
                 }
             }
         });
@@ -119,7 +120,7 @@ public final class GADemo {
     }
 
     private static void testOn1000Maps(AbstractSimulator simulator, Robot robot) {
-        simulator.generateGrids(1000, NUMBER_OF_BOTTLES, WIDTH, HEIGHT, HAS_WALLS);
+        simulator.generateGrids(1000, (int) (RANDOM.nextGaussian() * 10 + 50), WIDTH, HEIGHT, HAS_WALLS);
 
         List<Stats> stats = simulator.playGames(robot);
         double fitness = GeneticAlgorithm.calculateFitness(stats);
