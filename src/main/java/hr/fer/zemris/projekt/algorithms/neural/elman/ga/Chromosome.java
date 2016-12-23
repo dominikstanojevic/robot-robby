@@ -3,9 +3,10 @@ package hr.fer.zemris.projekt.algorithms.neural.elman.ga;
 import hr.fer.zemris.projekt.algorithms.neural.Utils;
 
 /**
- * Created by Dominik on 9.12.2016..
+ * @author Dominik Stanojevic, Kristijan Vulinovic
+ * @version 1.1.0
  */
-public class Chromosome {
+public class Chromosome implements Comparable<Chromosome>{
     private double[] weights;
     private double fitness;
 
@@ -40,5 +41,10 @@ public class Chromosome {
     @Override
     public String toString() {
        return "Fitness: " + fitness;
+    }
+
+    @Override
+    public int compareTo(Chromosome o) {
+        return Double.compare(this.getFitness(), o.getFitness());
     }
 }
