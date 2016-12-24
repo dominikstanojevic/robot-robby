@@ -111,10 +111,11 @@ public class Chromosome implements Robot {
     }
 
     /**
-     * Mutates this {@code Chromosome}. The mutation is performed on a single
-     * random move/action, which is then changed into another move/action.
+     * Mutates this {@code Chromosome}. The mutation is always performed on
+     * at least one gene, while the mutation rate for the others is determined
+     * by the parameter.
      *
-     * @param mutationRate
+     * @param mutationRate chance for each individual gene to be mutated
      * @param random {@link Random} object
      * @return {@code this}
      */
