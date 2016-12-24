@@ -49,6 +49,9 @@ public final class GADemo {
     /** Determines after how many generations the demo will print the current best result. */
     private static final int PRINT_FREQUENCY = 10;
 
+    /** Number of maps to test the robot on in the end. */
+    private static final int END_NUMBER_OF_MAPS = 10_000;
+
     /**
      * Entry point for the program.
      *
@@ -72,7 +75,7 @@ public final class GADemo {
         AbstractSimulator simulator = new Simulator(MAX_MOVES);
         Robot best = train(algorithm, simulator, mapGenerationFrequency);
 
-        testOn1000Maps(simulator, best);
+        testOnNewMaps(simulator, best, END_NUMBER_OF_MAPS);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -95,7 +98,7 @@ public final class GADemo {
      * @return best {@link Robot} from the genetic algorithm
      */
     private static Robot train(ObservableAlgorithm algorithm, AbstractSimulator simulator, int mapGenerationFrequency) {
-        simulator.generateGrids(NUMBER_OF_GRIDS, (int) (RANDOM.nextGaussian() * 10 + 50), WIDTH, HEIGHT, HAS_WALLS);
+        simulator.generateGrids(NUMBER_OF_GRIDS, WIDTH, HEIGHT, HAS_WALLS, RANDOM);
 
         algorithm.addObserver(new Observer<TrainingResult>() {
 
@@ -107,11 +110,11 @@ public final class GADemo {
                 generation++;
 
                 if (generation % PRINT_FREQUENCY == 0) {
-                    System.out.printf("%4d. iteration best fitness: %5.4f%n", generation, o.getValue());
+                    System.out.printf("%4d. iteration best fitness: %5.4f%n", generation, o.getBestResult().standardizedFitness());
                 }
 
                 if (regenMaps && generation % mapGenerationFrequency == 0) {
-                    simulator.generateGrids(NUMBER_OF_GRIDS, (int) (RANDOM.nextGaussian() * 10 + 50), WIDTH, HEIGHT, HAS_WALLS);
+                    simulator.generateGrids(NUMBER_OF_GRIDS, WIDTH, HEIGHT, HAS_WALLS, RANDOM);
                 }
             }
         });
@@ -119,13 +122,12 @@ public final class GADemo {
         return algorithm.run(simulator);
     }
 
-    private static void testOn1000Maps(AbstractSimulator simulator, Robot robot) {
-        simulator.generateGrids(1000, (int) (RANDOM.nextGaussian() * 10 + 50), WIDTH, HEIGHT, HAS_WALLS);
+    private static void testOnNewMaps(AbstractSimulator simulator, Robot robot, int numberOfMaps) {
+        simulator.generateGrids(numberOfMaps, WIDTH, HEIGHT, HAS_WALLS, RANDOM);
 
         List<Stats> stats = simulator.playGames(robot);
         double fitness = GeneticAlgorithm.calculateFitness(stats);
 
         System.out.println(fitness);
     }
-
 }
