@@ -47,6 +47,11 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
     public static final String TOURNAMENT_SIZE_ID = "Tournament size";
 
     /**
+     * ID of the {@code mutation rate} parameter.
+     */
+    public static final String MUTATION_RATE_ID = "Mutation rate";
+
+    /**
      * Default value of the {@code maximum generations} parameter.
      */
     public static final int DEFAULT_MAX_GENERATIONS = 1_000;
@@ -59,12 +64,17 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
     /**
      * Default value of the {@code elitism ratio} parameter.
      */
-    public static final double DEFAULT_ELITISM__RATIO = 0.01;
+    public static final double DEFAULT_ELITISM_RATIO = 0.01;
 
     /**
      * Default value of the {@code tournament size} parameter.
      */
     public static final int DEFAULT_TOURNAMENT_SIZE = 3;
+
+    /**
+     * Default value of the {@code mutation rate} parameter.
+     */
+    public static final double DEFAULT_MUTATION_RATE = 0.002;
 
     /**
      * {@code Maximum generations} parameter.
@@ -87,13 +97,19 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
     Parameter tournamentSize;
 
     /**
+     * {@code Mutation rate} parameter.
+     */
+    Parameter mutationRate;
+
+    /**
      * Constructs a {@link GAParameters} object with the default parameters.
      */
     GAParameters() {
         maxGenerations = new Parameter(MAX_GEN_ID, ParameterType.INTEGER, 0, 100_000, DEFAULT_MAX_GENERATIONS);
         populationSize = new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 0, 1_000, DEFAULT_POPULATION_SIZE);
-        elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 1, DEFAULT_ELITISM__RATIO);
+        elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 1, DEFAULT_ELITISM_RATIO);
         tournamentSize = new Parameter(TOURNAMENT_SIZE_ID, ParameterType.INTEGER, 1, 10, DEFAULT_TOURNAMENT_SIZE);
+        mutationRate = new Parameter(MUTATION_RATE_ID, ParameterType.DOUBLE, 0, 0.1, DEFAULT_MUTATION_RATE);
     }
 
     @Override
@@ -107,6 +123,8 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
                 return elitismRatio;
             case TOURNAMENT_SIZE_ID:
                 return tournamentSize;
+            case MUTATION_RATE_ID:
+                return mutationRate;
             default:
              throw new IllegalArgumentException("Unrecognized parameter: " + name);
         }
@@ -126,6 +144,8 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
                 break;
             case TOURNAMENT_SIZE_ID:
                 tournamentSize.setValue(value);
+            case MUTATION_RATE_ID:
+                mutationRate.setValue(value);
             default:
                 throw new IllegalArgumentException("Unrecognized parameter: " + name);
         }
@@ -133,7 +153,7 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
 
     @Override
     public Set<Parameter> getParameters() {
-        return new HashSet<>(Arrays.asList(maxGenerations, populationSize, elitismRatio, tournamentSize));
+        return new HashSet<>(Arrays.asList(maxGenerations, populationSize, elitismRatio, tournamentSize, mutationRate));
     }
 
     /**
@@ -147,6 +167,7 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
         copy.populationSize = copyParameter(this.populationSize);
         copy.elitismRatio = copyParameter(this.elitismRatio);
         copy.tournamentSize = copyParameter(this.tournamentSize);
+        copy.mutationRate = copyParameter(this.mutationRate);
 
         return copy;
     }

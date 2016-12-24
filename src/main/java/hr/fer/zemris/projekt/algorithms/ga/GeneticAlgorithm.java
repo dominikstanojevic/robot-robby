@@ -1,5 +1,6 @@
 package hr.fer.zemris.projekt.algorithms.ga;
 
+import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
@@ -7,9 +8,10 @@ import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Stats;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -40,17 +42,34 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
 
     @Override
     public Robot readSolutionFromFile(Path filePath) throws IOException {
-        try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(filePath))) {
-            return (Robot) ois.readObject();
-        } catch (ClassNotFoundException | ClassCastException e) {
-            throw new RuntimeException(e);
+        try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+            Move[] moves = new Move[Chromosome.NUMBER_OF_SITUATIONS];
+
+            for (int i = 0; i < moves.length; i++) {
+                int index = reader.read();
+
+                if (index < 0 || index >= Chromosome.MOVES.length) {
+                    throw new IndexOutOfBoundsException("Index of Move out of bounds: " + index);
+                }
+
+                moves[i] = Chromosome.MOVES[index];
+            }
+
+            return new Chromosome(moves);
         }
     }
 
     @Override
     public void writeSolutionToFile(Path filePath, Robot robot) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(filePath))) {
-            oos.writeObject(robot);
+        if (!(robot instanceof Chromosome)) {
+            throw new IllegalArgumentException("Robot not supported by this algorithm: " + robot.getClass().getName());
+        }
+
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
+            Move[] moves = ((Chromosome) robot).getMoves();
+            for (int i = 0; i < moves.length; i++) {
+                writer.write(moves[i].ordinal());
+            }
         }
     }
 
@@ -66,24 +85,33 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         }
 
         GAParameters gaParameters = (GAParameters) parameters;
-        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        ExecutorService pool = Executors.newFixedThreadPool(
+                Runtime.getRuntime().availableProcessors(),
+                r -> {
+                    Thread t = new Thread(r);
+                    t.setDaemon(true);
+                    return t;
+                }
+        );
 
         // load parameters
         int populationSize = (int) gaParameters.populationSize.getValue();
         int maxGenerations = (int) gaParameters.maxGenerations.getValue();
         double elitismRatio = gaParameters.elitismRatio.getValue();
         int tournamentSize = (int) gaParameters.tournamentSize.getValue();
+        double mutationRate = gaParameters.mutationRate.getValue();
 
         Population population = Population.generatePopulation(populationSize);
         evaluatePopulation(simulator, population, pool);
 
         for (int i = 1; i <= maxGenerations; i++) {
-            population.evolve(elitismRatio, tournamentSize);
+            population.evolve(elitismRatio, tournamentSize, mutationRate);
             evaluatePopulation(simulator, population, pool);
 
             Chromosome best = population.getBest();
 
-            this.notifyListeners(best.getFitness());
+            this.notifyListeners(best, population.calculateAvgFitness(), i);
         }
 
         pool.shutdown();

@@ -87,12 +87,12 @@ public class Population implements Iterable<Chromosome> {
 
     /**
      * Evolves the population into the next generation.
-     *
-     * @param elitismRatio   elitism ratio, determines the percentage of best results from the
+     *  @param elitismRatio   elitism ratio, determines the percentage of best results from the
      *                       previous generation which will remain in the next generation
      * @param tournamentSize size of the tournament used to pick the parents
+     * @param mutationRate
      */
-    public void evolve(double elitismRatio, int tournamentSize) {
+    public void evolve(double elitismRatio, int tournamentSize, double mutationRate) {
         if (elitismRatio < 0 || elitismRatio > 1) {
             throw new IllegalArgumentException("Elitism ratio must be between 0 and 1, not " + elitismRatio);
         }
@@ -115,7 +115,7 @@ public class Population implements Iterable<Chromosome> {
                     break;
                 }
 
-                child.mutate(RANDOM);
+                child.mutate(mutationRate, RANDOM);
                 newChromosomes.add(child);
             }
         }
@@ -156,6 +156,12 @@ public class Population implements Iterable<Chromosome> {
         }
 
         return candidate;
+    }
+
+    public double calculateAvgFitness() {
+        return chromosomes.stream()
+                .mapToDouble(Chromosome::getFitness)
+                .average().getAsDouble();
     }
 
     @Override

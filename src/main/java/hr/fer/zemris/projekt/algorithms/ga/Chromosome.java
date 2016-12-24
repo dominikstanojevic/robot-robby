@@ -4,7 +4,6 @@ import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Field;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -16,17 +15,12 @@ import java.util.Random;
  * <p>Due to it's use in a genetic algorithm, this class contains methods for mutating
  * and crossing over. The crossover operator is a
  * <a href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover">
- * single-point crossover</a> operator, while the mutation operator chooses one {@link Move}
- * in the chromosome at random, and randomizes it's value.</p>
+ * single-point crossover</a> operator, while the mutation operator has a small chance to mutate
+ * each gene in the chromosome at random, while always picking at least one.</p>
  *
  * @author Leon Luttenberger
  */
-public class Chromosome implements Robot, Serializable {
-
-    /**
-     * Unique identifier.
-     */
-    private static final long serialVersionUID = 1274476794769719180L;
+public class Chromosome implements Robot {
 
     /**
      * {@link Comparator} of the {@link Chromosome} by fitness.
@@ -36,17 +30,17 @@ public class Chromosome implements Robot, Serializable {
     /**
      * Number of possible situations that a robot can find itself in.
      */
-    private static final int NUMBER_OF_SITUATIONS = 2 * 3 * 3 * 3 * 3;
+    static final int NUMBER_OF_SITUATIONS = 2 * 3 * 3 * 3 * 3;
 
     /**
      * Array of all the possible {@link Move} objects.
      */
-    private static final Move[] MOVES = Move.values();
+    static final Move[] MOVES = Move.values();
 
     /**
      * Array of all the possible {@link Field} objects.
      */
-    private static final Field[] FIELDS = Field.values();
+    static final Field[] FIELDS = Field.values();
 
     /**
      * The genome of the chromosome, represents the moves that the robot will make in any
@@ -76,7 +70,7 @@ public class Chromosome implements Robot, Serializable {
         Chromosome chromosome = new Chromosome(new Move[NUMBER_OF_SITUATIONS]);
 
         for (int i = 0; i < chromosome.moves.length; i++) {
-            chromosome.moves[i] = RANDOM_MOVE(random);
+            chromosome.moves[i] = randomMove(random);
         }
 
         return chromosome;
@@ -87,8 +81,17 @@ public class Chromosome implements Robot, Serializable {
      * @param random {@link Random} object
      * @return a random {@link Move} object.
      */
-    private static Move RANDOM_MOVE(Random random) {
+    private static Move randomMove(Random random) {
         return MOVES[random.nextInt(MOVES.length)];
+    }
+
+    /**
+     * Returns the moves array.
+     *
+     * @return the moves array
+     */
+    Move[] getMoves() {
+        return moves;
     }
 
     /**
@@ -110,12 +113,19 @@ public class Chromosome implements Robot, Serializable {
     /**
      * Mutates this {@code Chromosome}. The mutation is performed on a single
      * random move/action, which is then changed into another move/action.
+     *
+     * @param mutationRate
      * @param random {@link Random} object
      * @return {@code this}
      */
-    Chromosome mutate(Random random) {
-        int index = random.nextInt(moves.length);
-        moves[index] = MOVES[random.nextInt(MOVES.length)];
+    Chromosome mutate(double mutationRate, Random random) {
+        int randomIndex = random.nextInt(moves.length);
+
+        for (int i = 0; i < moves.length; i++) {
+            if (i == randomIndex || random.nextDouble() < mutationRate) {
+                moves[i] = randomMove(random);
+            }
+        }
 
         return this;
     }
@@ -154,6 +164,11 @@ public class Chromosome implements Robot, Serializable {
     public Move nextMove(Field current, Field left, Field right, Field up, Field down) {
         int index = indexOf(current, left, right, up, down);
         return moves[index];
+    }
+
+    @Override
+    public double standardizedFitness() {
+        return fitness;
     }
 
     /**
