@@ -28,7 +28,7 @@ import java.util.Random;
  * Observers can be notified whenever a move is made.</p>
  *
  * @author Kristijan Vulinovic, Leon Luttenberger
- * @version 1.1.3
+ * @version 1.1.4
  */
 public abstract class AbstractSimulator implements Observable<RobotActionTaken> {
 
@@ -196,7 +196,9 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      * @return a {@link Stats} object describing every detail about the game.
      */
     protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd) {
-        ((ElmanNeuralNetwork) robot).clearContext();
+        if (robot instanceof ElmanNeuralNetwork){
+            ((ElmanNeuralNetwork) robot).clearContext();
+        }
         IGrid grid = originalGrid.copy();
 
         int moveNumber = 0;

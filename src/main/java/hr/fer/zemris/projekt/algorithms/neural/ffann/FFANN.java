@@ -9,6 +9,7 @@ import hr.fer.zemris.projekt.algorithms.neural.NeuralNetworkException;
 import hr.fer.zemris.projekt.grid.Field;
 import org.apache.commons.math3.linear.RealVector;
 
+import java.util.EmptyStackException;
 import java.util.Objects;
 
 /**
@@ -27,15 +28,17 @@ public class FFANN implements Robot {
         }
 
         layers = new Layer[layout.length];
-        numberOfWeights = 0;
 
         for (int i = 0; i < layout.length; ++i){
             layers[i] = new Layer(layout[i], activationFunctions[i]);
-            numberOfWeights += layers[i].numberOfWeights();
-
             if (i > 0){
-                layers[i - i].setNext(layers[i]);
+                layers[i - 1].setNext(layers[i]);
             }
+        }
+
+        numberOfWeights = 0;
+        for (Layer layer : layers){
+            numberOfWeights += layer.numberOfWeights();
         }
     }
 
@@ -63,9 +66,12 @@ public class FFANN implements Robot {
 
         int index = 0;
         for (Layer layer : layers){
+            if (layer.numberOfWeights() == 0) continue;
+
             double[] tmpWidths = new double[layer.numberOfWeights()];
             System.arraycopy(weights, index, tmpWidths, 0, tmpWidths.length);
             layer.setWeightMatrix(tmpWidths);
+            index += tmpWidths.length;
         }
     }
 
