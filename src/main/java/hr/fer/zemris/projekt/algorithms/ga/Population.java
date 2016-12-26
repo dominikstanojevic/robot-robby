@@ -90,9 +90,8 @@ public class Population implements Iterable<Chromosome> {
      *  @param elitismRatio   elitism ratio, determines the percentage of best results from the
      *                       previous generation which will remain in the next generation
      * @param tournamentSize size of the tournament used to pick the parents
-     * @param mutationRate
      */
-    public void evolve(double elitismRatio, int tournamentSize, double mutationRate) {
+    public void evolve(double elitismRatio, int tournamentSize) {
         if (elitismRatio < 0 || elitismRatio > 1) {
             throw new IllegalArgumentException("Elitism ratio must be between 0 and 1, not " + elitismRatio);
         }
@@ -115,7 +114,7 @@ public class Population implements Iterable<Chromosome> {
                     break;
                 }
 
-                child.mutate(mutationRate, RANDOM);
+                child.mutate(RANDOM);
                 newChromosomes.add(child);
             }
         }

@@ -100,13 +100,12 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         int maxGenerations = (int) gaParameters.maxGenerations.getValue();
         double elitismRatio = gaParameters.elitismRatio.getValue();
         int tournamentSize = (int) gaParameters.tournamentSize.getValue();
-        double mutationRate = gaParameters.mutationRate.getValue();
 
         Population population = Population.generatePopulation(populationSize);
         evaluatePopulation(simulator, population, pool);
 
         for (int i = 1; i <= maxGenerations; i++) {
-            population.evolve(elitismRatio, tournamentSize, mutationRate);
+            population.evolve(elitismRatio, tournamentSize);
             evaluatePopulation(simulator, population, pool);
 
             Chromosome best = population.getBest();

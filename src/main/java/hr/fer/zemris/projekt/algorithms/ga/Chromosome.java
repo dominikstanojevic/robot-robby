@@ -112,21 +112,14 @@ public class Chromosome implements Robot {
 
     /**
      * Mutates this {@code Chromosome}. The mutation is always performed on
-     * at least one gene, while the mutation rate for the others is determined
-     * by the parameter.
+     * at a single gene.
      *
-     * @param mutationRate chance for each individual gene to be mutated
      * @param random {@link Random} object
      * @return {@code this}
      */
-    Chromosome mutate(double mutationRate, Random random) {
+    Chromosome mutate(Random random) {
         int randomIndex = random.nextInt(moves.length);
-
-        for (int i = 0; i < moves.length; i++) {
-            if (i == randomIndex || random.nextDouble() < mutationRate) {
-                moves[i] = randomMove(random);
-            }
-        }
+        moves[randomIndex] = randomMove(random);
 
         return this;
     }

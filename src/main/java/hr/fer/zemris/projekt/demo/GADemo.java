@@ -3,9 +3,6 @@ package hr.fer.zemris.projekt.demo;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.ga.GeneticAlgorithm;
-import hr.fer.zemris.projekt.observer.Observable;
-import hr.fer.zemris.projekt.observer.Observer;
-import hr.fer.zemris.projekt.observer.observations.TrainingResult;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Simulator;
 import hr.fer.zemris.projekt.simulator.Stats;
@@ -100,22 +97,15 @@ public final class GADemo {
     private static Robot train(ObservableAlgorithm algorithm, AbstractSimulator simulator, int mapGenerationFrequency) {
         simulator.generateGrids(NUMBER_OF_GRIDS, WIDTH, HEIGHT, HAS_WALLS, RANDOM);
 
-        algorithm.addObserver(new Observer<TrainingResult>() {
+        algorithm.addObserver((sender, o) -> {
+            int generation = o.getIteration();
 
-            private int generation = 0;
-            private boolean regenMaps = mapGenerationFrequency > 0;
+            if (generation % PRINT_FREQUENCY == 0) {
+                System.out.printf("%4d. iteration best fitness: %5.4f%n", generation, o.getBestResult().standardizedFitness() * 500);
+            }
 
-            @Override
-            public void observationMade(Observable sender, TrainingResult o) {
-                generation++;
-
-                if (generation % PRINT_FREQUENCY == 0) {
-                    System.out.printf("%4d. iteration best fitness: %5.4f%n", generation, o.getBestResult().standardizedFitness());
-                }
-
-                if (regenMaps && generation % mapGenerationFrequency == 0) {
-                    simulator.generateGrids(NUMBER_OF_GRIDS, WIDTH, HEIGHT, HAS_WALLS, RANDOM);
-                }
+            if (mapGenerationFrequency > 0 && generation % mapGenerationFrequency == 0) {
+                simulator.generateGrids(NUMBER_OF_GRIDS, WIDTH, HEIGHT, HAS_WALLS, RANDOM);
             }
         });
 
@@ -128,6 +118,7 @@ public final class GADemo {
         List<Stats> stats = simulator.playGames(robot);
         double fitness = GeneticAlgorithm.calculateFitness(stats);
 
-        System.out.println(fitness);
+        System.out.println("Fitness: " + fitness);
+        System.out.println("Scaled to 500: " + fitness * 500);
     }
 }
