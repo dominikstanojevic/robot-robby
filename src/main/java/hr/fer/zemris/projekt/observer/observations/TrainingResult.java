@@ -17,9 +17,9 @@ public class TrainingResult {
     private Robot bestResult;
 
     /**
-     * Average result of the iteration.
+     * Average fitness of the iteration.
      */
-    private Robot averageResult;
+    private double averageFitness;
 
     /**
      * Iteration that the algorithm is currently in.
@@ -30,12 +30,12 @@ public class TrainingResult {
      * Constructs a {@link TrainingResult} object with the specified values.
      *
      * @param bestResult best result of the iteration
-     * @param averageResult average result of the iteration
+     * @param averageFitness average fitness of the iteration
      * @param iteration current iteration
      */
-    public TrainingResult(Robot bestResult, Robot averageResult, int iteration) {
+    public TrainingResult(Robot bestResult, double averageFitness, int iteration) {
         this.bestResult = bestResult;
-        this.averageResult = averageResult;
+        this.averageFitness = averageFitness;
         this.iteration = iteration;
     }
 
@@ -53,8 +53,8 @@ public class TrainingResult {
      *
      * @return the average result of the iteration
      */
-    public Robot getAverageResult() {
-        return averageResult;
+    public double getAverageFitness() {
+        return averageFitness;
     }
 
     /**

@@ -37,16 +37,16 @@ public abstract class ObservableAlgorithm implements Observable<TrainingResult>,
      * Notifies the listeners with a {@link TrainingResult}
      * object only if somebody is observing this object.
      *
-     * @param best best result of the iteration
-     * @param average average result of the iteration
-     * @param iteration current iteration
+     * @param best           best result of the iteration
+     * @param averageFitness average fitness of the iteration
+     * @param iteration      current iteration
      */
-    protected void notifyListeners(Robot best, Robot average, int iteration) {
+    protected void notifyListeners(Robot best, double averageFitness, int iteration) {
         if (observers == null || observers.isEmpty()) {
             return;
         }
 
-        this.fire(new TrainingResult(best, average, iteration));
+        this.fire(new TrainingResult(best, averageFitness, iteration));
     }
 
     @Override
