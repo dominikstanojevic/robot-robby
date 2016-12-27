@@ -1,0 +1,71 @@
+Dubina ulaznog stabla, samo grow kreiranje stabala
+Max inicijalna dubina: 2.0
+Broj boca 3004.9; Zabijanja 370.9; prazna saginjanja 0.0
+Max inicijalna dubina: 3.0
+Broj boca 2602.1; Zabijanja 325.9; prazna saginjanja 0.0
+Max inicijalna dubina: 4.0
+Broj boca 2965.1; Zabijanja 394.6; prazna saginjanja 0.0
+Max inicijalna dubina: 5.0
+Broj boca 2962.7; Zabijanja 461.4; prazna saginjanja 0.0
+Max inicijalna dubina: 6.0
+Broj boca 3244.4; Zabijanja 441.3; prazna saginjanja 0.0
+Max inicijalna dubina: 7.0
+Broj boca 3079.4; Zabijanja 457.0; prazna saginjanja 0.0
+Max inicijalna dubina: 8.0
+Broj boca 2993.9; Zabijanja 344.1; prazna saginjanja 0.0
+Max inicijalna dubina: 9.0
+Broj boca 3290.5; Zabijanja 380.5; prazna saginjanja 0.0
+Max inicijalna dubina: 10.0
+Broj boca 2900.3; Zabijanja 303.9; prazna saginjanja 32.7
+
+
+Dubina ulaznog stabla, samo grow kreiranje stabala
+Max dubina: 6.0
+Broj boca 2379.8; Zabijanja 733.9; prazna saginjanja 0.0
+Max dubina: 7.0
+Broj boca 2837.0; Zabijanja 863.8; prazna saginjanja 0.0
+Max dubina: 8.0
+Broj boca 2472.1; Zabijanja 495.0; prazna saginjanja 0.0
+Max dubina: 9.0
+Broj boca 2996.7; Zabijanja 650.2; prazna saginjanja 0.0
+Max dubina: 10.0
+Broj boca 3112.5; Zabijanja 696.0; prazna saginjanja 0.0
+Max dubina: 11.0
+Broj boca 2804.5; Zabijanja 670.6; prazna saginjanja 0.0
+Max dubina: 12.0
+Broj boca 2890.4; Zabijanja 560.1; prazna saginjanja 0.0
+Max dubina: 13.0
+Broj boca 2894.0; Zabijanja 314.5; prazna saginjanja 0.0
+Max dubina: 14.0
+Broj boca 2888.4; Zabijanja 376.0; prazna saginjanja 11.0
+Max dubina: 15.0
+Broj boca 2990.6; Zabijanja 381.7; prazna saginjanja 0.0
+Max dubina: 16.0
+Broj boca 2593.8; Zabijanja 483.1; prazna saginjanja 0.0
+Max dubina: 17.0
+Broj boca 3132.4; Zabijanja 807.2; prazna saginjanja 0.0
+
+
+Dubina crossover, samo grow kreiranje stabala
+Max dubina: 0.0
+Broj boca 2587.8; Zabijanja 579.3; prazna saginjanja 0.0
+Max dubina: 0.1
+Broj boca 2812.3; Zabijanja 562.0; prazna saginjanja 0.0
+Max dubina: 0.2
+Broj boca 2852.5; Zabijanja 494.9; prazna saginjanja 0.0
+Max dubina: 0.30000000000000004
+Broj boca 3213.2; Zabijanja 409.6; prazna saginjanja 0.0
+Max dubina: 0.4
+Broj boca 3269.2; Zabijanja 451.9; prazna saginjanja 0.0
+Max dubina: 0.5
+Broj boca 3225.0; Zabijanja 584.9; prazna saginjanja 0.0
+Max dubina: 0.6
+Broj boca 2985.1; Zabijanja 401.1; prazna saginjanja 0.0
+Max dubina: 0.7
+Broj boca 3107.1; Zabijanja 437.4; prazna saginjanja 0.0
+Max dubina: 0.7999999999999999
+Broj boca 2816.3; Zabijanja 371.5; prazna saginjanja 0.0
+Max dubina: 0.8999999999999999
+Broj boca 2921.7; Zabijanja 493.3; prazna saginjanja 0.0
+Max dubina: 0.9999999999999999
+Broj boca 2005.9; Zabijanja 244.1; prazna saginjanja 0.0
