@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.IGrid;
 
 public class MapPanel extends JPanel {
@@ -28,7 +29,21 @@ public class MapPanel extends JPanel {
 	public void setSide(int side){
 		this.side = side;
 		
+		removeAll();
+		
 		setLayout(new GridLayout(side, side));
+		
+		fields = new ArrayList<>();
+		for(int i=0; i<side; i++){
+			for(int j=0; j<side; j++){
+				MapField field = new MapField();
+				fields.add(field);
+				add(field);
+			}
+		}
+		
+		repaint();
+		revalidate();
 	}
 	
 	public void setGrid(IGrid grid){
@@ -53,6 +68,12 @@ public class MapPanel extends JPanel {
 		repaint();
 		revalidate();
 		
+	}
+
+	public void enableEditing(boolean b) {
+		if(fields != null){
+			for(MapField f : fields) f.setEditingEnabled(b);
+		}		
 	}
 
 }

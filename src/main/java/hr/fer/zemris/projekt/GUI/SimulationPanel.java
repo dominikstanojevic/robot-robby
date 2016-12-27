@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -66,6 +67,20 @@ public class SimulationPanel extends JPanel {
 		
 		JButton btnCreateMap = new JButton("Create Map");
 		optionsPanel.add(btnCreateMap);
+		
+		btnCreateMap.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				JCreateMapDialog d = new JCreateMapDialog();
+				d.setModal(true);
+				d.setVisible(true);
+				
+				map.setSide(d.getMapSide());
+				map.enableEditing(true);
+			}
+		});
 		
 		JButton btnLoadMap = new JButton("Load Map");
 		optionsPanel.add(btnLoadMap);
