@@ -7,6 +7,8 @@ import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.Simulator;
+import hr.fer.zemris.projekt.web.utils.SimulatorConfiguration;
+import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,17 +24,45 @@ import java.util.stream.Collectors;
 
 public class TrainServlet extends HttpServlet {
 
+    private static final Random RANDOM = new Random();
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String algorithmID = req.getParameter("algorithm");
 
         Algorithm algorithm = Algorithms.getAlgorithm(algorithmID);
         Parameters<?> parameters = readParameters(req, algorithm);
 
-        int maxMoves = Integer.parseInt(req.getParameter("maxMoves"));
+        SimulatorConfiguration config = (SimulatorConfiguration) req.getSession().getAttribute("simulatorConfig");
+        Simulator simulator = config.getSimulator();
 
-        Simulator simulator = new Simulator(maxMoves);
-        simulator.generateGrids(100, 10, 10, false, new Random());
+        if (config.isVariableBottles()) {
+            simulator.generateGrids(
+                    config.getNumberOfGrids(),
+                    config.getGridWidth(),
+                    config.getGridHeight(),
+                    false,
+                    RANDOM
+            );
+        } else {
+            simulator.generateGrids(
+                    config.getNumberOfGrids(),
+                    config.getNumberOfBottles(),
+                    config.getGridWidth(),
+                    config.getGridHeight(),
+                    false
+            );
+        }
+
         Robot robot = algorithm.run(simulator, parameters);
+        req.getSession().setAttribute("robot", robot);
+
+        resp.setContentType("application/json;charset=UTF-8");
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("fitness", robot.standardizedFitness());
+
+        resp.getWriter().write(jsonObject.toString());
+        resp.getWriter().flush();
     }
 
     private Parameters<?> readParameters(HttpServletRequest req, Algorithm algorithm) {

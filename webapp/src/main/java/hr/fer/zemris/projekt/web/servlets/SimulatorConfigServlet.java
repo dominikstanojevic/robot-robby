@@ -1,6 +1,6 @@
 package hr.fer.zemris.projekt.web.servlets;
 
-import hr.fer.zemris.projekt.simulator.Simulator;
+import com.google.gson.Gson;
 import hr.fer.zemris.projekt.web.utils.SimulatorConfiguration;
 
 import javax.servlet.ServletException;
@@ -14,12 +14,27 @@ import java.util.function.Consumer;
 @WebServlet(name = "SimulatorConfigServlet", urlPatterns = "/simulatorConfig")
 public class SimulatorConfigServlet extends HttpServlet {
 
+    private static final Gson GSON = new Gson();
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int maxMoves = Integer.parseInt(req.getParameter("maxMoves"));
-        Simulator simulator = new Simulator(maxMoves);
+        resp.setContentType("application/json;charset=UTF-8");
 
-        SimulatorConfiguration simulatorConfig = new SimulatorConfiguration(simulator);
+        SimulatorConfiguration simulatorConfig = (SimulatorConfiguration)
+                req.getSession().getAttribute("simulatorConfig");
 
+        String json = GSON.toJson(simulatorConfig);
+
+        resp.getWriter().write(json);
+        resp.getWriter().flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        SimulatorConfiguration simulatorConfig = (SimulatorConfiguration)
+                req.getSession().getAttribute("simulatorConfig");
+
+        configureParameter(req, "maxMoves", simulatorConfig::setMaxMoves);
         configureParameter(req, "gridHeight", simulatorConfig::setGridHeight);
         configureParameter(req, "gridWidth", simulatorConfig::setGridWidth);
         configureParameter(req, "numberOfGrids", simulatorConfig::setNumberOfGrids);
@@ -27,11 +42,13 @@ public class SimulatorConfigServlet extends HttpServlet {
 
         String variableBottlesParam = req.getParameter("variableBottles");
         if (variableBottlesParam != null) {
-            boolean variableBottles = Boolean.parseBoolean(variableBottlesParam);
+            boolean variableBottles = Boolean.valueOf(variableBottlesParam);
             simulatorConfig.setVariableBottles(variableBottles);
         }
 
         req.getSession().setAttribute("simulatorConfig", simulatorConfig);
+
+        this.doGet(req, resp);
     }
 
     private static void configureParameter(HttpServletRequest request, String parameterName, Consumer<Integer> setter) {

@@ -4,7 +4,8 @@ import hr.fer.zemris.projekt.simulator.Simulator;
 
 public class SimulatorConfiguration {
 
-    private Simulator simulator;
+    private transient Simulator simulator;
+    private int maxMoves = 200;
 
     private int gridHeight = 10;
     private int gridWidth = 10;
@@ -15,11 +16,11 @@ public class SimulatorConfiguration {
 
     private boolean hasWalls = false;
 
-    public SimulatorConfiguration(Simulator simulator) {
-        this.simulator = simulator;
-    }
-
     public Simulator getSimulator() {
+        if (simulator == null) {
+            simulator = new Simulator(maxMoves);
+        }
+
         return simulator;
     }
 
@@ -62,4 +63,14 @@ public class SimulatorConfiguration {
     public void setNumberOfBottles(int numberOfBottles) {
         this.numberOfBottles = numberOfBottles;
     }
+
+    public int getMaxMoves() {
+        return maxMoves;
+    }
+
+    public void setMaxMoves(int maxMoves) {
+        this.maxMoves = maxMoves;
+        this.simulator = null;
+    }
+
 }

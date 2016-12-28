@@ -3,7 +3,8 @@
 <head>
     <title>Index</title>
 </head>
-<body>
 
+<body>
+<h2>Welcome!</h2>
 </body>
 </html>
