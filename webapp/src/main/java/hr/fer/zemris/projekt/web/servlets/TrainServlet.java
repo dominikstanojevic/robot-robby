@@ -27,7 +27,7 @@ public class TrainServlet extends HttpServlet {
     private static final Random RANDOM = new Random();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String algorithmID = req.getParameter("algorithm");
+        String algorithmID = req.getParameter("algorithmID");
 
         Algorithm algorithm = Algorithms.getAlgorithm(algorithmID);
         Parameters<?> parameters = readParameters(req, algorithm);
