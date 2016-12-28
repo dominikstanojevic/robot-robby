@@ -17,6 +17,7 @@ public class MapField extends JComponent {
 	
 	private Field field;
 	private boolean editingEnabled = false;
+	private boolean isCurrent = false;
 
 	public MapField(Field field) {
 		
@@ -42,6 +43,28 @@ public class MapField extends JComponent {
 		this(Field.EMPTY);
 	}
 	
+	public void setField(Field field) {
+		this.field = field;
+		
+		repaint();
+		revalidate();
+	}
+
+	public Field getField() {
+		return field;
+	}
+
+	public boolean isCurrent() {
+		return isCurrent;
+	}
+
+	public void setCurrent(boolean isCurrent) {
+		this.isCurrent = isCurrent;
+		
+		repaint();
+		revalidate();
+	}
+
 	private void toggleFieldValue() {
 		
 		if(field == Field.BOTTLE) field = Field.EMPTY;
@@ -54,6 +77,12 @@ public class MapField extends JComponent {
 
 	@Override
 	protected void paintComponent(Graphics g) {
+		
+		super.paintComponent(g);
+		
+		if(isCurrent){
+			g.fillOval(getWidth()/2,  getHeight()/2, 20, 20);
+		}
 		
 		if(field == Field.BOTTLE){
 			g.drawString("B", getWidth()/2, getHeight()/2);

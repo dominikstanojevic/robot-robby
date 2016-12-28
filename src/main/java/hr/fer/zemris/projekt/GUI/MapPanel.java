@@ -8,36 +8,36 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.grid.Field;
+import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
+import hr.fer.zemris.projekt.observer.observations.RobotActionTaken;
 
 public class MapPanel extends JPanel {
 	
 	private static final long serialVersionUID = 3040933415189290493L;
 	private int side;
 	private IGrid grid;
-	private List<MapField> fields;
+	private MapField[][] fields;
 
 	public MapPanel() {
 		setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 	}
-
-	private void initGUI() {
-		
-	}
 	
 	public void setSide(int side){
 		this.side = side;
+		this.grid = null;
 		
 		removeAll();
 		
 		setLayout(new GridLayout(side, side));
 		
-		fields = new ArrayList<>();
-		for(int i=0; i<side; i++){
-			for(int j=0; j<side; j++){
+		fields = new MapField[side][side];
+		for(int row=0; row<side; row++){
+			for(int col=0; col<side; col++){
 				MapField field = new MapField();
-				fields.add(field);
+				fields[row][col] = field;
 				add(field);
 			}
 		}
@@ -53,14 +53,15 @@ public class MapPanel extends JPanel {
 		this.grid = grid;
 		int width = grid.getWidth();
 		int height = grid.getHeight();
+		this.side = width;
 		
 		setLayout(new GridLayout(width, height));
-		fields = new ArrayList<>();
+		fields = new MapField[width][height];
 		
-		for(int i=0; i<height; i++){
-			for(int j=0; j<width; j++){
-				MapField field = new MapField(grid.getField(i, j));
-				fields.add(field);
+		for(int row=0; row<height; row++){
+			for(int col=0; col<width; col++){
+				MapField field = new MapField(grid.getField(row, col));
+				fields[row][col] = field;
 				add(field);
 			}
 		}
@@ -72,8 +73,69 @@ public class MapPanel extends JPanel {
 
 	public void enableEditing(boolean b) {
 		if(fields != null){
-			for(MapField f : fields) f.setEditingEnabled(b);
-		}		
+
+			for(int row=0; row<side; row++){
+				for(int col=0; col<side; col++){
+					
+					fields[row][col].setEditingEnabled(b);
+				}
+			}
+		}
+		
+		
 	}
+
+	public void generateGrid() {
+		Field[][] gridField = new Field[side][side];
+		
+		for(int row=0; row<side; row++){
+			for(int col=0; col<side; col++){
+				
+				gridField[row][col] = fields[row][col].getField();
+			}
+		}
+		
+		grid = new Grid();
+		grid.setGrid(gridField, 0, 0);
+	}
+
+	public IGrid getGrid() {
+		return grid;
+	}
+
+	public void simulateAction(RobotActionTaken observation) {
+		
+		Move move = observation.getMove();
+		int previousRow = observation.getPreviousRow();
+		int previousColumn = observation.getPreviousColumn();
+		
+		if(fields[previousRow][previousColumn].getField() == Field.BOTTLE && move == Move.COLLECT){
+			fields[previousRow][previousColumn].setField(Field.EMPTY);
+			fields[previousRow][previousColumn].repaint();
+		}
+		
+		fields[previousRow][previousColumn].setCurrent(false);
+		
+		int currentRow = observation.getCurrentRow();
+		int currentColumn = observation.getCurrentColumn();
+		
+		//provjeriti jesu li unutar grida
+		
+		fields[currentRow][currentColumn].setCurrent(true);
+		fields[currentRow][currentColumn].repaint();
+		
+		repaint();
+		revalidate();
+		
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			//Ignore
+		}
+		
+		
+	}
+	
+	
 
 }
