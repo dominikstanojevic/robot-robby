@@ -18,7 +18,7 @@ public class MapPanel extends JPanel {
 	
 	private static final long serialVersionUID = 3040933415189290493L;
 	private int side;
-	private IGrid grid;
+	private Grid grid;
 	private MapField[][] fields;
 
 	public MapPanel() {
@@ -46,7 +46,7 @@ public class MapPanel extends JPanel {
 		revalidate();
 	}
 	
-	public void setGrid(IGrid grid){
+	public void setGrid(Grid grid){
 		
 		removeAll();
 		
@@ -99,7 +99,7 @@ public class MapPanel extends JPanel {
 		grid.setGrid(gridField, 0, 0);
 	}
 
-	public IGrid getGrid() {
+	public Grid getGrid() {
 		return grid;
 	}
 
@@ -111,24 +111,21 @@ public class MapPanel extends JPanel {
 		
 		if(fields[previousRow][previousColumn].getField() == Field.BOTTLE && move == Move.COLLECT){
 			fields[previousRow][previousColumn].setField(Field.EMPTY);
-			fields[previousRow][previousColumn].repaint();
-		}
-		
-		fields[previousRow][previousColumn].setCurrent(false);
+		}		
 		
 		int currentRow = observation.getCurrentRow();
 		int currentColumn = observation.getCurrentColumn();
 		
-		//provjeriti jesu li unutar grida
-		
-		fields[currentRow][currentColumn].setCurrent(true);
-		fields[currentRow][currentColumn].repaint();
-		
-		repaint();
-		revalidate();
+		if(currentRow >= 0 && currentRow < side && currentColumn >=0 && currentColumn < side){
+			
+			fields[previousRow][previousColumn].setCurrent(false);
+			
+			fields[currentRow][currentColumn].setCurrent(true);
+			fields[currentRow][currentColumn].repaint();
+		}
 		
 		try {
-			Thread.sleep(100);
+			Thread.sleep(50);
 		} catch (InterruptedException e) {
 			//Ignore
 		}
