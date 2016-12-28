@@ -11,7 +11,7 @@ import java.util.function.Function;
 public class UniformMutation extends RandomMutation {
     private static Function<Double, Double> change = x -> (Utils.RANDOM.nextDouble() - 0.5) * 2 * x;
 
-    public UniformMutation(double mutationRate) {
-        super(mutationRate, change);
+    public UniformMutation(double mutationRate, double sigma) {
+        super(mutationRate, sigma, change);
     }
 }

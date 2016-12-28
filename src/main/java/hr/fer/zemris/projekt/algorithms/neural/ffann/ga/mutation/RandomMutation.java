@@ -1,5 +1,6 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.mutation;
 
+import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
 
 import java.util.function.Function;
@@ -10,10 +11,12 @@ import java.util.function.Function;
  */
 public abstract class RandomMutation implements IMutation {
     private double mutationRate;
+    private double sigma;
     private Function<Double, Double> change;
 
-    public RandomMutation(double mutationRate, Function<Double, Double> change) {
+    public RandomMutation(double mutationRate, double sigma, Function<Double, Double> change) {
         this.mutationRate = mutationRate;
+        this.sigma = sigma;
         this.change = change;
     }
 
@@ -22,7 +25,9 @@ public abstract class RandomMutation implements IMutation {
         double[] weights = chromosome.getWeights();
 
         for (int i = 0; i < weights.length; ++i){
-            weights[i] += change.apply(mutationRate);
+            if (Utils.RANDOM.nextDouble() < mutationRate){
+                weights[i] += change.apply(sigma);
+            }
         }
 
         chromosome.setWeights(weights);

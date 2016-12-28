@@ -11,7 +11,7 @@ import java.util.function.Function;
 public class GausMutation extends RandomMutation {
     private static Function<Double, Double> change = x -> Utils.RANDOM.nextGaussian() * x;
 
-    public GausMutation(double sigma) {
-        super(sigma, change);
+    public GausMutation(double mutationRate, double sigma) {
+        super(mutationRate, sigma, change);
     }
 }

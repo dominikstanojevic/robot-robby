@@ -10,11 +10,10 @@ import hr.fer.zemris.projekt.algorithms.neural.ffann.FFANN;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.compFactor.ICompFactor;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.compFactor.LinearCompFactor;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.crossover.ICrossover;
-import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.crossover.TwoPointCrossover;
+import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.crossover.IntervalCrossover;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.mutation.GausMutation;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.mutation.IMutation;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.selection.ISelection;
-import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.selection.RandomSelection;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.selection.TournamentSelection;
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
@@ -52,6 +51,11 @@ public class SASEGASA extends ObservableAlgorithm {
     private double successRatio;
     private double maxSelectionPressure;
     private double mutationRate;
+    private double sigma;
+    private double alpha;
+
+    private double startingIntervalMin;
+    private double startingIntervalMax;
 
     private ISelection firstSelection;
     private ISelection secondSelection;
@@ -92,10 +96,7 @@ public class SASEGASA extends ObservableAlgorithm {
                     end = populationSize;
                 }
 
-                List<Chromosome> currentPopulation = new ArrayList<>();
-                for (int j = begin; j < end; ++j){
-                    currentPopulation.add(population.get(j));
-                }
+                List<Chromosome> currentPopulation = population.subList(begin, end);
 
                 currentPopulation = run(currentPopulation);
                 newPopulation.addAll(currentPopulation);
@@ -134,12 +135,13 @@ public class SASEGASA extends ObservableAlgorithm {
             compFactor.nextFactor();
             Set<Chromosome> newPopulation = new HashSet<>();
             Set<Chromosome> pool = new HashSet<>();
+            pool.add(bestOfPopulation(population));
 
             poolSize = 0;
             while (selectionPressure < maxSelectionPressure && newPopulation.size() < successSize){
                 Chromosome firstParent = firstSelection.select(population);
                 Chromosome secondParent = secondSelection.select(population);
-                while (secondParent == firstParent){
+                while (secondParent.equals(firstParent)){
                     secondParent = secondSelection.select(population);
                 }
 
@@ -191,10 +193,13 @@ public class SASEGASA extends ObservableAlgorithm {
             }
 
             population = new ArrayList<>(newPopulation);
-            System.out.println(bestOfPopulation(population));
+
+            if (generation % 10 == 0){
+                System.out.println("Generation: " + generation + "  - " + bestOfPopulation(population));
+            }
         }
 
-        System.out.println("Village Completed!");
+        System.out.println("Village Completed! " + bestOfPopulation(population));
         return population;
     }
 
@@ -202,7 +207,7 @@ public class SASEGASA extends ObservableAlgorithm {
         List<Chromosome> population = new ArrayList<>();
 
         for (int i = 0; i < populationSize; ++i){
-            Chromosome newChromosome = new Chromosome(chromosomeSize);
+            Chromosome newChromosome = new Chromosome(chromosomeSize, startingIntervalMin, startingIntervalMax);
             evaluate(newChromosome);
             population.add(newChromosome);
         }
@@ -235,8 +240,8 @@ public class SASEGASA extends ObservableAlgorithm {
         }
 
         network = new FFANN(
-                new int[]{15, 15, 7},
-                new ActivationFunction[] {HYP_TAN, SIGMOID, HYP_TAN}
+                new int[]{15, 7},
+                new ActivationFunction[] {SIGMOID, HYP_TAN}
         );
 
         chromosomeSize = network.getNumberOfWeights();
@@ -247,12 +252,16 @@ public class SASEGASA extends ObservableAlgorithm {
         successRatio = parameters.getParameter(SUCCESS_RATIO).getValue();
         maxSelectionPressure = parameters.getParameter(MAX_SELECTION_PRESSURE).getValue();
         mutationRate = parameters.getParameter(MUTATION_RATE).getValue();
+        sigma = parameters.getParameter(SIGMA).getValue();
         maxIteration = (int) parameters.getParameter(MAX_ITERATION).getValue();
+        startingIntervalMin = parameters.getParameter(STARTING_INTERVAL_MIN).getValue();
+        startingIntervalMax = parameters.getParameter(STARTING_INTERVAL_MAX).getValue();
+        alpha = parameters.getParameter(ALPHA).getValue();
 
         firstSelection = new TournamentSelection(tournamentSize);
-        secondSelection = new RandomSelection();
-        crossover = new TwoPointCrossover();
-        mutation = new GausMutation(mutationRate);
+        secondSelection = new TournamentSelection(tournamentSize);
+        crossover = new IntervalCrossover(alpha);
+        mutation = new GausMutation(mutationRate, sigma);
         compFactor = new LinearCompFactor(maxGenerations);
     }
 }
