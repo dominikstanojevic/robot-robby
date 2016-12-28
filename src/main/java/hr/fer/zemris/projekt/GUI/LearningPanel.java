@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -31,6 +32,8 @@ public class LearningPanel extends JPanel {
 
 	private static final long serialVersionUID = 6104960870300948842L;
 	
+	private JTabbedPane parent;
+	
 	private ObservableAlgorithm algorithm;
 	private Robot robot;
 	private Simulator simulator = new Simulator();
@@ -41,8 +44,10 @@ public class LearningPanel extends JPanel {
 	private JButton btnRunSimulation = new JButton("Simulate");
 	
 
-	public LearningPanel() {
+	public LearningPanel(JTabbedPane parent) {
 		super();
+		
+		this.parent = parent;
 
 		initGUI();
 	}
@@ -171,7 +176,9 @@ public class LearningPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO run simulation tab with robot
+				
+				parent.setSelectedIndex(1);
+				((SimulationPanel) parent.getSelectedComponent()).setRobot(robot);
 				
 			}
 		});
@@ -184,6 +191,10 @@ public class LearningPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				btnExportRobot.setEnabled(false);
+				btnRunSimulation.setEnabled(false);
+				
 				int mapNum = slMapNumber.getValue();
 				int mapSide = slMapSize.getValue();
 				int numOfBottles = (int) Math.round(slBottlePercentage.getValue() * 0.01 * mapSide * mapSide);

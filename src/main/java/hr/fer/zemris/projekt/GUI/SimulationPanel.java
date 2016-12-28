@@ -41,12 +41,17 @@ public class SimulationPanel extends JPanel {
 	private JButton btnSaveMap;
 	private JButton btnSimulate;
 	private JLabel lMapStatus = new JLabel("");
+	private JLabel lRobotStatus;
 
 	public SimulationPanel() {
 		super();
 
 		setLayout(new BorderLayout());
 		initGUI();
+	}
+	
+	public void setRobot(Robot robot){
+		this.robot = robot;
 	}
 
 	private void initGUI() {
@@ -196,7 +201,7 @@ public class SimulationPanel extends JPanel {
 
 		JButton btnLoadRobot = new JButton("Load Robot");
 		optionsPanel.add(btnLoadRobot);
-		JLabel lRobotStatus = new JLabel("No Robot Selected.");
+		lRobotStatus = new JLabel("No Robot Selected.");
 		optionsPanel.add(lRobotStatus);
 
 		btnLoadRobot.addActionListener(new ActionListener() {

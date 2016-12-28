@@ -10,7 +10,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import hr.fer.zemris.projekt.algorithms.Robot;
+
 public class MainFrame extends JFrame {
+	
+	private LearningPanel learningPanel;
+	private SimulationPanel simulationPanel;
 	
 	public MainFrame() throws HeadlessException {
 		super();
@@ -27,10 +32,10 @@ public class MainFrame extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane();
 		add(tabbedPane);
 		
-		JPanel learningPanel = new LearningPanel();
+		learningPanel = new LearningPanel(tabbedPane);
 		tabbedPane.addTab("Learning Algorithms", learningPanel);
 		
-		JPanel simulationPanel = new SimulationPanel();
+		simulationPanel = new SimulationPanel();
 		tabbedPane.addTab("Simulation", simulationPanel);
 		
 	}
