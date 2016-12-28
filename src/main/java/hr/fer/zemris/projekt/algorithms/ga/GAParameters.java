@@ -4,8 +4,9 @@ import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -86,54 +87,56 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
      */
     Parameter tournamentSize;
 
+    private Map<String, Parameter> parametersMap = new HashMap<>();
+
     /**
      * Constructs a {@link GAParameters} object with the default parameters.
      */
     GAParameters() {
-        maxGenerations = new Parameter(MAX_GEN_ID, ParameterType.INTEGER, 0, 100_000, DEFAULT_MAX_GENERATIONS);
-        populationSize = new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 0, 1_000, DEFAULT_POPULATION_SIZE);
-        elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 0.2, DEFAULT_ELITISM_RATIO);
-        tournamentSize = new Parameter(TOURNAMENT_SIZE_ID, ParameterType.INTEGER, 1, 10, DEFAULT_TOURNAMENT_SIZE);
+        Parameter maxGenerations = new Parameter(MAX_GEN_ID, ParameterType.INTEGER, 0, 100_000, DEFAULT_MAX_GENERATIONS);
+        Parameter populationSize = new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 0, 1_000, DEFAULT_POPULATION_SIZE);
+        Parameter elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 0.2, DEFAULT_ELITISM_RATIO);
+        Parameter tournamentSize = new Parameter(TOURNAMENT_SIZE_ID, ParameterType.INTEGER, 1, 10, DEFAULT_TOURNAMENT_SIZE);
+
+        init(maxGenerations, populationSize, elitismRatio, tournamentSize);
     }
+	
+	private void init(Parameter maxGenerations, Parameter populationSize,
+                      Parameter elitismRatio, Parameter tournamentSize) {
+
+		this.maxGenerations = maxGenerations;
+		this.populationSize = populationSize;
+		this.elitismRatio = elitismRatio;
+		this.tournamentSize = tournamentSize;
+		
+		
+		parametersMap.put(MAX_GEN_ID, maxGenerations);
+        parametersMap.put(POP_SIZE_ID, populationSize);
+        parametersMap.put(ELITISM_RATIO_ID, elitismRatio);
+        parametersMap.put(TOURNAMENT_SIZE_ID, tournamentSize);
+	}
 
     @Override
     public Parameter getParameter(String name) {
-        switch (name) {
-            case MAX_GEN_ID:
-                return maxGenerations;
-            case POP_SIZE_ID:
-                return populationSize;
-            case ELITISM_RATIO_ID:
-                return elitismRatio;
-            case TOURNAMENT_SIZE_ID:
-                return tournamentSize;
-            default:
-             throw new IllegalArgumentException("Unrecognized parameter: " + name);
+        if (!parametersMap.containsKey(name)) {
+            throw new IllegalArgumentException("Unrecognized parameter: " + name);
         }
+
+        return parametersMap.get(name);
     }
 
     @Override
     public void setParameter(String name, double value) {
-        switch (name) {
-            case MAX_GEN_ID:
-                maxGenerations.setValue(value);
-                break;
-            case POP_SIZE_ID:
-                populationSize.setValue(value);
-                break;
-            case ELITISM_RATIO_ID:
-                elitismRatio.setValue(value);
-                break;
-            case TOURNAMENT_SIZE_ID:
-                tournamentSize.setValue(value);
-            default:
-                throw new IllegalArgumentException("Unrecognized parameter: " + name);
+        if (!parametersMap.containsKey(name)) {
+            throw new IllegalArgumentException("Unrecognized parameter: " + name);
         }
+
+        parametersMap.get(name).setValue(value);
     }
 
     @Override
     public Set<Parameter> getParameters() {
-        return new HashSet<>(Arrays.asList(maxGenerations, populationSize, elitismRatio, tournamentSize));
+        return new HashSet<>(parametersMap.values());
     }
 
     /**
@@ -143,10 +146,12 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
     public GAParameters copy() {
         GAParameters copy = new GAParameters();
 
-        copy.maxGenerations = copyParameter(this.maxGenerations);
-        copy.populationSize = copyParameter(this.populationSize);
-        copy.elitismRatio = copyParameter(this.elitismRatio);
-        copy.tournamentSize = copyParameter(this.tournamentSize);
+        copy.init(
+                copyParameter(maxGenerations),
+                copyParameter(populationSize),
+                copyParameter(elitismRatio),
+                copyParameter(tournamentSize)
+        );
 
         return copy;
     }
