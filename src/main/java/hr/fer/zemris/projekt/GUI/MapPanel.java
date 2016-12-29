@@ -106,11 +106,22 @@ public class MapPanel extends JPanel {
 	public void simulateAction(RobotActionTaken observation) {
 		
 		Move move = observation.getMove();
+		
 		int previousRow = observation.getPreviousRow();
 		int previousColumn = observation.getPreviousColumn();
 		
-		if(fields[previousRow][previousColumn].getField() == Field.BOTTLE && move == Move.COLLECT){
-			fields[previousRow][previousColumn].setField(Field.EMPTY);
+		if(move == Move.COLLECT){
+			
+			fields[previousRow][previousColumn].setPickup(true);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				//Ignore
+			}
+			if(fields[previousRow][previousColumn].getField() == Field.BOTTLE){
+				fields[previousRow][previousColumn].setField(Field.EMPTY);
+			}
+			fields[previousRow][previousColumn].setPickup(false);
 		}		
 		
 		int currentRow = observation.getCurrentRow();
@@ -118,14 +129,24 @@ public class MapPanel extends JPanel {
 		
 		if(currentRow >= 0 && currentRow < side && currentColumn >=0 && currentColumn < side){
 			
-			fields[previousRow][previousColumn].setCurrent(false);
-			
+			fields[previousRow][previousColumn].setCurrent(false);			
 			fields[currentRow][currentColumn].setCurrent(true);
-			fields[currentRow][currentColumn].repaint();
+			
+		}else{
+			fields[previousRow][previousColumn].setWallHit(true);
+			
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				//Ignore
+			}
+			
+			fields[previousRow][previousColumn].setWallHit(false);
+			
 		}
 		
 		try {
-			Thread.sleep(50);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			//Ignore
 		}

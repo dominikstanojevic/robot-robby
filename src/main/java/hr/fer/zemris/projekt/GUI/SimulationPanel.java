@@ -228,6 +228,8 @@ public class SimulationPanel extends JPanel {
 								btnSimulate.setEnabled(true);
 						} else {
 							lRobotStatus.setText("Selected file is not a valid robot for the given algorithm.");
+							robot = null;
+							btnSimulate.setEnabled(false);
 						}
 
 					} catch (IOException e1) {
