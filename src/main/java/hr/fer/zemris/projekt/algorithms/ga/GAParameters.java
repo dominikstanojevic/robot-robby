@@ -93,28 +93,27 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
      * Constructs a {@link GAParameters} object with the default parameters.
      */
     GAParameters() {
-        Parameter maxGenerations = new Parameter(MAX_GEN_ID, ParameterType.INTEGER, 0, 100_000, DEFAULT_MAX_GENERATIONS);
-        Parameter populationSize = new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 0, 1_000, DEFAULT_POPULATION_SIZE);
-        Parameter elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 0.2, DEFAULT_ELITISM_RATIO);
-        Parameter tournamentSize = new Parameter(TOURNAMENT_SIZE_ID, ParameterType.INTEGER, 1, 10, DEFAULT_TOURNAMENT_SIZE);
-
-        init(maxGenerations, populationSize, elitismRatio, tournamentSize);
+        this(
+                new Parameter(MAX_GEN_ID, ParameterType.INTEGER, 0, 100_000, DEFAULT_MAX_GENERATIONS),
+                new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 0, 1_000, DEFAULT_POPULATION_SIZE),
+                new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 0.2, DEFAULT_ELITISM_RATIO),
+                new Parameter(TOURNAMENT_SIZE_ID, ParameterType.INTEGER, 1, 10, DEFAULT_TOURNAMENT_SIZE)
+            );
     }
-	
-	private void init(Parameter maxGenerations, Parameter populationSize,
-                      Parameter elitismRatio, Parameter tournamentSize) {
 
-		this.maxGenerations = maxGenerations;
-		this.populationSize = populationSize;
-		this.elitismRatio = elitismRatio;
-		this.tournamentSize = tournamentSize;
-		
-		
-		parametersMap.put(MAX_GEN_ID, maxGenerations);
+    private GAParameters(Parameter maxGenerations, Parameter populationSize,
+                         Parameter elitismRatio, Parameter tournamentSize) {
+
+        this.maxGenerations = maxGenerations;
+        this.populationSize = populationSize;
+        this.elitismRatio = elitismRatio;
+        this.tournamentSize = tournamentSize;
+
+        parametersMap.put(MAX_GEN_ID, maxGenerations);
         parametersMap.put(POP_SIZE_ID, populationSize);
         parametersMap.put(ELITISM_RATIO_ID, elitismRatio);
         parametersMap.put(TOURNAMENT_SIZE_ID, tournamentSize);
-	}
+    }
 
     @Override
     public Parameter getParameter(String name) {
@@ -144,16 +143,12 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
      * @return a copy of the current {@link GAParameters} object
      */
     public GAParameters copy() {
-        GAParameters copy = new GAParameters();
-
-        copy.init(
+        return new GAParameters(
                 copyParameter(maxGenerations),
                 copyParameter(populationSize),
                 copyParameter(elitismRatio),
                 copyParameter(tournamentSize)
         );
-
-        return copy;
     }
 
     /**
