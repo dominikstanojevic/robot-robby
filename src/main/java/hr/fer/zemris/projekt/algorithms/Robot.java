@@ -15,7 +15,6 @@ import hr.fer.zemris.projekt.grid.Field;
  * @version 1.0.0
  */
 public interface Robot {
-	
 
     /**
      * Calculates what move to play in the situation described by the arguments.
@@ -34,4 +33,11 @@ public interface Robot {
      * current situation.
      */
     Move nextMove(Field current, Field left, Field right, Field up, Field down);
+
+    /**
+     * Returns the standardized fitness value for the {@code Robot}.
+     *
+     * @return the standardized fitness value for the {@code Robot}
+     */
+    double standardizedFitness();
 }

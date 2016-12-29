@@ -21,6 +21,7 @@ import javax.swing.event.ChangeListener;
 
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
+import hr.fer.zemris.projekt.algorithms.RobotFormatException;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
@@ -49,8 +50,8 @@ public class SimulationPanel extends JPanel {
 		setLayout(new BorderLayout());
 		initGUI();
 	}
-	
-	public void setRobot(Robot robot){
+
+	public void setRobot(Robot robot) {
 		this.robot = robot;
 	}
 
@@ -81,7 +82,8 @@ public class SimulationPanel extends JPanel {
 				lMapStatus.setText("Map successfully generated.");
 
 				btnSaveMap.setEnabled(true);
-				if(robot != null) btnSimulate.setEnabled(true);
+				if (robot != null)
+					btnSimulate.setEnabled(true);
 
 			}
 		});
@@ -121,7 +123,8 @@ public class SimulationPanel extends JPanel {
 						btnSaveMap.setEnabled(true);
 						btnGenerateMap.setEnabled(true);
 						btnLoadMap.setEnabled(true);
-						if(robot != null) btnSimulate.setEnabled(true);						
+						if (robot != null)
+							btnSimulate.setEnabled(true);
 
 						lMapStatus.setText("Map successfully created.");
 					}
@@ -151,7 +154,8 @@ public class SimulationPanel extends JPanel {
 						map.setGrid(grid);
 						lMapStatus.setText("Map successfully loaded.");
 						btnSaveMap.setEnabled(true);
-						if(robot != null) btnSimulate.setEnabled(true);
+						if (robot != null)
+							btnSimulate.setEnabled(true);
 
 					} catch (Exception e1) {
 						lMapStatus.setText("Unable to load map.");
@@ -220,13 +224,16 @@ public class SimulationPanel extends JPanel {
 						robot = a.readSolutionFromFile(Paths.get(file.getPath()));
 						if (robot != null) {
 							lRobotStatus.setText("Robot successfully loaded.");
-							if(map.getGrid() != null) btnSimulate.setEnabled(true);
+							if (map.getGrid() != null)
+								btnSimulate.setEnabled(true);
 						} else {
 							lRobotStatus.setText("Selected file is not a valid robot for the given algorithm.");
 						}
 
 					} catch (IOException e1) {
 						lRobotStatus.setText("An error occured while loading robot.");
+					} catch (RobotFormatException e2) {
+						lRobotStatus.setText("Selected file is not a valid robot for the given algorithm.");
 					}
 
 				}
@@ -253,14 +260,14 @@ public class SimulationPanel extends JPanel {
 					if (grid == null) {
 						lSimulationStatus.setText("Unable to start simulation, no map was given.");
 					} else {
-						
+
 						btnCreateMap.setEnabled(false);
 						btnGenerateMap.setEnabled(false);
 						btnLoadRobot.setEnabled(false);
 						btnLoadMap.setEnabled(false);
 						btnSaveMap.setEnabled(false);
 						btnSimulate.setEnabled(false);
-						
+
 						simulator.setGrid(grid);
 						simulator.addObserver(new Observer<RobotActionTaken>() {
 
@@ -282,7 +289,7 @@ public class SimulationPanel extends JPanel {
 
 							@Override
 							protected void done() {
-								
+
 								btnCreateMap.setEnabled(true);
 								btnGenerateMap.setEnabled(true);
 								btnLoadRobot.setEnabled(true);
@@ -290,9 +297,9 @@ public class SimulationPanel extends JPanel {
 								btnSaveMap.setEnabled(true);
 								btnSimulate.setEnabled(true);
 							}
-							
+
 						};
-						
+
 						w.execute();
 
 					}

@@ -23,7 +23,7 @@ public class Individual implements Robot, Comparable<Individual> {
 	 */
 	private double rawFitness;
 	
-	private double standardFitness;
+	private double standardizedFitness;
 	/**
 	 * Program tree of the individual.
 	 */
@@ -68,13 +68,13 @@ public class Individual implements Robot, Comparable<Individual> {
 	
 	
 
-
-	public double getStandardFitness() {
-		return standardFitness;
+	@Override
+	public double standardizedFitness() {
+		return standardizedFitness;
 	}
 
-	public void setStandardFitness(double standardFitness) {
-		this.standardFitness = standardFitness;
+	public void setStandardizedFitness(double standardFitness) {
+		this.standardizedFitness = standardFitness;
 	}
 
 	/**

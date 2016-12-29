@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
+import hr.fer.zemris.projekt.algorithms.RobotFormatException;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.FunctionNode;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.Node;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.ParsingException;
@@ -28,6 +29,11 @@ import hr.fer.zemris.projekt.simulator.Stats;
  * 
  */
 public class GeneticProgramming extends ObservableAlgorithm {
+	
+	
+	public static final int EMPTY_PICKUP_PENALTY = 1;
+	public static final int HITTING_WALL_PENALTY = 5;
+	public static final int PICKUP_PRIZE = 10;
 
 	/**
 	 * Tournament size in tournament selection.
@@ -45,6 +51,9 @@ public class GeneticProgramming extends ObservableAlgorithm {
 	 * Best individual produced so far by the algorithm in the latest run.
 	 */
 	private Individual bestIndividual;
+	
+	private Individual currBestIndividual;
+	
 	/**
 	 * Selector of random nodes in trees.
 	 */
@@ -110,20 +119,23 @@ public class GeneticProgramming extends ObservableAlgorithm {
 			evaluateFitness(simulator, pickupPrize, hitWallPenalty, emptyPickupPenalty);
 			determineBestIndividual();
 			
-			double f = 0;
-			for(Individual i : population) f+=i.getRawFitness();
-			//System.out.println("Prosjek generacije " + f/population.size());
+			double average = 0;
+			for(Individual i : population) average+=i.standardizedFitness();
+			average = average / population.size();
+			//System.out.println("Prosjek generacije " + average);
 			
 			if(generation%20 == 0){
 				System.out.println("**************");
 				System.out.println("Generacija: " + generation);
-				System.out.println("Prosjek generacije: " + f/population.size());
-				System.out.println("Najbolji do sada: " + bestIndividual.getRawFitness());
+				System.out.println("Prosjek generacije: " + average);
+				System.out.println("Najbolji do sada: " + bestIndividual.standardizedFitness());
 			}
 			
 //			if(generation>0 && generation%100 == 0){
 //				simulator.generateGrids(100, 50, 10, 10, false);
 //			}
+			
+			notifyListeners(currBestIndividual, average, generation);
 
 			population = getNextGeneration(populationSize, mutationRate, crossoverRate, crossoverMaxDepth);
 			
@@ -196,7 +208,7 @@ public class GeneticProgramming extends ObservableAlgorithm {
 			standardFitness = standardFitness / (bottlesLeft + bottlesPickedUp);
 			
 			population.get(i).setRawFitness(fitness);
-			population.get(i).setStandardFitness(standardFitness);
+			population.get(i).setStandardizedFitness(standardFitness);
 			
 		}
 		
@@ -206,15 +218,13 @@ public class GeneticProgramming extends ObservableAlgorithm {
 	 * Determines the best {@link Individual} in current population based on calculated fitness.
 	 */
 	private void determineBestIndividual() {
-		Individual currGenerationBest = Collections.max(population);
+		currBestIndividual = Collections.max(population);
 		
 		//System.out.println("Najbolji u generaciji " + currGenerationBest.getRawFitness());
 		
-		if (bestIndividual == null || currGenerationBest.compareTo(bestIndividual) > 0) {
-			bestIndividual = currGenerationBest;
+		if (bestIndividual == null || currBestIndividual.compareTo(bestIndividual) > 0) {
+			bestIndividual = currBestIndividual;
 		}
-		
-		notifyListeners(currGenerationBest.getStandardFitness());
 
 	}
 
@@ -232,7 +242,7 @@ public class GeneticProgramming extends ObservableAlgorithm {
 		List<Individual> nextGeneration = new ArrayList<>();
 		
 		//elitism(1)
-		nextGeneration.add(new Individual(bestIndividual.getTree().copy()));
+		nextGeneration.add(new Individual(currBestIndividual.getTree().copy()));
 		
 		while(nextGeneration.size() < populationSize){
 
@@ -404,11 +414,6 @@ public class GeneticProgramming extends ObservableAlgorithm {
 	public String toString() {
 		return "Genetic Programming";
 	}
-	
-	@Override
-	public Robot getBestRobot(){
-		return bestIndividual;
-	}
 
 	@Override
 	public Robot readSolutionFromFile(Path filePath) throws IOException {
@@ -418,7 +423,7 @@ public class GeneticProgramming extends ObservableAlgorithm {
 		try {
 			return Individual.parseIndividual(individual);
 		} catch (ParsingException e) {
-			return null;
+			throw new RobotFormatException("Unable to parse Robot from file.");
 		}
 	}
 

@@ -22,11 +22,7 @@ import java.nio.file.Path;
  * @version 1.1.1
  */
 public interface Algorithm {
-	
-	
-	public static final int EMPTY_PICKUP_PENALTY = 1;
-	public static final int HITTING_WALL_PENALTY = 5;
-	public static final int PICKUP_PRIZE = 10;
+
 
     /**
      * Reads all the information about the algorithm from a file. The file can
@@ -54,7 +50,7 @@ public interface Algorithm {
 
     /**
      * Returns the default {@link Parameters parameters} for this algorithm.
-     * Note that this method should return a copy of the parameters,
+     * Note that this method should return a deep copy of the parameters,
      * as the default values should not be changed.
      *
      * @return the default {@link Parameters parameters} for this algorithm
@@ -66,7 +62,7 @@ public interface Algorithm {
      *
      * @param simulator  simulator to test the results on
      * @param parameters parameters to run the algorithm with
-     * @return 
+     * @return {@link Robot} which was trained by the algorithm
      */
     Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters);
 
@@ -74,10 +70,9 @@ public interface Algorithm {
      * Runs the algorithm with the default parameters.
      *
      * @param simulator simulator to test the results on
+     * @return {@link Robot} which was trained by the algorithm
      */
-    default void run(AbstractSimulator simulator) {
-        this.run(simulator, getDefaultParameters());
+    default Robot run(AbstractSimulator simulator) {
+        return this.run(simulator, getDefaultParameters());
     }
-    
-    Robot getBestRobot();
 }
