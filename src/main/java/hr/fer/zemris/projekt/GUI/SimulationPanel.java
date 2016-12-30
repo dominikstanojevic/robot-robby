@@ -12,19 +12,14 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.SwingWorker;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.RobotFormatException;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
 import hr.fer.zemris.projekt.grid.Grid;
-import hr.fer.zemris.projekt.grid.IGrid;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.RobotActionTaken;
@@ -35,12 +30,16 @@ public class SimulationPanel extends JPanel {
 	private static final long serialVersionUID = -7933105213494475778L;
 
 	private Robot robot;
-	private Simulator simulator = new Simulator();
+	private Simulator simulator;
 	private MapPanel map = new MapPanel();
 
+	private JButton btnSimulate;
+	private JButton btnGenerateMap;
+	private JButton btnCreateMap;
 	private JButton btnLoadMap;
 	private JButton btnSaveMap;
-	private JButton btnSimulate;
+	private JButton btnLoadRobot;
+
 	private JLabel lMapStatus = new JLabel("");
 	private JLabel lRobotStatus;
 
@@ -64,7 +63,7 @@ public class SimulationPanel extends JPanel {
 		add(optionsPanel, BorderLayout.LINE_START);
 		add(map, BorderLayout.CENTER);
 
-		JButton btnGenerateMap = new JButton("Generate Map");
+		btnGenerateMap = new JButton("Generate Map");
 		optionsPanel.add(btnGenerateMap);
 
 		btnGenerateMap.addActionListener(new ActionListener() {
@@ -77,7 +76,7 @@ public class SimulationPanel extends JPanel {
 				d.setVisible(true);
 
 				Grid grid = new Grid();
-				grid.generate(d.getMapSide(), d.getMapSide(), d.getNumberOfBottles(), false);
+				grid.generate(d.getColumns(), d.getRows(), d.getNumberOfBottles(), false);
 				map.setGrid(grid);
 				lMapStatus.setText("Map successfully generated.");
 
@@ -88,7 +87,7 @@ public class SimulationPanel extends JPanel {
 			}
 		});
 
-		JButton btnCreateMap = new JButton("Create Map");
+		btnCreateMap = new JButton("Create Map");
 		optionsPanel.add(btnCreateMap);
 
 		btnCreateMap.addActionListener(new ActionListener() {
@@ -100,13 +99,11 @@ public class SimulationPanel extends JPanel {
 				d.setModal(true);
 				d.setVisible(true);
 
-				map.setSide(d.getMapSide());
+				map.setSides(d.getRows(), d.getColumns());
 				map.enableEditing(true);
 				lMapStatus.setText("Creating map.");
 
-				btnGenerateMap.setEnabled(false);
-				btnLoadMap.setEnabled(false);
-				btnSimulate.setEnabled(false);
+				disableButtons();
 
 				createPanel.add(new JLabel(
 						"Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
@@ -120,16 +117,13 @@ public class SimulationPanel extends JPanel {
 						map.generateGrid();
 						createPanel.removeAll();
 
-						btnSaveMap.setEnabled(true);
-						btnGenerateMap.setEnabled(true);
-						btnLoadMap.setEnabled(true);
-						if (robot != null)
-							btnSimulate.setEnabled(true);
+						enableButtons();
+						if (robot == null)
+							btnSimulate.setEnabled(false);
 
 						lMapStatus.setText("Map successfully created.");
 					}
 				});
-
 			}
 		});
 
@@ -203,7 +197,7 @@ public class SimulationPanel extends JPanel {
 		cbAlgorithm.setSelectedItem(algorithms[0]);
 		optionsPanel.add(cbAlgorithm);
 
-		JButton btnLoadRobot = new JButton("Load Robot");
+		btnLoadRobot = new JButton("Load Robot");
 		optionsPanel.add(btnLoadRobot);
 		lRobotStatus = new JLabel("No Robot Selected.");
 		optionsPanel.add(lRobotStatus);
@@ -263,13 +257,9 @@ public class SimulationPanel extends JPanel {
 						lSimulationStatus.setText("Unable to start simulation, no map was given.");
 					} else {
 
-						btnCreateMap.setEnabled(false);
-						btnGenerateMap.setEnabled(false);
-						btnLoadRobot.setEnabled(false);
-						btnLoadMap.setEnabled(false);
-						btnSaveMap.setEnabled(false);
-						btnSimulate.setEnabled(false);
-
+						disableButtons();
+						
+						simulator = new Simulator(map.getRows() * map.getColumns() * 2);
 						simulator.setGrid(grid);
 						simulator.addObserver(new Observer<RobotActionTaken>() {
 
@@ -280,36 +270,60 @@ public class SimulationPanel extends JPanel {
 							}
 						});
 
-						SwingWorker<Void, Void> w = new SwingWorker<Void, Void>() {
+						SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
 							@Override
 							protected Void doInBackground() throws Exception {
+
 								map.setGrid(grid);
 								simulator.playGames(robot);
+
 								return null;
 							}
 
 							@Override
 							protected void done() {
+								enableButtons();
 
-								btnCreateMap.setEnabled(true);
-								btnGenerateMap.setEnabled(true);
-								btnLoadRobot.setEnabled(true);
-								btnLoadMap.setEnabled(true);
-								btnSaveMap.setEnabled(true);
-								btnSimulate.setEnabled(true);
 							}
-
 						};
 
-						w.execute();
+						worker.execute();
 
 					}
 
 				}
 
 			}
+
 		});
 
+	}
+
+	/**
+	 * Enables all the buttons in OptionsPanel.
+	 */
+	private void disableButtons() {
+
+		btnCreateMap.setEnabled(false);
+		btnGenerateMap.setEnabled(false);
+		btnLoadRobot.setEnabled(false);
+		btnLoadMap.setEnabled(false);
+		btnSaveMap.setEnabled(false);
+		btnSimulate.setEnabled(false);
+
+	}
+
+	/**
+	 * Enables all the buttons in OptionsPanel.
+	 */
+	private void enableButtons() {
+
+		btnCreateMap.setEnabled(true);
+		btnGenerateMap.setEnabled(true);
+		btnLoadRobot.setEnabled(true);
+		btnLoadMap.setEnabled(true);
+		btnSaveMap.setEnabled(true);
+		btnSimulate.setEnabled(true);
 	}
 }

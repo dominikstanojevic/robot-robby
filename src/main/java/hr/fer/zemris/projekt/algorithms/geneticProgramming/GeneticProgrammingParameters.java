@@ -1,9 +1,8 @@
 package hr.fer.zemris.projekt.algorithms.geneticProgramming;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.ParameterType;
@@ -217,14 +216,14 @@ public class GeneticProgrammingParameters implements Parameters<GeneticProgrammi
 	}
 
 	@Override
-	public Set<Parameter> getParameters() {
+	public LinkedHashSet<Parameter> getParameters() {
 //		Set<Parameter> paramSet = new HashSet<>();
 //		Collection<Parameter> params = parameters.values();
 //		for (Parameter p : params) {
 //			paramSet.add(new Parameter(p.getName(), p.getType(), p.getMinValue(), p.getMaxValue(), p.getValue()));
 //		}
 //		return paramSet;
-		return new TreeSet<Parameter>(parameters.values());
+		return new LinkedHashSet<Parameter>(parameters.values());
 	}
 
 }

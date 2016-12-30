@@ -6,7 +6,7 @@ package hr.fer.zemris.projekt.parameter;
  * @author Kristijan Vulinovic
  * @version 1.0.1
  */
-public class Parameter implements Comparable<Parameter>{
+public class Parameter{
     /**
      * The default value for the minimal value.
      */
@@ -189,9 +189,4 @@ public class Parameter implements Comparable<Parameter>{
 
         this.value = value;
     }
-
-	@Override
-	public int compareTo(Parameter o) {
-		return this.name.compareTo(o.name);
-	}
 }

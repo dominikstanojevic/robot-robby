@@ -20,8 +20,9 @@ import javax.swing.event.ChangeListener;
 public class JCreateMapDialog extends JDialog {
 
 	private static final long serialVersionUID = 3671122922403916985L;
-
-	private int mapSide;
+	
+	private int rows;
+	private int columns;
 
 	public JCreateMapDialog() {
 
@@ -38,24 +39,43 @@ public class JCreateMapDialog extends JDialog {
 		add(p);
 		p.setBorder(BorderFactory.createEmptyBorder(20, 20, 5, 20));
 		
-		JSlider slMapSize = new JSlider(2, 15, 10);
-		slMapSize.createStandardLabels(5);
-		slMapSize.setMajorTickSpacing(5);
-		slMapSize.setPaintTicks(true);
-		slMapSize.setPaintLabels(true);
+		JSlider slMapRows = new JSlider(2, 15, 10);
+		slMapRows.createStandardLabels(5);
+		slMapRows.setMajorTickSpacing(5);
+		slMapRows.setPaintTicks(true);
+		slMapRows.setPaintLabels(true);
 		
-		JLabel lMapSize = new JLabel("Map side size: " + slMapSize.getValue());
-		slMapSize.addChangeListener(new ChangeListener() {
+		JLabel lMapRows = new JLabel("Number of rows: " + slMapRows.getValue());
+		slMapRows.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				lMapSize.setText("Map side size: " + slMapSize.getValue());
+				lMapRows.setText("Number of rows: " + slMapRows.getValue());
 				
 			}
 		});		
-		p.add(lMapSize);
-		p.add(slMapSize);
-		slMapSize.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+		p.add(lMapRows);
+		p.add(slMapRows);
+		slMapRows.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
+		
+		JSlider slMapColumns = new JSlider(2, 15, 10);
+		slMapColumns.createStandardLabels(5);
+		slMapColumns.setMajorTickSpacing(5);
+		slMapColumns.setPaintTicks(true);
+		slMapColumns.setPaintLabels(true);
+		
+		JLabel lMapColumns = new JLabel("Number of columns: " + slMapColumns.getValue());
+		slMapColumns.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				lMapColumns.setText("Number of columns: "  + slMapColumns.getValue());
+				
+			}
+		});		
+		p.add(lMapColumns);
+		p.add(slMapColumns);
+		slMapColumns.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
 		
 		JButton btnOK = new JButton("OK");
 		p.add(btnOK);
@@ -65,7 +85,8 @@ public class JCreateMapDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				mapSide = slMapSize.getValue();
+				rows = slMapRows.getValue();
+				columns = slMapColumns.getValue();
 						
 				dispose();
 			}
@@ -73,8 +94,11 @@ public class JCreateMapDialog extends JDialog {
 		
 	}
 	
-	public int getMapSide(){
-		return mapSide;
+	public int getRows() {
+		return rows;
 	}
 
+	public int getColumns() {
+		return columns;
+	}
 }

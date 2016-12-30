@@ -31,22 +31,20 @@ import hr.fer.zemris.projekt.simulator.Simulator;
 public class LearningPanel extends JPanel {
 
 	private static final long serialVersionUID = 6104960870300948842L;
-	
+
 	private JTabbedPane parent;
-	
+
 	private ObservableAlgorithm algorithm;
 	private Robot robot;
-	private Simulator simulator = new Simulator();
-	
-	
+	private Simulator simulator;
+
 	private JButton btnStart = new JButton("Run Algorithm");
 	private JButton btnExportRobot = new JButton("Save Robot to File");
 	private JButton btnRunSimulation = new JButton("Simulate");
-	
 
 	public LearningPanel(JTabbedPane parent) {
 		super();
-		
+
 		this.parent = parent;
 
 		initGUI();
@@ -85,49 +83,61 @@ public class LearningPanel extends JPanel {
 		JPanel mapEditor = new JPanel(new GridLayout(0, 1));
 		add(mapEditor, BorderLayout.LINE_END);
 
-		
-		
 		JSlider slMapNumber = new JSlider(10, 100, 50);
 		slMapNumber.createStandardLabels(50);
 		slMapNumber.setMajorTickSpacing(20);
 		slMapNumber.setPaintTicks(true);
 		slMapNumber.setPaintLabels(true);
-		
+
 		JLabel lMapNumber = new JLabel("Number of maps: " + slMapNumber.getValue());
 		slMapNumber.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				lMapNumber.setText("Number of maps: " + slMapNumber.getValue());
-				
+
 			}
 		});
-		
+
 		mapEditor.add(lMapNumber);
 		mapEditor.add(slMapNumber);
-
 		
+		JSlider slMapRows = new JSlider(2, 15, 10);
+		slMapRows.createStandardLabels(5);
+		slMapRows.setMajorTickSpacing(5);
+		slMapRows.setPaintTicks(true);
+		slMapRows.setPaintLabels(true);
 		
-		JSlider slMapSize = new JSlider(2, 15, 10);
-		slMapSize.createStandardLabels(5);
-		slMapSize.setMajorTickSpacing(5);
-		slMapSize.setPaintTicks(true);
-		slMapSize.setPaintLabels(true);
-		
-		JLabel lMapSize = new JLabel("Map side size: " + slMapSize.getValue());
-		slMapSize.addChangeListener(new ChangeListener() {
+		JLabel lMapRows = new JLabel("Number of rows: " + slMapRows.getValue());
+		slMapRows.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				lMapSize.setText("Map side size: " + slMapSize.getValue());
+				lMapRows.setText("Number of rows: " + slMapRows.getValue());
+				
+			}
+		});
+		mapEditor.add(lMapRows);
+		mapEditor.add(slMapRows);
+		
+		JSlider slMapColumns = new JSlider(2, 15, 10);
+		slMapColumns.createStandardLabels(5);
+		slMapColumns.setMajorTickSpacing(5);
+		slMapColumns.setPaintTicks(true);
+		slMapColumns.setPaintLabels(true);
+		
+		JLabel lMapColumns = new JLabel("Number of columns: " + slMapColumns.getValue());
+		slMapColumns.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				lMapColumns.setText("Number of columns: "  + slMapColumns.getValue());
 				
 			}
 		});		
-		mapEditor.add(lMapSize);
-		mapEditor.add(slMapSize);
+		mapEditor.add(lMapColumns);
+		mapEditor.add(slMapColumns);
 
-		
-		
 		JSlider slBottlePercentage = new JSlider(0, 100, 50);
 		Hashtable labelTable = new Hashtable();
 		labelTable.put(0, new JLabel("0"));
@@ -135,30 +145,30 @@ public class LearningPanel extends JPanel {
 		labelTable.put(100, new JLabel("1"));
 		slBottlePercentage.setLabelTable(labelTable);
 		slBottlePercentage.setPaintLabels(true);
-		
+
 		JLabel lBottlePercentage = new JLabel("Percentage of bottles: " + slBottlePercentage.getValue() + "%");
 		slBottlePercentage.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				lBottlePercentage.setText("Percentage of bottles: " + slBottlePercentage.getValue() + "%");
-				
+
 			}
 		});
 		mapEditor.add(lBottlePercentage);
 		mapEditor.add(slBottlePercentage);
-		
+
 		btnExportRobot.setEnabled(false);
-		btnExportRobot.addActionListener(new ActionListener() {			
+		btnExportRobot.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				JFileChooser chooser = new JFileChooser();
 				int returnVal = chooser.showDialog(mapEditor, "Save");
-				
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
+
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File file = chooser.getSelectedFile();
-					
+
 					try {
 						algorithm.writeSolutionToFile(Paths.get(file.getPath()), robot);
 					} catch (IOException e1) {
@@ -168,59 +178,59 @@ public class LearningPanel extends JPanel {
 			}
 		});
 		mapEditor.add(btnExportRobot);
-		
-		
-		
+
 		btnRunSimulation.setEnabled(false);
 		btnRunSimulation.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				parent.setSelectedIndex(1);
 				((SimulationPanel) parent.getSelectedComponent()).setRobot(robot);
-				
+
 			}
 		});
 		mapEditor.add(btnRunSimulation);
-		
+
 		btnStart.setEnabled(false);
-		mapEditor.add(btnStart);		
-		
+		mapEditor.add(btnStart);
+
 		btnStart.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				btnExportRobot.setEnabled(false);
 				btnRunSimulation.setEnabled(false);
-				
+
 				int mapNum = slMapNumber.getValue();
-				int mapSide = slMapSize.getValue();
-				int numOfBottles = (int) Math.round(slBottlePercentage.getValue() * 0.01 * mapSide * mapSide);
-				
-				SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>(){
+				int mapRows = slMapRows.getValue();
+				int mapCols = slMapColumns.getValue();
+				int numOfBottles = (int) Math.round(slBottlePercentage.getValue() * 0.01 * mapRows * mapCols);
+
+				SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
 
 					@Override
 					protected Void doInBackground() throws Exception {
 						
-						simulator.generateGrids(mapNum, numOfBottles, mapSide, mapSide, false);
+						simulator = new Simulator(2*mapCols*mapRows);
+						simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
 						robot = algorithm.run(simulator, parameters.getParameters());
-						
+
 						return null;
 					}
 
 					@Override
 					protected void done() {
-						//TODO
+						// TODO
 						btnExportRobot.setEnabled(true);
 						btnRunSimulation.setEnabled(true);
 					}
-					
+
 				};
-				
+
 				worker.execute();
-				
+
 			}
 		});
 

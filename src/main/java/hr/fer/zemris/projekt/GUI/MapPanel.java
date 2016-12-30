@@ -17,7 +17,8 @@ import hr.fer.zemris.projekt.observer.observations.RobotActionTaken;
 public class MapPanel extends JPanel {
 	
 	private static final long serialVersionUID = 3040933415189290493L;
-	private int side;
+	private int columns;
+	private int rows;
 	private Grid grid;
 	private MapField[][] fields;
 
@@ -25,17 +26,19 @@ public class MapPanel extends JPanel {
 		setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 	}
 	
-	public void setSide(int side){
-		this.side = side;
+	public void setSides(int rows, int columns){
+		this.columns = columns;
+		this.rows = rows;
 		this.grid = null;
 		
 		removeAll();
 		
-		setLayout(new GridLayout(side, side));
+		setLayout(new GridLayout(rows, columns));
 		
-		fields = new MapField[side][side];
-		for(int row=0; row<side; row++){
-			for(int col=0; col<side; col++){
+		fields = new MapField[rows][columns];
+		for(int row=0; row<rows; row++){
+			for(int col=0; col<columns; col++){
+				
 				MapField field = new MapField();
 				fields[row][col] = field;
 				add(field);
@@ -46,20 +49,28 @@ public class MapPanel extends JPanel {
 		revalidate();
 	}
 	
+	public int getColumns() {
+		return columns;
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
 	public void setGrid(Grid grid){
 		
 		removeAll();
 		
 		this.grid = grid;
-		int width = grid.getWidth();
-		int height = grid.getHeight();
-		this.side = width;
+		this.columns = grid.getWidth();
+		this.rows = grid.getHeight();
 		
-		setLayout(new GridLayout(width, height));
-		fields = new MapField[width][height];
+		setLayout(new GridLayout(rows, columns));
+		fields = new MapField[rows][columns];
 		
-		for(int row=0; row<height; row++){
-			for(int col=0; col<width; col++){
+		for(int row=0; row<rows; row++){
+			for(int col=0; col<columns; col++){
+				
 				MapField field = new MapField(grid.getField(row, col));
 				fields[row][col] = field;
 				add(field);
@@ -74,8 +85,8 @@ public class MapPanel extends JPanel {
 	public void enableEditing(boolean b) {
 		if(fields != null){
 
-			for(int row=0; row<side; row++){
-				for(int col=0; col<side; col++){
+			for(int row=0; row<rows; row++){
+				for(int col=0; col<columns; col++){
 					
 					fields[row][col].setEditingEnabled(b);
 				}
@@ -86,10 +97,10 @@ public class MapPanel extends JPanel {
 	}
 
 	public void generateGrid() {
-		Field[][] gridField = new Field[side][side];
+		Field[][] gridField = new Field[rows][columns];
 		
-		for(int row=0; row<side; row++){
-			for(int col=0; col<side; col++){
+		for(int row=0; row<rows; row++){
+			for(int col=0; col<columns; col++){
 				
 				gridField[row][col] = fields[row][col].getField();
 			}
@@ -127,7 +138,7 @@ public class MapPanel extends JPanel {
 		int currentRow = observation.getCurrentRow();
 		int currentColumn = observation.getCurrentColumn();
 		
-		if(currentRow >= 0 && currentRow < side && currentColumn >=0 && currentColumn < side){
+		if(currentRow >= 0 && currentRow < rows && currentColumn >=0 && currentColumn < columns){
 			
 			fields[previousRow][previousColumn].setCurrent(false);			
 			fields[currentRow][currentColumn].setCurrent(true);

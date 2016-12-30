@@ -3,23 +3,23 @@ package hr.fer.zemris.projekt.GUI;
 import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
-import hr.fer.zemris.projekt.algorithms.Robot;
-
 public class MainFrame extends JFrame {
+	
+
+	private static final long serialVersionUID = -2344383069969205119L;
 	
 	private LearningPanel learningPanel;
 	private SimulationPanel simulationPanel;
 	
 	public MainFrame() throws HeadlessException {
 		super();
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Robot Robby");
         initGUI();
         setSize(900, 600);
