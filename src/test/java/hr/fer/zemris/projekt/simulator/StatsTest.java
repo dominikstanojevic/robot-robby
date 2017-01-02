@@ -1,15 +1,15 @@
 package hr.fer.zemris.projekt.simulator;
 
-import hr.fer.zemris.projekt.Move;
-import hr.fer.zemris.projekt.grid.IGrid;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
+import hr.fer.zemris.projekt.Move;
+import hr.fer.zemris.projekt.grid.IGrid;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 @SuppressWarnings("javadoc")
 public class StatsTest {

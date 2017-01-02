@@ -29,23 +29,15 @@ public class RewardFunction {
         return wallCollision;
     }
 
-    public static void setRewards(
-            ReinforcmentLearningParameters params) {
-        livingReward = params.getParameter(
-                ReinforcmentLearningParameters.LIVING_REWARD_NAME)
+    public static void setRewards(ReinforcmentLearningParameters params) {
+        livingReward = params.getParameter(ReinforcmentLearningParameters.LIVING_REWARD_NAME)
                 .getValue();
         pickedBottle = params
-                .getParameter(
-                        ReinforcmentLearningParameters.PICKED_BOTTLE_REWARD_NAME)
-                        .getValue();
-        emptyPickUp = params
-                .getParameter(
-                        ReinforcmentLearningParameters.EMPTY_PICK_UP_REWARD_NAME)
-                        .getValue();
-        wallCollision = params
-                .getParameter(
-                        ReinforcmentLearningParameters.WALL_COLLISION_REWARD_NAME)
-                        .getValue();
+                .getParameter(ReinforcmentLearningParameters.PICKED_BOTTLE_REWARD_NAME).getValue();
+        emptyPickUp = params.getParameter(ReinforcmentLearningParameters.EMPTY_PICK_UP_REWARD_NAME)
+                .getValue();
+        wallCollision = params.getParameter(
+                ReinforcmentLearningParameters.WALL_COLLISION_REWARD_NAME).getValue();
     }
 
     public static double calculateReward(State oldState, Move action) {
@@ -62,43 +54,36 @@ public class RewardFunction {
 
     }
 
-    private static boolean checkBottlePickedUp(State oldState,
-            Move action) {
-        if (oldState.getFieldState(State.StateFields.CURRENT)
-                .equals(Field.BOTTLE) && action.equals(Move.COLLECT)) {
+    private static boolean checkBottlePickedUp(State oldState, Move action) {
+        if (oldState.getFieldState(State.StateFields.CURRENT).equals(Field.BOTTLE)
+                && action.equals(Move.COLLECT)) {
             return true;
         }
         return false;
     }
 
-    private static boolean checkEmptyPickUp(State oldState,
-            Move action) {
-        if (!oldState.getFieldState(State.StateFields.CURRENT)
-                .equals(Field.BOTTLE) && action.equals(Move.COLLECT)) {
+    private static boolean checkEmptyPickUp(State oldState, Move action) {
+        if (!oldState.getFieldState(State.StateFields.CURRENT).equals(Field.BOTTLE)
+                && action.equals(Move.COLLECT)) {
             return true;
         }
         return false;
     }
 
-    private static boolean checkWallCollision(State oldState,
-            Move action) {
-        if (oldState.getFieldState(State.StateFields.UP).equals(
-                Field.WALL)
+    private static boolean checkWallCollision(State oldState, Move action) {
+        if (oldState.getFieldState(State.StateFields.UP).equals(Field.WALL)
                 && action.equals(Move.UP)) {
             return true;
         }
-        if (oldState.getFieldState(State.StateFields.DOWN).equals(
-                Field.WALL)
+        if (oldState.getFieldState(State.StateFields.DOWN).equals(Field.WALL)
                 && action.equals(Move.DOWN)) {
             return true;
         }
-        if (oldState.getFieldState(State.StateFields.RIGHT).equals(
-                Field.WALL)
+        if (oldState.getFieldState(State.StateFields.RIGHT).equals(Field.WALL)
                 && action.equals(Move.RIGHT)) {
             return true;
         }
-        if (oldState.getFieldState(State.StateFields.LEFT).equals(
-                Field.WALL)
+        if (oldState.getFieldState(State.StateFields.LEFT).equals(Field.WALL)
                 && action.equals(Move.LEFT)) {
             return true;
         }

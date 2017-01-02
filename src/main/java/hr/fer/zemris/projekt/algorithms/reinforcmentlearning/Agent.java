@@ -28,4 +28,10 @@ public class Agent implements Robot {
 
         return move;
     }
+
+    @Override
+    public double standardizedFitness() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

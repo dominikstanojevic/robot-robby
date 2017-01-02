@@ -64,7 +64,7 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
     }
 
     @Override
-    public void run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
+    public Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
         if (currentQFunction == null) {
             currentQFunction = new QFunction((ReinforcmentLearningParameters) parameters);
         } else {
@@ -97,6 +97,9 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
                 System.out.println();
             }
         }
+
+        // TODO
+        return null;
 
     }
 }

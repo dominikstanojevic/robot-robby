@@ -6,8 +6,8 @@ import hr.fer.zemris.projekt.grid.IGrid;
 import java.util.List;
 
 /**
- * A class that holds the statistical information about a single game played
- * by an algorithm.
+ * A class that holds the statistical information about a single game played by
+ * an algorithm.
  *
  * @author Kristijan Vulinovic
  * @version 1.0.1
@@ -27,7 +27,8 @@ public class Stats {
      */
     private final int bottlesLeft;
     /**
-     * The number of moves that resulted in hitting a wall during the whole game.
+     * The number of moves that resulted in hitting a wall during the whole
+     * game.
      */
     private final int wallsHit;
     /**
@@ -46,26 +47,34 @@ public class Stats {
     private final List<Move> moves;
 
     /**
-     * Creates the statistics for a new game, with all the detail about the game.
+     * Creates the statistics for a new game, with all the detail about the
+     * game.
      *
-     * @param movesNeeded The number of moves needed to collect every bottle
-     *                    from the grid, or the total number of moves played.
-     * @param bottlesCollected The total number of collected bottles.
-     * @param bottlesLeft The number of bottles left on the grid.
-     * @param wallsHit The number of moves that resulted in hitting a wall during
-     *                 the whole game.
-     * @param emptyPickups Number of moves where the robot tried to collect a
-     *                     bottle, but there was no bottle on the current field.
-     * @param grid The grid that was used to play the game.
-     * @param moves A list of all the moves made in the game.
+     * @param movesNeeded
+     *            The number of moves needed to collect every bottle from the
+     *            grid, or the total number of moves played.
+     * @param bottlesCollected
+     *            The total number of collected bottles.
+     * @param bottlesLeft
+     *            The number of bottles left on the grid.
+     * @param wallsHit
+     *            The number of moves that resulted in hitting a wall during the
+     *            whole game.
+     * @param emptyPickups
+     *            Number of moves where the robot tried to collect a bottle, but
+     *            there was no bottle on the current field.
+     * @param grid
+     *            The grid that was used to play the game.
+     * @param moves
+     *            A list of all the moves made in the game.
      */
-    public Stats(int movesNeeded, int bottlesCollected, int bottlesLeft, int wallsHit, int emptyPickups,
-                 IGrid grid, List<Move> moves) {
+    public Stats(int movesNeeded, int bottlesCollected, int bottlesLeft, int wallsHit,
+            int emptyPickups, IGrid grid, List<Move> moves) {
 
         if (grid == null) {
             throw new IllegalArgumentException("The given grid is not allowed to be null.");
         }
-        if (moves == null){
+        if (moves == null) {
             throw new IllegalArgumentException("The given list of moves is not allowed to be null.");
         }
 
@@ -83,7 +92,7 @@ public class Stats {
      * or the total number of moves played.
      *
      * @return The number of moves needed to collect every bottle from the grid,
-     * or the total number of moves played.
+     *         or the total number of moves played.
      */
     public int getMovesNeeded() {
         return movesNeeded;
@@ -108,22 +117,22 @@ public class Stats {
     }
 
     /**
-     * Returns the number of moves that resulted in hitting a wall during
-     * the whole game.
+     * Returns the number of moves that resulted in hitting a wall during the
+     * whole game.
      *
-     * @return The number of moves that resulted in hitting a wall during
-     * the whole game.
+     * @return The number of moves that resulted in hitting a wall during the
+     *         whole game.
      */
     public int getWallsHit() {
         return wallsHit;
     }
 
     /**
-     * Returns number of moves where the robot tried to collect a bottle,
-     * but there was no bottle on the current field.
+     * Returns number of moves where the robot tried to collect a bottle, but
+     * there was no bottle on the current field.
      *
-     * @return Number of moves where the robot tried to collect a bottle,
-     * but there was no bottle on the current field.
+     * @return Number of moves where the robot tried to collect a bottle, but
+     *         there was no bottle on the current field.
      */
     public int getEmptyPickups() {
         return emptyPickups;

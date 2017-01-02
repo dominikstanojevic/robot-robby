@@ -1,8 +1,7 @@
 package hr.fer.zemris.projekt.grid;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,8 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 @SuppressWarnings("javadoc")
 public class GridTest {
@@ -41,7 +41,6 @@ public class GridTest {
     public void testGenerationWithNegativeNumberOfBottles() {
         grid.generate(10, 10, -1, false);
     }
-
 
     @Test(expected = IllegalArgumentException.class)
     public void testGenerationWithNegativeWidth() {
@@ -94,11 +93,9 @@ public class GridTest {
 
     @Test
     public void testCustomGrid() {
-        Field[][] fields = new Field[][] {
-                {Field.BOTTLE, Field.EMPTY, Field.EMPTY},
-                {Field.EMPTY, Field.EMPTY, Field.BOTTLE},
-                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY}
-        };
+        Field[][] fields = new Field[][] { { Field.BOTTLE, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.BOTTLE },
+                { Field.BOTTLE, Field.BOTTLE, Field.EMPTY } };
         grid.setGrid(fields, 1, 1);
 
         assertEquals(4, grid.getNumberOfBottles());
@@ -112,10 +109,9 @@ public class GridTest {
     @Test
     public void testCustomGrid2() {
         Field[][] fields = new Field[][] {
-                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE},
-                {Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL},
-                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY}
-        };
+                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE },
+                { Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL },
+                { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY } };
         int row = 1;
         int column = 2;
         grid.setGrid(fields, row, column);
@@ -139,7 +135,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadFromFile(){
+    public void testReadFromFile() {
         Path filePath = Paths.get(pathPrefix).resolve("gridDefinition1.txt");
 
         try {
@@ -150,7 +146,7 @@ public class GridTest {
     }
 
     @Test
-    public void testReadFromFile2(){
+    public void testReadFromFile2() {
         Path filePath = Paths.get(pathPrefix).resolve("gridDefinition2.txt");
 
         try {
@@ -182,7 +178,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadEmptyFile(){
+    public void testReadEmptyFile() {
         Path filePath = Paths.get(pathPrefix).resolve("emptyFile.txt");
 
         try {
@@ -193,7 +189,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadNullFile(){
+    public void testReadNullFile() {
         try {
             grid.readFromFile(null);
         } catch (IOException e) {
@@ -202,7 +198,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadFileThatDoesNotExist(){
+    public void testReadFileThatDoesNotExist() {
         Path filePath = Paths.get(pathPrefix).resolve("gridDefinitionNan.txt");
 
         try {
@@ -213,7 +209,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadFileWrongSize(){
+    public void testReadFileWrongSize() {
         Path filePath = Paths.get(pathPrefix).resolve("invalidSize.txt");
 
         try {
@@ -224,7 +220,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadFileSizeNaN(){
+    public void testReadFileSizeNaN() {
         Path filePath = Paths.get(pathPrefix).resolve("sizeNaN.txt");
 
         try {
@@ -235,7 +231,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadFileWrongStart(){
+    public void testReadFileWrongStart() {
         Path filePath = Paths.get(pathPrefix).resolve("invalidStart.txt");
 
         try {
@@ -246,7 +242,7 @@ public class GridTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testReadFileStartNaN(){
+    public void testReadFileStartNaN() {
         Path filePath = Paths.get(pathPrefix).resolve("startNaN.txt");
 
         try {
@@ -257,7 +253,7 @@ public class GridTest {
     }
 
     @Test
-    public void writeToFile(){
+    public void writeToFile() {
         Path inputPath = Paths.get(pathPrefix).resolve("gridDefinition2.txt");
         Path outputPath = Paths.get(pathPrefix).resolve("gridOutput.txt");
 
@@ -271,7 +267,7 @@ public class GridTest {
             assertEquals(input.size(), output.size());
             int n = input.size();
 
-            for (int i = 0; i < n; ++i){
+            for (int i = 0; i < n; ++i) {
                 assertEquals(input.get(i), output.get(i));
             }
 
@@ -282,12 +278,11 @@ public class GridTest {
     }
 
     @Test
-    public void testCopy(){
+    public void testCopy() {
         Field[][] fields = new Field[][] {
-                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE},
-                {Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL},
-                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY}
-        };
+                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE },
+                { Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL },
+                { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY } };
         int row = 1;
         int column = 2;
         grid.setGrid(fields, row, column);
@@ -311,10 +306,9 @@ public class GridTest {
     @Test
     public void testSetStartingPosition() {
         Field[][] fields = new Field[][] {
-                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE},
-                {Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL},
-                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY}
-        };
+                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE },
+                { Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL },
+                { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY } };
         int row = 0;
         int column = 0;
         grid.setGrid(fields, row, column);
@@ -328,10 +322,9 @@ public class GridTest {
     @Test(expected = IllegalArgumentException.class)
     public void testIllegalStartingPosition() {
         Field[][] fields = new Field[][] {
-                {Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE},
-                {Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL},
-                {Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY}
-        };
+                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.BOTTLE },
+                { Field.WALL, Field.EMPTY, Field.BOTTLE, Field.WALL },
+                { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY } };
         int row = 0;
         int column = 0;
         grid.setGrid(fields, row, column);

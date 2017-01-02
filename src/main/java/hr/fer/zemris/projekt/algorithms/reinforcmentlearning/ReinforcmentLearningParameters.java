@@ -5,8 +5,7 @@ import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLearningAlgorithm> {
 
@@ -58,8 +57,8 @@ public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLe
                 ParameterType.INTEGER, MIN_ITERATIONS_NUMBER, MAX_ITERATIONS_NUMBER,
                 DEFAULT_ITERATIONS_NUMBER));
         parameterMap
-        .put(LIVING_REWARD_NAME, new Parameter(LIVING_REWARD_NAME, ParameterType.INTEGER,
-                MIN_LIVING_REWARD, MAX_LIVING_REWARD, DEFAULT_LIVING_REWARD));
+                .put(LIVING_REWARD_NAME, new Parameter(LIVING_REWARD_NAME, ParameterType.INTEGER,
+                        MIN_LIVING_REWARD, MAX_LIVING_REWARD, DEFAULT_LIVING_REWARD));
         parameterMap.put(PICKED_BOTTLE_REWARD_NAME, new Parameter(PICKED_BOTTLE_REWARD_NAME,
                 ParameterType.INTEGER, MIN_PICKED_BOTTLE_REWARD, MAX_PICKED_BOTTLE_REWARD,
                 DEFAULT_PICKED_BOTTLE_REWARD));
@@ -97,8 +96,8 @@ public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLe
     }
 
     @Override
-    public Set<Parameter> getParameters() {
-        Set<Parameter> parameterCopy = new HashSet<Parameter>();
+    public LinkedHashSet<Parameter> getParameters() {
+        LinkedHashSet<Parameter> parameterCopy = new LinkedHashSet<Parameter>();
         for (Parameter param : parameterMap.values()) {
             parameterCopy.add(new Parameter(param.getName(), param.getType(), param.getMinValue(),
                     param.getMaxValue(), param.getValue()));

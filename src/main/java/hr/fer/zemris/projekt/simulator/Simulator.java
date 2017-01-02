@@ -17,10 +17,11 @@ import java.util.Random;
  */
 public class Simulator extends AbstractSimulator {
     /**
-     * Creates a new {@link Simulator} with the maximal number of moves
-     * equal to the ones given in the argument.
+     * Creates a new {@link Simulator} with the maximal number of moves equal to
+     * the ones given in the argument.
      *
-     * @param maxMoves the maximal number of moves.
+     * @param maxMoves
+     *            the maximal number of moves.
      */
     public Simulator(int maxMoves) {
         super(maxMoves);
@@ -35,7 +36,7 @@ public class Simulator extends AbstractSimulator {
 
     @Override
     public List<Stats> playGames(Robot robot) {
-        if (grids == null){
+        if (grids == null) {
             throw new IllegalStateException("There are no defined grids for this simulation.");
         }
         Random rnd = new Random();
