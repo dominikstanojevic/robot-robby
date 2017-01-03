@@ -155,7 +155,7 @@ public class Layer {
         }
 
         if (context != null) {
-            context.setWeights(Arrays.copyOfRange(weights, m * n, weights.length));
+            context.setWeights(Arrays.copyOfRange(weights, m * n, m * n + context.numberOfWeights()));
         }
     }
 
@@ -195,5 +195,9 @@ public class Layer {
         }
 
         return weights;
+    }
+
+    public ActivationFunction getActivationFunction() {
+        return activationFunction;
     }
 }

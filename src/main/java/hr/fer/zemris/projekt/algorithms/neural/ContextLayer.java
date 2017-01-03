@@ -1,6 +1,8 @@
 package hr.fer.zemris.projekt.algorithms.neural;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 /**
@@ -8,11 +10,11 @@ import org.apache.commons.math3.linear.RealVector;
  */
 public class ContextLayer {
     private RealVector values;
-    private RealVector weights;
+    private RealMatrix weights;
 
     public ContextLayer(int size) {
         this.values = new ArrayRealVector(size);
-        this.weights = Utils.createRandomVector(size, -1, 1);
+        this.weights = MatrixUtils.createRealMatrix(new double[size][size]);
     }
 
     void copyValues(RealVector values) {
@@ -20,7 +22,16 @@ public class ContextLayer {
     }
 
     RealVector getValues() {
-        return Utils.ebeMultiply(values, weights);
+        int n = values.getDimension();
+        double[] result = new double[n];
+
+        for (int i = 0; i < n; i++) {
+            RealVector weightsForNeuron = weights.getColumnVector(i);
+
+            result[i] = values.dotProduct(weightsForNeuron);
+        }
+
+        return new ArrayRealVector(result);
     }
 
     public void clear() {
@@ -28,14 +39,29 @@ public class ContextLayer {
     }
 
     public int numberOfWeights() {
-        return weights.getDimension();
+        int n = values.getDimension();
+        return n * n;
     }
 
     public void setWeights(double[] weights) {
-        this.weights = new ArrayRealVector(weights);
+        int n = values.getDimension();
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                this.weights.setEntry(i, j, weights[i * n + j]);
+            }
+        }
     }
 
     public RealVector getWeights() {
-        return weights;
+        int n = values.getDimension();
+        double[] weights = new double[n * n];
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < n; j++) {
+                weights[i * n + j] = this.weights.getEntry(i, j);
+            }
+        }
+
+        return new ArrayRealVector(weights);
     }
 }

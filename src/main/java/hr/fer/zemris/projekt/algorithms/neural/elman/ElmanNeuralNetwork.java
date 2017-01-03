@@ -1,4 +1,4 @@
-package hr.fer.zemris.projekt.algorithms.neural.elman.ga;
+package hr.fer.zemris.projekt.algorithms.neural.elman;
 
 import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Robot;
@@ -11,6 +11,7 @@ import org.apache.commons.math3.linear.RealVector;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * Created by Dominik on 9.12.2016..
@@ -106,5 +107,21 @@ public class ElmanNeuralNetwork implements Robot {
 
             layers[i].setWeightMatrix(weightsForLayer);
         }
+    }
+
+    public String getArchitecture() {
+        StringJoiner sj = new StringJoiner("x");
+        for(Layer layer : layers) {
+            sj.add(Integer.toString(layer.numberOfNeurons()));
+        }
+        return sj.toString();
+    }
+
+    public String getFunctions() {
+        StringJoiner sj = new StringJoiner(" ");
+        for(int i = 1; i < layers.length; i++) {
+            sj.add(layers[i].getActivationFunction().name());
+        }
+        return  sj.toString();
     }
 }

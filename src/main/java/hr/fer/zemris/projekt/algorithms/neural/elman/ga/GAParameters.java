@@ -17,22 +17,17 @@ public class GAParameters implements Parameters<GA> {
     public static final int DEFAULT_POPULATION_SIZE = 50;
 
     public static final String MAX_GENERATIONS = "maxGenerations";
-    public static final int DEFAULT_MAX_GENERATIONS = 2_500;
+    public static final int DEFAULT_MAX_GENERATIONS = 1_500;
 
     public static final String TOURNAMENT_SIZE = "tournamentSize";
     public static final int DEFAULT_TOURNAMENT_SIZE = 3;
 
-    public static final String SELECTION_PROBABILITY = "selectionProbability";
-    public static final double DEFAULT_SELECTION_PROBABILITY = 0.9;
-
     public static final String ALPHA = "alpha";
     public static final double DEFAULT_ALPHA = 0.5;
 
-    public static final String MUTATION_RATE = "mutationRate";
-    public static final double DEFAULT_MUTATION_RATE = 0.5;
+    public static final String SIGMA = "sigma";
+    public static final double DEFAULT_SIGMA = 0.5;
 
-    public static final String REFRESH_RATE = "refreshRate";
-    public static final double DEFAULT_REFRESH_RATE = 0.01;
 
     public GAParameters() {
         parameters.add(new Parameter(POPULATION_SIZE, ParameterType.INTEGER, 1, 10_000, DEFAULT_POPULATION_SIZE));
@@ -40,10 +35,8 @@ public class GAParameters implements Parameters<GA> {
                 DEFAULT_MAX_GENERATIONS));
         parameters.add(new Parameter(TOURNAMENT_SIZE, ParameterType.INTEGER, 1, DEFAULT_POPULATION_SIZE,
                 DEFAULT_TOURNAMENT_SIZE));
-        parameters.add(new Parameter(SELECTION_PROBABILITY, ParameterType.DOUBLE, 0, 1, DEFAULT_SELECTION_PROBABILITY));
         parameters.add(new Parameter(ALPHA, ParameterType.DOUBLE, 0, 5, DEFAULT_ALPHA));
-        parameters.add(new Parameter(MUTATION_RATE, ParameterType.DOUBLE, 0, 1, DEFAULT_MUTATION_RATE));
-        parameters.add(new Parameter(REFRESH_RATE, ParameterType.DOUBLE, 0, 1, DEFAULT_REFRESH_RATE));
+        parameters.add(new Parameter(SIGMA, ParameterType.DOUBLE, 0, Parameter.DEFAULT_MAX_VALUE, DEFAULT_SIGMA));
     }
 
     @Override

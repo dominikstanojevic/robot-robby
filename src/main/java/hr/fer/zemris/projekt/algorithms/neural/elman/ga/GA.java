@@ -5,6 +5,7 @@ import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.neural.ActivationFunction;
 import hr.fer.zemris.projekt.algorithms.neural.Utils;
+import hr.fer.zemris.projekt.algorithms.neural.elman.ElmanNeuralNetwork;
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Stats;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -32,18 +34,33 @@ public class GA extends ObservableAlgorithm {
 
     @Override
     public Robot readSolutionFromFile(Path filePath) throws IOException {
-        return null;
+        List<String> lines = Files.readAllLines(filePath);
+
+        int[] numberOfNeurons = Arrays.stream(lines.get(0).split("x")).mapToInt(Integer::parseInt).toArray();
+        ActivationFunction[] functions = Arrays.stream(lines.get(1).split(" ")).map(ActivationFunction::valueOf)
+                .toArray(ActivationFunction[]::new);
+        double[] weights = Arrays.stream(lines.get(2).split(" ")).mapToDouble(Double::parseDouble).toArray();
+
+        ElmanNeuralNetwork enn = new ElmanNeuralNetwork(numberOfNeurons, functions);
+        enn.setWeights(weights);
+
+        return enn;
     }
 
     @Override
     public void writeSolutionToFile(Path filePath, Robot robot) throws IOException {
         Objects.requireNonNull(robot, "Robot cannot be null.");
         if (!(robot instanceof ElmanNeuralNetwork)) {
-            throw new IllegalArgumentException("Given implementation is not correct. Expected Elman neural network.");
+            throw new IllegalArgumentException(
+                    "Given implementation is not correct. Expected Elman neural network, " + "given: " +
+                    robot.getClass());
         }
 
-        StringJoiner sj = new StringJoiner(" ");
-        for (double weight : ((ElmanNeuralNetwork) robot).getWeights()) {
+        ElmanNeuralNetwork r = (ElmanNeuralNetwork) robot;
+        String prefix = r.getArchitecture() + "\n" + r.getFunctions() + "\n";
+
+        StringJoiner sj = new StringJoiner(" ", prefix, "");
+        for (double weight : r.getWeights()) {
             sj.add(Double.toString(weight));
         }
 
@@ -56,7 +73,7 @@ public class GA extends ObservableAlgorithm {
     }
 
     @Override
-    public void run(
+    public Robot run(
             AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
         if (!(parameters instanceof GAParameters)) {
             throw new IllegalStateException("Cannot pass non-GA parameters to GA class.");
@@ -64,29 +81,30 @@ public class GA extends ObservableAlgorithm {
         this.simulator = simulator;
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
         network = ThreadLocal.withInitial(() -> new ElmanNeuralNetwork(new int[] {
-                15, 15, 7 }, new ActivationFunction[] { ActivationFunction.HYP_TAN, ActivationFunction.HYP_TAN }));
+                15, 7, 7 }, new ActivationFunction[] { ActivationFunction.HYP_TAN, ActivationFunction.HYP_TAN }));
         int chromosomeSize = network.get().getNumberOfWeights();
 
         //loading parameters
         int populationSize = (int) parameters.getParameter(GAParameters.POPULATION_SIZE).getValue();
         int maxGenerations = (int) parameters.getParameter(GAParameters.MAX_GENERATIONS).getValue();
         int tournamentSize = (int) parameters.getParameter(GAParameters.TOURNAMENT_SIZE).getValue();
-        double selectionProbability = parameters.getParameter(GAParameters.SELECTION_PROBABILITY).getValue();
         double alpha = parameters.getParameter(GAParameters.ALPHA).getValue();
-        double sigma = parameters.getParameter(GAParameters.MUTATION_RATE).getValue();
-        double refreshRate = parameters.getParameter(GAParameters.REFRESH_RATE).getValue();
+        double sigma = parameters.getParameter(GAParameters.SIGMA).getValue();
+
 
         List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
 
         for (int i = 0; i < maxGenerations; i++) {
 
             if (i % 100 == 0) {
-                simulator.generateGrids(100, 10, 10, false);
+                simulator.generateGrids(50, 10, 10, false);
             }
             evaluatePopulation(population, pool);
 
             population = sortPopulation(population);
             printBest(population, i);
+
+
 
             List<Chromosome> newPopulation = new ArrayList<>();
 
@@ -97,7 +115,7 @@ public class GA extends ObservableAlgorithm {
             List<Callable<Pair>> callables = new ArrayList<>();
             List<Chromosome> old = population;
             Callable<Pair> callable = () -> {
-                Pair parents = selectParents(old, tournamentSize, selectionProbability);
+                Pair parents = selectParents(old, tournamentSize);
                 Pair children = crossover(parents, alpha);
 
                 mutate(children.first, sigma);
@@ -129,17 +147,14 @@ public class GA extends ObservableAlgorithm {
         population = sortPopulation(population);
         Chromosome best = population.get(0);
 
-        simulator.generateGrids(1000, 10, 10, false);
+        simulator.generateGrids(10000, 10, 10, false);
         evaluateSolution(best);
         System.out.println(best);
 
         pool.shutdown();
+        return null;
     }
 
-    private int generateNumberOfBottles() {
-        int bottles = (int) Utils.RANDOM.nextGaussian() * 15 + 50;
-        return Math.max(1, Math.min(bottles, 100));
-    }
 
     private void printBest(List<Chromosome> population, int iteration) {
         if (iteration % 10 == 0) {
@@ -151,9 +166,9 @@ public class GA extends ObservableAlgorithm {
         double[] chromosome = child.getWeights();
 
         for (int i = 0; i < chromosome.length; i++) {
-           if(Utils.RANDOM.nextDouble() <= 0.1) {
-               chromosome[i] += Utils.RANDOM.nextGaussian() * sigma;
-           }
+
+            chromosome[i] += Utils.RANDOM.nextGaussian() * sigma;
+
         }
     }
 
@@ -176,15 +191,15 @@ public class GA extends ObservableAlgorithm {
         return new Pair(new Chromosome(firstChild), new Chromosome(secondChild));
     }
 
-    private Pair selectParents(List<Chromosome> population, int tournamentSize, double selectionProbability) {
-        Chromosome first = tournamentSelection(population, tournamentSize, selectionProbability);
-        Chromosome second = tournamentSelection(population, tournamentSize, selectionProbability);
+    private Pair selectParents(List<Chromosome> population, int tournamentSize) {
+        Chromosome first = tournamentSelection(population, tournamentSize);
+        Chromosome second = tournamentSelection(population, tournamentSize);
 
         return new Pair(first, second);
     }
 
     private Chromosome tournamentSelection(
-            List<Chromosome> population, int tournamentSize, double selectionProbability) {
+            List<Chromosome> population, int tournamentSize) {
         List<Chromosome> chosen = new ArrayList<>();
         int populationSize = population.size();
 
@@ -248,6 +263,10 @@ public class GA extends ObservableAlgorithm {
         }
 
         return population;
+    }
+
+    private double getAverageFitness(List<Chromosome> population) {
+        return population.stream().mapToDouble(c -> c.getFitness()).average().getAsDouble();
     }
 
     private static class Pair {

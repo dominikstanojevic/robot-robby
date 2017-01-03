@@ -75,7 +75,7 @@ public class SASEGASA extends ObservableAlgorithm {
     }
 
     @Override
-    public void run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
+    public Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
         this.simulator = simulator;
         initialize(parameters);
 
@@ -104,6 +104,7 @@ public class SASEGASA extends ObservableAlgorithm {
             population = newPopulation;
             System.out.println(bestOfPopulation(population));
         }
+        return null;
     }
 
     private Chromosome bestOfPopulation(List<Chromosome> population) {
