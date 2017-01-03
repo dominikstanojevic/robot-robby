@@ -40,6 +40,8 @@ public class FFANN implements Robot {
         for (Layer layer : layers){
             numberOfWeights += layer.numberOfWeights();
         }
+
+        System.out.println(numberOfWeights);
     }
 
     public int getNumberOfWeights(){
