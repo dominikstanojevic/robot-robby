@@ -49,7 +49,7 @@ public interface Algorithm {
 
     /**
      * Returns the default {@link Parameters parameters} for this algorithm.
-     * Note that this method should return a copy of the parameters,
+     * Note that this method should return a deep copy of the parameters,
      * as the default values should not be changed.
      *
      * @return the default {@link Parameters parameters} for this algorithm
