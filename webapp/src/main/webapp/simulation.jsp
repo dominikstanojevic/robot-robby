@@ -1,11 +1,14 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Simulation demo</title>
+    <meta charset="utf-8">
 
-    <script type="text/javascript" src="simulation.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css"/>
+    <script type="text/javascript" src="resources/js/simulation.js"></script>
 </head>
 <body>
+    <jsp:include page="about.jsp"/>
+
     <canvas id="canvas" height="480" width="640"> </canvas>
     <button id = "btn1" onclick="simulation.previous()" > Previous </button>
     <button id = "btn2" onclick="toggle()" > Play </button>

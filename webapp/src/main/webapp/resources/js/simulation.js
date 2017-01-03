@@ -48,28 +48,28 @@ function Simulation(canvas, grid, moves){
         imagesLoaded++;
     };
 
-    grass.src = "pictures/grass.png";
+    grass.src = "resources/pictures/grass.png";
     grass.alt = "Empty field with grass.";
 
-    bottle.src = "pictures/bottle.png";
+    bottle.src = "resources/pictures/bottle.png";
     bottle.alt = "Field of grass with a bottle.";
 
-    roby.src = "pictures/roby.png";
+    roby.src = "resources/pictures/roby.png";
     roby.alt = "Field with robot.";
 
-    pickup.src = "pictures/pickup.png";
+    pickup.src = "resources/pictures/pickup.png";
     pickup.alt = "Robot picking up a bottle.";
 
-    emptyPickup.src = "pictures/empty-pickup.png";
+    emptyPickup.src = "resources/pictures/empty-pickup.png";
     emptyPickup.alt = "Robot trying to perform a pickup on empty.";
 
-    robyBottle.src = "pictures/roby-bottle.png";
+    robyBottle.src = "resources/pictures/roby-bottle.png";
     robyBottle.alt = "Robot standing on the same field as a bottle.";
 
-    wallHit.src = "pictures/roby-wall.png";
+    wallHit.src = "resources/pictures/roby-wall.png";
     wallHit.alt = "Robot after hitting a wall.";
 
-    bottleWall.src = "pictures/roby-bottle-wall.png";
+    bottleWall.src = "resources/pictures/roby-bottle-wall.png";
     bottleWall.alt = "Robot standing on a bottle and hitting a wall.";
 
     var moveIndex = 0;

@@ -6,7 +6,7 @@
 <body>
     <canvas id="canvas" width="640" height="480"></canvas>
 
-    <script src="GridLoader.js" type="text/javascript"> </script>
+    <script src="resources/js/GridLoader.js" type="text/javascript"> </script>
     <script type="text/javascript">
         var canvas = document.getElementById("canvas");
 
