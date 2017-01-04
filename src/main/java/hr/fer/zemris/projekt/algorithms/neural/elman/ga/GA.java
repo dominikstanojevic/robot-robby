@@ -91,7 +91,6 @@ public class GA extends ObservableAlgorithm {
         double alpha = parameters.getParameter(GAParameters.ALPHA).getValue();
         double sigma = parameters.getParameter(GAParameters.SIGMA).getValue();
 
-
         List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
 
         for (int i = 0; i < maxGenerations; i++) {
@@ -99,12 +98,13 @@ public class GA extends ObservableAlgorithm {
             if (i % 100 == 0) {
                 simulator.generateGrids(50, 10, 10, false);
             }
-            evaluatePopulation(population, pool);
 
+            evaluatePopulation(population, pool);
             population = sortPopulation(population);
             printBest(population, i);
-
-
+            ElmanNeuralNetwork best = network.get();
+            best.setWeights(population.get(0).getWeights());
+            this.notifyListeners(best, getAverageFitness(population), i);
 
             List<Chromosome> newPopulation = new ArrayList<>();
 
@@ -154,7 +154,6 @@ public class GA extends ObservableAlgorithm {
         pool.shutdown();
         return null;
     }
-
 
     private void printBest(List<Chromosome> population, int iteration) {
         if (iteration % 10 == 0) {
