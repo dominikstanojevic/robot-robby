@@ -1,6 +1,7 @@
 package hr.fer.zemris.projekt;
 
 import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.ga.GeneticAlgorithm;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
@@ -10,7 +11,7 @@ import java.util.function.Supplier;
 
 public final class Algorithms {
 
-    private static final Map<String, Supplier<Algorithm>> ALGORITHM_SUPPLIERS = new HashMap<>();
+    private static final Map<String, Supplier<ObservableAlgorithm>> ALGORITHM_SUPPLIERS = new HashMap<>();
     private static final Map<String, Algorithm> ALGORITHM_MAP = new HashMap<>();
 
     static {
@@ -19,7 +20,7 @@ public final class Algorithms {
         ALGORITHM_MAP.put("ga", new GeneticAlgorithm());
     }
 
-    public static Algorithm getAlgorithm(String id) {
+    public static ObservableAlgorithm getAlgorithm(String id) {
         if (!ALGORITHM_SUPPLIERS.containsKey(id)) {
             throw new IllegalArgumentException("No algorithm found with ID: " + id);
         }

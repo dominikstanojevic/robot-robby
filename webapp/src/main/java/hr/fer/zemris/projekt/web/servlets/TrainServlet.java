@@ -2,6 +2,7 @@ package hr.fer.zemris.projekt.web.servlets;
 
 import hr.fer.zemris.projekt.Algorithms;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.ParameterType;
@@ -29,7 +30,7 @@ public class TrainServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String algorithmID = req.getParameter("algorithmID");
 
-        Algorithm algorithm = Algorithms.getAlgorithm(algorithmID);
+        ObservableAlgorithm algorithm = Algorithms.getAlgorithm(algorithmID);
         Parameters<?> parameters = readParameters(req, algorithm);
 
         SimulatorConfiguration config = (SimulatorConfiguration) req.getSession().getAttribute("simulatorConfig");
@@ -53,16 +54,40 @@ public class TrainServlet extends HttpServlet {
             );
         }
 
+        //content type must be set to text/event-stream
+        resp.setContentType("text/event-stream");
+
+        //encoding must be set to UTF-8
+        resp.setCharacterEncoding("UTF-8");
+
+        algorithm.addObserver((sender, observation) -> {
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("iteration", observation.getIteration());
+            jsonObject.put("best", observation.getBestResult().standardizedFitness());
+            jsonObject.put("average", observation.getAverageFitness());
+
+            try {
+                resp.getWriter().write("data: " + jsonObject.toString() + "\n\n");
+
+                if (observation.getIteration() % 20 == 0) {
+                    resp.getWriter().flush();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         Robot robot = algorithm.run(simulator, parameters);
         req.getSession().setAttribute("robot", robot);
 
-        resp.setContentType("application/json;charset=UTF-8");
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("fitness", robot.standardizedFitness());
-
-        resp.getWriter().write(jsonObject.toString());
+        resp.getWriter().write("data: finished\n\n");
         resp.getWriter().flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
     }
 
     private Parameters<?> readParameters(HttpServletRequest req, Algorithm algorithm) {

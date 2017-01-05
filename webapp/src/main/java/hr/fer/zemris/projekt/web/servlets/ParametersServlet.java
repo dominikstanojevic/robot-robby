@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "ParametersServlet", urlPatterns = {"/parameters"})
 public class ParametersServlet extends HttpServlet {
@@ -23,10 +24,12 @@ public class ParametersServlet extends HttpServlet {
         String algorithmID = req.getParameter("algorithmID");
 
         Parameters<? extends Algorithm> parameters = Algorithms.getDefaultParameters(algorithmID);
-        Set<Parameter> parameterSet = parameters.getParameters();
+        List<Parameter> parametersList = new ArrayList<>(parameters.getParameters());
+
+        parametersList.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
 
         resp.setContentType("application/json;charset=UTF-8");
-        resp.getWriter().write(GSON.toJson(parameterSet));
+        resp.getWriter().write(GSON.toJson(parametersList));
         resp.getWriter().flush();
     }
 }

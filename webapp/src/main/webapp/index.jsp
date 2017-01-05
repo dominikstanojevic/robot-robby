@@ -2,9 +2,13 @@
 <head>
     <title>Index</title>
     <meta charset="utf-8">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="resources/js/graph.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css"/>
 </head>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type="text/javascript">
 
     function init() {
@@ -66,24 +70,73 @@
             }
         );
     }
+
+    function validateForm() {
+        var inputs = document.forms["trainingForm"].getElementsByTagName("input");
+
+        var params = "?";
+
+        for (var i = 0; i < inputs.length; i++) {
+            if (!inputs[i].checkValidity()) {
+                return false;
+            }
+
+            params += inputs[i].name;
+            params += "=";
+            params += inputs[i].value;
+            params += "&";
+        }
+
+        var graph = new Graph(
+            document.getElementById("plotCanvas"),
+            { name: "Iterations", min: 0, max: 1000 }, //TODO this should NOT be hardcoded
+            { name: "Fitness", min: -0.5, max: 1.0 },
+            [
+                { color: "Red" },
+                { color: "Green" }
+            ]
+        );
+
+        var eventSource = new EventSource("train" + params);
+        eventSource.onmessage = function(event) {
+            if (event.data == "finished") {
+                eventSource.close();
+                return;
+            }
+
+            var result = JSON.parse(event.data);
+            var iteration = result["iteration"];
+
+            if (iteration == 0 || iteration == 1 || iteration % 20 == 0) {
+                graph.addPoint([
+                    new Point(iteration, result["best"]),
+                    new Point(iteration, result["average"])
+                ]);
+            }
+        };
+
+        return false;
+    }
 </script>
 
 <body onload="init()">
+
+<jsp:include page="about.jsp"/>
 
 <p><select onchange="optionSelected()" id="algorithmSelection">
     <option value="ga">Genetic algorithm</option>
     <option value="nn">Neural network</option>
 </select></p>
 
-<p><form id="trainingForm" method="get" action="train">
+<p><form id="trainingForm" method="post" onsubmit="return validateForm()">
     <table id="parametersTable">
     </table>
 
     <input id="algorithmID" type="hidden" name="algorithmID">
-    <input type="submit" value="Submit">
-</form></p>
+    <input type="submit">
+</form>
 
-<p><canvas id="canvas" width="400" height="300" style="border: solid black 1px"></canvas></p>
+<canvas id="plotCanvas" width="600" height="300" style="border: solid black 1px"></canvas>
 
 </body>
 </html>
