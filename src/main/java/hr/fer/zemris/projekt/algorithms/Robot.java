@@ -7,7 +7,7 @@ import hr.fer.zemris.projekt.grid.Field;
  * <p>Represents an implementation of Robby the Robot's brain. The robot implementation
  * can be asked for it's next move depending on it's current surrounding using the
  * {@link Robot#nextMove(Field, Field, Field, Field, Field) nextMove} method.</p>
- *
+ * <p>
  * <p>This implementation of the robot's mind can range from being a single chromosome
  * in a genetic algorithm to a neural network, or any other robot training algorithm.</p>
  *
@@ -40,4 +40,11 @@ public interface Robot {
      * @return the standardized fitness value for the {@code Robot}
      */
     double standardizedFitness();
+
+    /**
+     * Initializes robot before playing a game. This method, by default, is empty so if robot needs to be
+     * initialized, this method must be overriden.
+     */
+    default void initialize() {
+    }
 }

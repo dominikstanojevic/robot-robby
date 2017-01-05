@@ -210,6 +210,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      */
     protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd) {
         IGrid grid = originalGrid.copy();
+        robot.initialize();
 
         int moveNumber = 0;
         int wallsHit = 0;
