@@ -105,7 +105,10 @@ public class SASEGASA extends ObservableAlgorithm {
             population = newPopulation;
             System.out.println(bestOfPopulation(population));
         }
-        return null;
+
+        Chromosome bestChromosome = bestOfPopulation(population);
+        network.setWeights(bestChromosome.getWeights());
+        return network;
     }
 
     private Chromosome bestOfPopulation(List<Chromosome> population) {
@@ -132,6 +135,9 @@ public class SASEGASA extends ObservableAlgorithm {
 
         compFactor.reset();
         while (selectionPressure < maxSelectionPressure && generation < maxGenerations){
+            if (generation % 50 == 0){
+                simulator.generateGrids(50, 10, 10, false);
+            }
             generation++;
             compFactor.nextFactor();
             Set<Chromosome> newPopulation = new HashSet<>();

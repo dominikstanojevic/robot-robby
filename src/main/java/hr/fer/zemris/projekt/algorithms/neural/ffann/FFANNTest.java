@@ -13,7 +13,7 @@ import hr.fer.zemris.projekt.simulator.Simulator;
 public class FFANNTest {
     public static void main(String[] args) {
         AbstractSimulator simulator = new Simulator(200);
-        simulator.generateGrids(10, 50, 10, 10, false);
+        simulator.generateGrids(50, 50, 10, 10, false);
 
         SASEGASA ga = new SASEGASA();
         ga.run(simulator, new SASEGASAParameters());
