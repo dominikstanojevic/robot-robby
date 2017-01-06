@@ -14,6 +14,8 @@ public class SimulatorConfiguration {
     private boolean variableBottles = true;
     private int numberOfBottles = 50;
 
+    private int mapRegenFrequency = 40;
+
     private boolean hasWalls = false;
 
     public Simulator getSimulator() {
@@ -64,6 +66,14 @@ public class SimulatorConfiguration {
         this.numberOfBottles = numberOfBottles;
     }
 
+    public int getMapRegenFrequency() {
+        return mapRegenFrequency;
+    }
+
+    public void setMapRegenFrequency(int mapRegexFrequency) {
+        this.mapRegenFrequency = mapRegexFrequency;
+    }
+
     public int getMaxMoves() {
         return maxMoves;
     }
@@ -72,5 +82,4 @@ public class SimulatorConfiguration {
         this.maxMoves = maxMoves;
         this.simulator = null;
     }
-
 }

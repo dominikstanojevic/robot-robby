@@ -36,23 +36,7 @@ public class TrainServlet extends HttpServlet {
         SimulatorConfiguration config = (SimulatorConfiguration) req.getSession().getAttribute("simulatorConfig");
         Simulator simulator = config.getSimulator();
 
-        if (config.isVariableBottles()) {
-            simulator.generateGrids(
-                    config.getNumberOfGrids(),
-                    config.getGridWidth(),
-                    config.getGridHeight(),
-                    false,
-                    RANDOM
-            );
-        } else {
-            simulator.generateGrids(
-                    config.getNumberOfGrids(),
-                    config.getNumberOfBottles(),
-                    config.getGridWidth(),
-                    config.getGridHeight(),
-                    false
-            );
-        }
+        generateGrids(simulator, config);
 
         //content type must be set to text/event-stream
         resp.setContentType("text/event-stream");
@@ -60,7 +44,13 @@ public class TrainServlet extends HttpServlet {
         //encoding must be set to UTF-8
         resp.setCharacterEncoding("UTF-8");
 
+        int mapRegenFrequency = config.getMapRegenFrequency();
+
         algorithm.addObserver((sender, observation) -> {
+            if (mapRegenFrequency > 0 && observation.getIteration() % mapRegenFrequency == 0) {
+                generateGrids(simulator, config);
+            }
+
             JSONObject jsonObject = new JSONObject();
 
             jsonObject.put("iteration", observation.getIteration());
@@ -116,5 +106,25 @@ public class TrainServlet extends HttpServlet {
         }
 
         return parameters;
+    }
+
+    private static void generateGrids(Simulator simulator, SimulatorConfiguration config) {
+        if (config.isVariableBottles()) {
+            simulator.generateGrids(
+                    config.getNumberOfGrids(),
+                    config.getGridWidth(),
+                    config.getGridHeight(),
+                    false,
+                    RANDOM
+            );
+        } else {
+            simulator.generateGrids(
+                    config.getNumberOfGrids(),
+                    config.getNumberOfBottles(),
+                    config.getGridWidth(),
+                    config.getGridHeight(),
+                    false
+            );
+        }
     }
 }

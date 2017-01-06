@@ -39,6 +39,7 @@ public class SimulatorConfigServlet extends HttpServlet {
         configureParameter(req, "gridWidth", simulatorConfig::setGridWidth);
         configureParameter(req, "numberOfGrids", simulatorConfig::setNumberOfGrids);
         configureParameter(req, "numberOfBottles", simulatorConfig::setNumberOfBottles);
+        configureParameter(req, "mapRegenFrequency", simulatorConfig::setMapRegenFrequency);
 
         String variableBottlesParam = req.getParameter("variableBottles");
         if (variableBottlesParam != null) {
