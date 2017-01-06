@@ -96,14 +96,12 @@ public class GA extends ObservableAlgorithm {
         for (int i = 0; i < maxGenerations; i++) {
 
             if (i % 100 == 0) {
-                simulator.generateGrids(50, 10, 10, false);
+                simulator.generateGrids(50, 10, 10, false, Utils.RANDOM);
             }
 
             evaluatePopulation(population, pool);
             population = sortPopulation(population);
-            printBest(population, i);
-            ElmanNeuralNetwork best = network.get();
-            best.setWeights(population.get(0).getWeights());
+            ElmanNeuralNetwork best = prepareBest(population.get(0));
             this.notifyListeners(best, getAverageFitness(population), i);
 
             List<Chromosome> newPopulation = new ArrayList<>();
@@ -147,7 +145,7 @@ public class GA extends ObservableAlgorithm {
         population = sortPopulation(population);
         Chromosome best = population.get(0);
 
-        simulator.generateGrids(10000, 10, 10, false);
+        simulator.generateGrids(10000, 10, 10, false, Utils.RANDOM);
         evaluateSolution(best);
         System.out.println(best);
 
@@ -155,19 +153,18 @@ public class GA extends ObservableAlgorithm {
         return null;
     }
 
-    private void printBest(List<Chromosome> population, int iteration) {
-        if (iteration % 10 == 0) {
-            System.out.println("Iteration " + iteration + ", " + population.get(0).toString());
-        }
+    private ElmanNeuralNetwork prepareBest(Chromosome best) {
+        ElmanNeuralNetwork robot = network.get();
+        robot.setWeights(best.getWeights());
+        robot.setStandardizedFitness(best.getFitness());
+        return robot;
     }
 
     private void mutate(Chromosome child, double sigma) {
         double[] chromosome = child.getWeights();
 
         for (int i = 0; i < chromosome.length; i++) {
-
-            chromosome[i] += Utils.RANDOM.nextGaussian() * sigma;
-
+                chromosome[i] += Utils.RANDOM.nextGaussian() * sigma;
         }
     }
 

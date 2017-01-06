@@ -26,12 +26,12 @@ public class GAParameters implements Parameters<GA> {
     public static final double DEFAULT_ALPHA = 0.5;
 
     public static final String SIGMA = "sigma";
-    public static final double DEFAULT_SIGMA = 0.5;
+    public static final double DEFAULT_SIGMA = 0.1;
 
 
     public GAParameters() {
-        parameters.add(new Parameter(POPULATION_SIZE, ParameterType.INTEGER, 1, 10_000, DEFAULT_POPULATION_SIZE));
-        parameters.add(new Parameter(MAX_GENERATIONS, ParameterType.INTEGER, 1, Integer.MAX_VALUE,
+        parameters.add(new Parameter(POPULATION_SIZE, ParameterType.INTEGER, 1, 100, DEFAULT_POPULATION_SIZE));
+        parameters.add(new Parameter(MAX_GENERATIONS, ParameterType.INTEGER, 1, 10_000,
                 DEFAULT_MAX_GENERATIONS));
         parameters.add(new Parameter(TOURNAMENT_SIZE, ParameterType.INTEGER, 1, DEFAULT_POPULATION_SIZE,
                 DEFAULT_TOURNAMENT_SIZE));

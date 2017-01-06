@@ -20,6 +20,8 @@ public class ElmanNeuralNetwork implements Robot {
     private Layer[] layers = new Layer[3];
     private int numberOfWeights;
 
+    private double standardizedFitness;
+
     public ElmanNeuralNetwork(int[] neuronsPerLayer, ActivationFunction[] functions) {
         Objects.requireNonNull(neuronsPerLayer, "Array containing number of neurons per layer cannot be null.");
         Objects.requireNonNull(functions, "Array containing activation functions cannot be null.");
@@ -60,6 +62,20 @@ public class ElmanNeuralNetwork implements Robot {
 
         RealVector output = calculateOutput(input);
         return Mapper.getInstance().decodeOutput(output);
+    }
+
+    public void setStandardizedFitness(double standardizedFitness) {
+        this.standardizedFitness = standardizedFitness;
+    }
+
+    @Override
+    public double standardizedFitness() {
+        return standardizedFitness;
+    }
+
+    @Override
+    public void initialize() {
+        clearContext();
     }
 
     private RealVector calculateOutput(RealVector input) {
@@ -111,7 +127,7 @@ public class ElmanNeuralNetwork implements Robot {
 
     public String getArchitecture() {
         StringJoiner sj = new StringJoiner("x");
-        for(Layer layer : layers) {
+        for (Layer layer : layers) {
             sj.add(Integer.toString(layer.numberOfNeurons()));
         }
         return sj.toString();
@@ -119,9 +135,9 @@ public class ElmanNeuralNetwork implements Robot {
 
     public String getFunctions() {
         StringJoiner sj = new StringJoiner(" ");
-        for(int i = 1; i < layers.length; i++) {
+        for (int i = 1; i < layers.length; i++) {
             sj.add(layers[i].getActivationFunction().name());
         }
-        return  sj.toString();
+        return sj.toString();
     }
 }

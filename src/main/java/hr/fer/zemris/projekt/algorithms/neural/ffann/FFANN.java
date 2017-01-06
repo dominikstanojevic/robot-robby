@@ -9,7 +9,6 @@ import hr.fer.zemris.projekt.algorithms.neural.NeuralNetworkException;
 import hr.fer.zemris.projekt.grid.Field;
 import org.apache.commons.math3.linear.RealVector;
 
-import java.util.EmptyStackException;
 import java.util.Objects;
 
 /**
@@ -85,6 +84,12 @@ public class FFANN implements Robot {
         RealVector output = calculateOutput(input);
 
         return mapper.decodeOutput(output);
+    }
+
+    //TODO: Override fitness
+    @Override
+    public double standardizedFitness() {
+        return 0;
     }
 
     private RealVector calculateOutput(RealVector input) {

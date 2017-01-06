@@ -2,8 +2,6 @@ package hr.fer.zemris.projekt.simulator;
 
 import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Robot;
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
-import hr.fer.zemris.projekt.algorithms.neural.elman.ElmanNeuralNetwork;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
@@ -28,7 +26,7 @@ import java.util.Random;
  * Observers can be notified whenever a move is made.</p>
  *
  * @author Kristijan Vulinovic, Leon Luttenberger
- * @version 1.1.4
+ * @version 1.1.3
  */
 public abstract class AbstractSimulator implements Observable<RobotActionTaken> {
 
@@ -46,6 +44,11 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      * The maximal number of moves allowed in a single game.
      */
     protected int maxMoves;
+
+    /**
+     * Flag that indicates if simulator is being paused
+     */
+    private boolean paused = false;
 
     /**
      * Creates a new AbstractSimulator with the given maximal number of moves.
@@ -96,27 +99,15 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
         }
     }
 
-    public void generateGrids(int numberOfGirds, int width, int height, boolean hasWalls) {
-        grids = new Grid[numberOfGirds];
-
-        for (int i = 0; i < numberOfGirds; i++) {
-            grids[i] = new Grid();
-
-            int numberOfBottles = (int) Utils.RANDOM.nextGaussian() * 15 + 50;
-            numberOfBottles = Math.max(1, Math.min(numberOfBottles, 100));
-
-            grids[i].generate(width, height, numberOfBottles, hasWalls);
-        }
-    }
-
     /**
      * Generates the given amount of random new grids. Number of bottles are distributed using normal distribution.
      * The parameters specify grid height and width. It is also possible to enable walls inside of the grid.
+     *
      * @param numberOfGirds the number of grids to be generated
-     * @param width the width of the grids
-     * @param height the height of the grids
-     * @param hasWalls a boolean flag indicating if the grid can have walls inside or not
-     * @param random random used for calculating the number of the bottles
+     * @param width         the width of the grids
+     * @param height        the height of the grids
+     * @param hasWalls      a boolean flag indicating if the grid can have walls inside or not
+     * @param random        random used for calculating the number of the bottles
      */
     public void generateGrids(int numberOfGirds, int width, int height, boolean hasWalls, Random random) {
         grids = new Grid[numberOfGirds];
@@ -218,10 +209,8 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      * @return a {@link Stats} object describing every detail about the game.
      */
     protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd) {
-        if (robot instanceof ElmanNeuralNetwork){
-            ((ElmanNeuralNetwork) robot).clearContext();
-        }
         IGrid grid = originalGrid.copy();
+        robot.initialize();
 
         int moveNumber = 0;
         int wallsHit = 0;
@@ -232,6 +221,10 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
         int y = grid.getCurrentColumn();
 
         while (moveNumber < maxMoves && grid.hasBottlesLeft()) {
+            if (paused) {
+                pause();
+            }
+
             moveNumber++;
 
             Move nextMove = getNextMove(robot, grid, x, y);
@@ -286,6 +279,32 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
         int bottlesCollected = originalGrid.getNumberOfBottles() - bottlesLeft;
 
         return new Stats(moveNumber, bottlesCollected, bottlesLeft, wallsHit, emptyPickups, originalGrid, moves);
+    }
+
+    /**
+     * Method that suspends the simulator.
+     */
+    public void suspend() {
+        paused = true;
+    }
+
+    /**
+     * Method that resumes the simulator.
+     */
+    public synchronized void resume() {
+        paused = false;
+        notifyAll();
+    }
+
+    private void pause() {
+        synchronized (this) {
+            while (paused) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                }
+            }
+        }
     }
 
     /**

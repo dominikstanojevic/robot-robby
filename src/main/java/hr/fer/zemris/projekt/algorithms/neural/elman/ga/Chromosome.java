@@ -15,7 +15,7 @@ public class Chromosome implements Comparable<Chromosome>{
     private boolean hasHashCode;
 
     public Chromosome(int size) {
-        this(size, 0, 1);
+        this(size, -0.5, 0.5);
     }
 
     public Chromosome(int size, double lowerBound, double upperBound) {
