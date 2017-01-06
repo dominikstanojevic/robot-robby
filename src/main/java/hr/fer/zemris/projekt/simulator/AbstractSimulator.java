@@ -96,6 +96,28 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
     }
 
     /**
+     * Generates the given amount of random new grids. Number of bottles are distributed using normal distribution.
+     * The parameters specify grid height and width. It is also possible to enable walls inside of the grid.
+     * @param numberOfGirds the number of grids to be generated
+     * @param width the width of the grids
+     * @param height the height of the grids
+     * @param hasWalls a boolean flag indicating if the grid can have walls inside or not
+     * @param random random used for calculating the number of the bottles
+     */
+    public void generateGrids(int numberOfGirds, int width, int height, boolean hasWalls, Random random) {
+        grids = new Grid[numberOfGirds];
+
+        for (int i = 0; i < numberOfGirds; i++) {
+            grids[i] = new Grid();
+
+            int numberOfBottles = (int) random.nextGaussian() * 15 + 50;
+            numberOfBottles = Math.max(1, Math.min(numberOfBottles, 100));
+
+            grids[i].generate(width, height, numberOfBottles, hasWalls);
+        }
+    }
+
+    /**
      * Reads the files in the list in order to create all the grids
      * defined by the files.
      *

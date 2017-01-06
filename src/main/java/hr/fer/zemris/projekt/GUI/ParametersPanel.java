@@ -4,6 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -28,7 +29,7 @@ public class ParametersPanel extends JPanel {
 	}
 
 	private void initGUI() {
-		setLayout(new GridLayout(0, 1));
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
 	}
 

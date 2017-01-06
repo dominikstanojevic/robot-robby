@@ -23,7 +23,6 @@ import java.nio.file.Path;
  */
 public interface Algorithm {
 
-
     /**
      * Reads all the information about the algorithm from a file. The file can
      * contain information from multiple generations of the algorithm.

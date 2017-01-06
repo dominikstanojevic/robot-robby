@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Hashtable;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -58,6 +59,7 @@ public class LearningPanel extends JPanel {
 		ParametersPanel parameters = new ParametersPanel();
 		algorithmOptions.add(parameters, BorderLayout.CENTER);
 
+		//ADD ALL ALGORITHMS
 		ObservableAlgorithm[] algoritms = new ObservableAlgorithm[] { new GeneticProgramming() };
 		JComboBox<ObservableAlgorithm> cbAlgoritms = new JComboBox<>(algoritms);
 		add(cbAlgoritms, BorderLayout.PAGE_START);
@@ -80,7 +82,8 @@ public class LearningPanel extends JPanel {
 		JPanel graphicalPanel = new JPanel();
 		add(graphicalPanel, BorderLayout.CENTER);
 
-		JPanel mapEditor = new JPanel(new GridLayout(0, 1));
+		JPanel mapEditor = new JPanel();
+		mapEditor.setLayout(new BoxLayout(mapEditor, BoxLayout.PAGE_AXIS));
 		add(mapEditor, BorderLayout.LINE_END);
 
 		JSlider slMapNumber = new JSlider(10, 100, 50);
@@ -159,6 +162,7 @@ public class LearningPanel extends JPanel {
 		mapEditor.add(slBottlePercentage);
 
 		btnExportRobot.setEnabled(false);
+		JLabel lExportResult = new JLabel("");
 		btnExportRobot.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -171,13 +175,15 @@ public class LearningPanel extends JPanel {
 
 					try {
 						algorithm.writeSolutionToFile(Paths.get(file.getPath()), robot);
+						lExportResult.setText("Robot saved.");
 					} catch (IOException e1) {
-						// TODO Auto-generated catch block
+						lExportResult.setText("Failed to save robot.");
 					}
 				}
 			}
 		});
 		mapEditor.add(btnExportRobot);
+		mapEditor.add(lExportResult);
 
 		btnRunSimulation.setEnabled(false);
 		btnRunSimulation.addActionListener(new ActionListener() {

@@ -34,6 +34,12 @@ public class SimulationPanel extends JPanel {
 	private MapPanel map = new MapPanel();
 
 	private JButton btnSimulate;
+	private JButton btnCancel;
+	private JButton btnPause;
+	private JButton btnResume;
+
+	private PausableSwingWorker<Void, Void> worker;
+
 	private JButton btnGenerateMap;
 	private JButton btnCreateMap;
 	private JButton btnLoadMap;
@@ -103,7 +109,7 @@ public class SimulationPanel extends JPanel {
 				map.enableEditing(true);
 				lMapStatus.setText("Creating map.");
 
-				disableButtons();
+				disableSetupButtons();
 
 				createPanel.add(new JLabel(
 						"Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
@@ -117,7 +123,7 @@ public class SimulationPanel extends JPanel {
 						map.generateGrid();
 						createPanel.removeAll();
 
-						enableButtons();
+						enableSetupButtons();
 						if (robot == null)
 							btnSimulate.setEnabled(false);
 
@@ -257,8 +263,8 @@ public class SimulationPanel extends JPanel {
 						lSimulationStatus.setText("Unable to start simulation, no map was given.");
 					} else {
 
-						disableButtons();
-						
+						disableSetupButtons();
+
 						simulator = new Simulator(map.getRows() * map.getColumns() * 2);
 						simulator.setGrid(grid);
 						simulator.addObserver(new Observer<RobotActionTaken>() {
@@ -270,21 +276,27 @@ public class SimulationPanel extends JPanel {
 							}
 						});
 
-						SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+						worker = new PausableSwingWorker<Void, Void>() {
 
 							@Override
 							protected Void doInBackground() throws Exception {
+								while (!isCancelled()) {
+									if (!isPaused()) {
 
-								map.setGrid(grid);
-								simulator.playGames(robot);
+										map.setGrid(grid);
+										simulator.playGames(robot);
 
+									} else {
+										Thread.sleep(500);
+									}
+								}
 								return null;
 							}
 
 							@Override
 							protected void done() {
-								enableButtons();
-
+								enableSetupButtons();
+								disableSimulationButtons();
 							}
 						};
 
@@ -298,12 +310,54 @@ public class SimulationPanel extends JPanel {
 
 		});
 
+		btnCancel = new JButton("Cancel");
+		btnCancel.setEnabled(false);
+
+		btnCancel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				worker.cancel(true);
+			}
+		});
+		optionsPanel.add(btnCancel);
+
+		btnPause = new JButton("Pause");
+		btnPause.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!worker.isDone() && !worker.isCancelled()) {
+					worker.pause();
+					btnResume.setEnabled(true);
+					btnPause.setEnabled(false);
+				}
+			}
+		});
+		btnPause.setEnabled(false);
+		optionsPanel.add(btnPause);
+
+		btnResume = new JButton("Resume");
+		btnResume.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!worker.isDone() && !worker.isCancelled()) {
+					worker.resume();
+					btnResume.setEnabled(false);
+					btnPause.setEnabled(true);
+				}
+			}
+		});
+		btnResume.setEnabled(false);
+		optionsPanel.add(btnResume);
+
 	}
 
 	/**
-	 * Enables all the buttons in OptionsPanel.
+	 * Enables the buttons operating with maps and robots in OptionsPanel.
 	 */
-	private void disableButtons() {
+	private void disableSetupButtons() {
 
 		btnCreateMap.setEnabled(false);
 		btnGenerateMap.setEnabled(false);
@@ -315,9 +369,9 @@ public class SimulationPanel extends JPanel {
 	}
 
 	/**
-	 * Enables all the buttons in OptionsPanel.
+	 * Disables the buttons operating with maps and robots in OptionsPanel.
 	 */
-	private void enableButtons() {
+	private void enableSetupButtons() {
 
 		btnCreateMap.setEnabled(true);
 		btnGenerateMap.setEnabled(true);
@@ -326,4 +380,11 @@ public class SimulationPanel extends JPanel {
 		btnSaveMap.setEnabled(true);
 		btnSimulate.setEnabled(true);
 	}
+	
+	private void disableSimulationButtons() {
+		btnCancel.setEnabled(false);
+		btnPause.setEnabled(false);
+		btnResume.setEnabled(false);
+	}
+
 }

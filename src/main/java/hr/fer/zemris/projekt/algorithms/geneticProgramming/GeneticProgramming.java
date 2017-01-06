@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.AlgorithmUtils;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.RobotFormatException;
@@ -29,11 +30,9 @@ import hr.fer.zemris.projekt.simulator.Stats;
  * 
  */
 public class GeneticProgramming extends ObservableAlgorithm {
-	
-	
-	public static final int EMPTY_PICKUP_PENALTY = 1;
-	public static final int HITTING_WALL_PENALTY = 5;
-	public static final int PICKUP_PRIZE = 10;
+//	public static final int EMPTY_PICKUP_PENALTY = 1;
+//	public static final int HITTING_WALL_PENALTY = 5;
+//	public static final int PICKUP_PRIZE = 10;
 
 	/**
 	 * Tournament size in tournament selection.
@@ -185,7 +184,6 @@ public class GeneticProgramming extends ObservableAlgorithm {
 
 		for (int i=0; i<populationSize; i++) {
 			List<Stats> statistics = simulator.playGames(population.get(i));
-
 			
 			int bottlesLeft = 0;
 			int bottlesPickedUp = 0;
@@ -203,12 +201,14 @@ public class GeneticProgramming extends ObservableAlgorithm {
 					- wallsHit * hitWallPenalty;
 			fitness = fitness / statistics.size();
 			
-			double standardFitness = bottlesPickedUp * PICKUP_PRIZE - emptyPickups * EMPTY_PICKUP_PENALTY
-					- wallsHit * HITTING_WALL_PENALTY;
-			standardFitness = standardFitness / (bottlesLeft + bottlesPickedUp);
+//			double standardFitness = bottlesPickedUp * PICKUP_PRIZE - emptyPickups * EMPTY_PICKUP_PENALTY
+//					- wallsHit * HITTING_WALL_PENALTY;
+//			standardFitness = standardFitness / (bottlesLeft + bottlesPickedUp);
+			
+			AlgorithmUtils.calculateFitness(statistics);
 			
 			population.get(i).setRawFitness(fitness);
-			population.get(i).setStandardizedFitness(standardFitness);
+			population.get(i).setStandardizedFitness(AlgorithmUtils.calculateFitness(statistics));
 			
 		}
 		
