@@ -13,31 +13,86 @@ function Graph(canvas, xAxis, yAxis, lineConfigs) {
 
     this.lineConfigs = lineConfigs;
 
-    var margin = 10;
+    var margins = {top: 10, down: 10, left: 30, right: 15};
 
     this.draw = function () {
+        this.reset();
+
         var ctx = this.context;
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         ctx.beginPath();
-        ctx.moveTo(margin, margin);
-        ctx.lineTo(margin, this.canvas.height - margin);
+        ctx.moveTo(margins.left, margins.top);
+        ctx.lineTo(margins.left, this.canvas.height - margins.down);
         ctx.stroke();
 
-        var yZero = this.canvas.height / (this.yMax - this.yMin);
+        var yZero = (this.canvas.height - margins.top - margins.down) / (this.yMax - this.yMin) + margins.top;
         ctx.beginPath();
-        ctx.moveTo(margin, yZero);
-        ctx.lineTo(this.canvas.width - margin, yZero);
+        ctx.moveTo(margins.left, yZero);
+        ctx.lineTo(this.canvas.width - margins.right, yZero);
         ctx.stroke();
+
+        ctx.font="13px Arial";
+
+        ctx.textAlign = "right";
+        ctx.textBaseline = "bottom";
+        ctx.fillText(this.xName, this.canvas.width - margins.right, yZero - 2);
+
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText(this.yName, margins.left + 2, margins.top);
+
+        ctx.setLineDash([5, 3]);
+        var oldColor = ctx.strokeStyle;
+        ctx.strokeStyle = "#d2d2c7";
+
+        var xMargin = (this.xMax - this.xMin) / 10;
+        var yMargin = (this.yMax - this.yMin) / 15;
+
+        //draw vertical lines
+        for (var i = this.xMin; i <= this.xMax; i += xMargin) {
+            if (Math.abs(i) < 1E-6) continue;
+
+            var scaledX = scaleX(i);
+
+            ctx.beginPath();
+            ctx.moveTo(scaledX, margins.top);
+            ctx.lineTo(scaledX, this.canvas.height - margins.down);
+            ctx.stroke();
+
+            ctx.textBaseline = "top";
+            ctx.textAlign = "center";
+            ctx.fillText(i, scaledX, yZero);
+        }
+
+        //draw horizontal lines
+        for (var j = this.yMin; j <= this.yMax; j += yMargin) {
+            if (Math.abs(j) < 1E-6) continue;
+
+            var scaledY = scaleY(j);
+
+            ctx.beginPath();
+            ctx.moveTo(margins.left, scaledY);
+            ctx.lineTo(this.canvas.width - margins.right, scaledY);
+            ctx.stroke();
+
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "right";
+            ctx.fillText(round(j, 2), margins.left - 4, scaledY);
+        }
+
+        ctx.setLineDash([]);
+        ctx.restore();
+        ctx.strokeStyle = oldColor;
     };
 
     var that = this;
 
     var scaleX = function (x) {
-        return (x / that.xMax) * (that.canvas.width - 2 * margin) + margin;
+        return (x / that.xMax) * (that.canvas.width - margins.left - margins.right) + margins.left;
     };
     var scaleY = function (y) {
-        return ((that.yMax - y) / (that.yMax - that.yMin)) * (that.canvas.height - 2 * margin) + margin;
+        return ((that.yMax - y) / (that.yMax - that.yMin)) * (that.canvas.height - margins.top - margins.down) + margins.top;
     };
 
     this.prevPoints = [];
@@ -74,10 +129,19 @@ function Graph(canvas, xAxis, yAxis, lineConfigs) {
         ctx.strokeStyle = oldColor;
     };
 
+    this.reset = function () {
+        this.prevPoints = [];
+    };
+
     this.draw();
 }
 
 function Point(x, y) {
     this.x = x;
     this.y = y;
+}
+
+function round(number, decimals) {
+    var base = Math.pow(10, decimals);
+    return Math.round(number * base) / base;
 }

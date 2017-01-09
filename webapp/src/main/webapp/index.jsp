@@ -11,8 +11,20 @@
 
 <script type="text/javascript">
 
+    var graph;
+
     function init() {
         optionSelected();
+
+        graph = new Graph(
+            document.getElementById("plotCanvas"),
+            { name: "Iterations", min: 0, max: 1000 },
+            { name: "Fitness", min: -0.5, max: 1.0 },
+            [
+                { color: "Red" },
+                { color: "Green" }
+            ]
+        );
     }
 
     function optionSelected() {
@@ -75,6 +87,7 @@
         var inputs = document.forms["trainingForm"].getElementsByTagName("input");
 
         var params = "?";
+        var numberOfIterations = 1000; //TODO this is bad
 
         for (var i = 0; i < inputs.length; i++) {
             if (!inputs[i].checkValidity()) {
@@ -85,17 +98,21 @@
             params += "=";
             params += inputs[i].value;
             params += "&";
+
+            if (inputs[i].name == 'Max generations') { //TODO this is even worse
+                numberOfIterations = inputs[i].value;
+            }
         }
 
-        var graph = new Graph(
-            document.getElementById("plotCanvas"),
-            { name: "Iterations", min: 0, max: 1000 }, //TODO this should NOT be hardcoded
-            { name: "Fitness", min: -0.5, max: 1.0 },
-            [
-                { color: "Red" },
-                { color: "Green" }
-            ]
-        );
+        startAlgorithm(params, numberOfIterations);
+
+        return false;
+    }
+
+    function startAlgorithm(params, numberOfIterations) {
+        graph.xMax = numberOfIterations;
+
+        graph.draw();
 
         var eventSource = new EventSource("train" + params);
         eventSource.onmessage = function(event) {
@@ -112,10 +129,10 @@
                     new Point(iteration, result["best"]),
                     new Point(iteration, result["average"])
                 ]);
+
+                document.getElementById("fitnessSpan").innerHTML = result["best"];
             }
         };
-
-        return false;
     }
 </script>
 
@@ -136,7 +153,8 @@
     <input type="submit">
 </form>
 
-<canvas id="plotCanvas" width="600" height="300" style="border: solid black 1px"></canvas>
+<canvas id="plotCanvas" width="900" height="450"></canvas>
+<span id="fitnessSpan"></span>
 
 </body>
 </html>

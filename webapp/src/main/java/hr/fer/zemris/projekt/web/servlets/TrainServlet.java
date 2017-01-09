@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "TrainServlet", urlPatterns = {"/train"})
@@ -28,6 +30,21 @@ public class TrainServlet extends HttpServlet {
     private static final Random RANDOM = new Random();
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        //content type must be set to text/event-stream
+        resp.setContentType("text/event-stream");
+
+        //encoding must be set to UTF-8
+        resp.setCharacterEncoding("UTF-8");
+
+        //don't start a new training session is one is already running
+        if (req.getSession().getAttribute("trainingThread") != null) {
+            resp.getWriter().write("data: finished\n\n");
+            resp.getWriter().flush();
+            return;
+        }
+
+        //read the parameters and generate grids
         String algorithmID = req.getParameter("algorithmID");
 
         ObservableAlgorithm algorithm = Algorithms.getAlgorithm(algorithmID);
@@ -38,14 +55,9 @@ public class TrainServlet extends HttpServlet {
 
         generateGrids(simulator, config);
 
-        //content type must be set to text/event-stream
-        resp.setContentType("text/event-stream");
-
-        //encoding must be set to UTF-8
-        resp.setCharacterEncoding("UTF-8");
-
         int mapRegenFrequency = config.getMapRegenFrequency();
 
+        //configure the observer
         algorithm.addObserver((sender, observation) -> {
             if (mapRegenFrequency > 0 && observation.getIteration() % mapRegenFrequency == 0) {
                 generateGrids(simulator, config);
@@ -68,11 +80,27 @@ public class TrainServlet extends HttpServlet {
             }
         });
 
-        Robot robot = algorithm.run(simulator, parameters);
-        req.getSession().setAttribute("robot", robot);
+        //set up the training thread and store in the session
+        FutureTask<Robot> futureTask = new FutureTask<>(() -> algorithm.run(simulator, parameters));
+        Thread thread = new Thread(futureTask);
+        thread.setDaemon(true);
 
-        resp.getWriter().write("data: finished\n\n");
-        resp.getWriter().flush();
+        req.getSession().setAttribute("trainingThread", thread);
+        thread.start();
+
+        try {
+            Robot robot = futureTask.get();
+            req.getSession().setAttribute("robot", robot);
+
+        } catch (InterruptedException | ExecutionException e) {
+            System.err.println("Training thread went to hell.");
+            e.printStackTrace();
+        } finally {
+            req.getSession().removeAttribute("trainingThread");
+
+            resp.getWriter().write("data: finished\n\n");
+            resp.getWriter().flush();
+        }
     }
 
     @Override
