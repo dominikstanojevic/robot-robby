@@ -55,30 +55,30 @@ function Graph(canvas, xAxis, yAxis, lineConfigs) {
 
             var scaledX = scaleX(i);
 
+            ctx.textBaseline = "top";
+            ctx.textAlign = "center";
+            ctx.fillText(i, scaledX, yZero);
+
             ctx.beginPath();
             ctx.moveTo(scaledX, margins.top);
             ctx.lineTo(scaledX, this.canvas.height - margins.down);
             ctx.stroke();
-
-            ctx.textBaseline = "top";
-            ctx.textAlign = "center";
-            ctx.fillText(i, scaledX, yZero);
         }
 
         //draw horizontal lines
         for (var j = this.yMin; j <= this.yMax; j += yMargin) {
-            if (Math.abs(j) < 1E-6) continue;
-
             var scaledY = scaleY(j);
+
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "right";
+            ctx.fillText(round(j, 2), margins.left - 4, scaledY);
+
+            if (Math.abs(j) < 1E-6) continue;
 
             ctx.beginPath();
             ctx.moveTo(margins.left, scaledY);
             ctx.lineTo(this.canvas.width - margins.right, scaledY);
             ctx.stroke();
-
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "right";
-            ctx.fillText(round(j, 2), margins.left - 4, scaledY);
         }
 
         ctx.setLineDash([]);

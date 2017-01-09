@@ -21,8 +21,8 @@
             { name: "Iterations", min: 0, max: 1000 },
             { name: "Fitness", min: -0.5, max: 1.0 },
             [
-                { color: "Red" },
-                { color: "Green" }
+                { color: "#ff0000" },
+                { color: "#008000" }
             ]
         );
     }
@@ -77,6 +77,12 @@
                         inputCell.appendChild(input);
 
                         table.appendChild(tableRow);
+
+                        //set scale for graph
+                        if (parameter.name == 'Max generations') { //TODO this is even worse
+                            graph.xMax = parameter.value;
+                            graph.draw();
+                        }
                     }
                 }
             }
