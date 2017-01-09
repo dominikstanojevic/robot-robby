@@ -19,8 +19,13 @@ public class SimulatorConfigServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json;charset=UTF-8");
 
+        if (req.getSession().getAttribute(Constants.SESSION_KEY_TRAINING_THREAD) != null) {
+            return;
+        }
+
+
         SimulatorConfiguration simulatorConfig = (SimulatorConfiguration)
-                req.getSession().getAttribute("simulatorConfig");
+                req.getSession().getAttribute(Constants.SESSION_KEY_SIMULATOR_CONFIG);
 
         String json = GSON.toJson(simulatorConfig);
 
@@ -32,7 +37,7 @@ public class SimulatorConfigServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         SimulatorConfiguration simulatorConfig = (SimulatorConfiguration)
-                req.getSession().getAttribute("simulatorConfig");
+                req.getSession().getAttribute(Constants.SESSION_KEY_SIMULATOR_CONFIG);
 
         configureParameter(req, "maxMoves", simulatorConfig::setMaxMoves);
         configureParameter(req, "gridHeight", simulatorConfig::setGridHeight);
@@ -47,7 +52,7 @@ public class SimulatorConfigServlet extends HttpServlet {
             simulatorConfig.setVariableBottles(variableBottles);
         }
 
-        req.getSession().setAttribute("simulatorConfig", simulatorConfig);
+        req.getSession().setAttribute(Constants.SESSION_KEY_SIMULATOR_CONFIG, simulatorConfig);
 
         this.doGet(req, resp);
     }

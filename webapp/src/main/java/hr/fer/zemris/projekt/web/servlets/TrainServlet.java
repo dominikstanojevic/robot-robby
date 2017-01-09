@@ -20,14 +20,20 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "TrainServlet", urlPatterns = {"/train"})
-
 public class TrainServlet extends HttpServlet {
 
     private static final Random RANDOM = new Random();
+
+    private static final int TIMEOUT_MINUTES = 10;
+    private static final int FLUSH_FREQUENCY = 20;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -38,7 +44,7 @@ public class TrainServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         //don't start a new training session is one is already running
-        if (req.getSession().getAttribute("trainingThread") != null) {
+        if (req.getSession().getAttribute(Constants.SESSION_KEY_TRAINING_THREAD) != null) {
             resp.getWriter().write("data: finished\n\n");
             resp.getWriter().flush();
             return;
@@ -50,7 +56,7 @@ public class TrainServlet extends HttpServlet {
         ObservableAlgorithm algorithm = Algorithms.getAlgorithm(algorithmID);
         Parameters<?> parameters = readParameters(req, algorithm);
 
-        SimulatorConfiguration config = (SimulatorConfiguration) req.getSession().getAttribute("simulatorConfig");
+        SimulatorConfiguration config = (SimulatorConfiguration) req.getSession().getAttribute(Constants.SESSION_KEY_SIMULATOR_CONFIG);
         Simulator simulator = config.getSimulator();
 
         generateGrids(simulator, config);
@@ -72,7 +78,7 @@ public class TrainServlet extends HttpServlet {
             try {
                 resp.getWriter().write("data: " + jsonObject.toString() + "\n\n");
 
-                if (observation.getIteration() % 20 == 0) {
+                if (observation.getIteration() % FLUSH_FREQUENCY == 0) {
                     resp.getWriter().flush();
                 }
             } catch (IOException e) {
@@ -82,21 +88,32 @@ public class TrainServlet extends HttpServlet {
 
         //set up the training thread and store in the session
         FutureTask<Robot> futureTask = new FutureTask<>(() -> algorithm.run(simulator, parameters));
-        Thread thread = new Thread(futureTask);
-        thread.setDaemon(true);
 
-        req.getSession().setAttribute("trainingThread", thread);
-        thread.start();
+        ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
+        });
+
+        req.getSession().setAttribute(Constants.SESSION_KEY_TRAINING_THREAD, executor);
+        executor.submit(futureTask);
 
         try {
-            Robot robot = futureTask.get();
-            req.getSession().setAttribute("robot", robot);
+            //TODO tweak this in the event the training is paused?
+            Robot robot = futureTask.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+            req.getSession().setAttribute(Constants.SESSION_KEY_ROBOT, robot);
+
+        } catch (TimeoutException e) {
+            futureTask.cancel(true);
+            System.err.println("Training thread timed out.");
 
         } catch (InterruptedException | ExecutionException e) {
             System.err.println("Training thread went to hell.");
             e.printStackTrace();
+
         } finally {
-            req.getSession().removeAttribute("trainingThread");
+            req.getSession().removeAttribute(Constants.SESSION_KEY_TRAINING_THREAD);
+            executor.shutdown();
 
             resp.getWriter().write("data: finished\n\n");
             resp.getWriter().flush();
