@@ -38,7 +38,7 @@ public class SimulationPanel extends JPanel {
 	private JButton btnPause;
 	private JButton btnResume;
 
-	private PausableSwingWorker<Void, Void> worker;
+	private SwingWorker<Void, Void> worker;
 
 	private JButton btnGenerateMap;
 	private JButton btnCreateMap;
@@ -264,10 +264,11 @@ public class SimulationPanel extends JPanel {
 					} else {
 
 						disableSetupButtons();
+						btnPause.setEnabled(true);
 
 						simulator = new Simulator(map.getRows() * map.getColumns() * 2);
 						simulator.setGrid(grid);
-						simulator.addObserver(new Observer<RobotActionTaken>() {
+						simulator.addObserver(new Observer<RobotActionTaken>() {						
 
 							@Override
 							public void observationMade(Observable sender, RobotActionTaken observation) {
@@ -276,20 +277,14 @@ public class SimulationPanel extends JPanel {
 							}
 						});
 
-						worker = new PausableSwingWorker<Void, Void>() {
+						worker = new SwingWorker<Void, Void>() {
 
 							@Override
 							protected Void doInBackground() throws Exception {
-								while (!isCancelled()) {
-									if (!isPaused()) {
 
-										map.setGrid(grid);
-										simulator.playGames(robot);
+								map.setGrid(grid);
+								simulator.playGames(robot);
 
-									} else {
-										Thread.sleep(500);
-									}
-								}
 								return null;
 							}
 
@@ -310,17 +305,17 @@ public class SimulationPanel extends JPanel {
 
 		});
 
-		btnCancel = new JButton("Cancel");
-		btnCancel.setEnabled(false);
-
-		btnCancel.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				worker.cancel(true);
-			}
-		});
-		optionsPanel.add(btnCancel);
+//		btnCancel = new JButton("Cancel");
+//		btnCancel.setEnabled(false);
+//
+//		btnCancel.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				worker.cancel(true);
+//			}
+//		});
+//		optionsPanel.add(btnCancel);
 
 		btnPause = new JButton("Pause");
 		btnPause.addActionListener(new ActionListener() {
@@ -328,7 +323,7 @@ public class SimulationPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!worker.isDone() && !worker.isCancelled()) {
-					worker.pause();
+					simulator.suspend();
 					btnResume.setEnabled(true);
 					btnPause.setEnabled(false);
 				}
@@ -343,7 +338,7 @@ public class SimulationPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!worker.isDone() && !worker.isCancelled()) {
-					worker.resume();
+					simulator.resume();
 					btnResume.setEnabled(false);
 					btnPause.setEnabled(true);
 				}
@@ -380,9 +375,9 @@ public class SimulationPanel extends JPanel {
 		btnSaveMap.setEnabled(true);
 		btnSimulate.setEnabled(true);
 	}
-	
+
 	private void disableSimulationButtons() {
-		btnCancel.setEnabled(false);
+//		btnCancel.setEnabled(false);
 		btnPause.setEnabled(false);
 		btnResume.setEnabled(false);
 	}
