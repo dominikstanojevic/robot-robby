@@ -21,7 +21,7 @@ import java.util.Random;
  * single threaded, depending on the implementation. The simulator ensures to
  * use the same set of grids for simulations in every call, unless the grid
  * list is changed manually.</p>
- *
+ * <p>
  * <p>This simulator also represents the subject in the observer design pattern.
  * Observers can be notified whenever a move is made.</p>
  *
@@ -46,12 +46,17 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
     protected int maxMoves;
 
     /**
+     * Flag that indicates if simulator is being paused
+     */
+    private boolean paused = false;
+
+    /**
      * Creates a new AbstractSimulator with the given maximal number of moves.
      *
      * @param maxMoves the maximal number of moves for a single game.
      */
     public AbstractSimulator(int maxMoves) {
-        if (maxMoves < 0){
+        if (maxMoves < 0) {
             throw new IllegalArgumentException("Maximum number of moves has to be a positive number!");
         }
 
@@ -69,7 +74,6 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      * Plays games on every defined grid.
      *
      * @param robot the {@link Robot} being tested
-     *
      * @return a List of {@link Stats} describing every game played.
      */
     public abstract List<Stats> playGames(Robot robot);
@@ -79,17 +83,17 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      * the number of bottles in the grid, the height and width. It is also
      * possible to enable walls inside of the grid.
      *
-     * @param numberOfGrids the number of grids to be generated.
+     * @param numberOfGrids   the number of grids to be generated.
      * @param numberOfBottles the number of bottles in the grids.
-     * @param width the width of the grids.
-     * @param height the height of the grids.
-     * @param hasWalls a boolean flag indicating if the grid can
-     *                 have walls inside it or not.
+     * @param width           the width of the grids.
+     * @param height          the height of the grids.
+     * @param hasWalls        a boolean flag indicating if the grid can
+     *                        have walls inside it or not.
      */
-    public void generateGrids(int numberOfGrids, int numberOfBottles, int width, int height, boolean hasWalls){
+    public void generateGrids(int numberOfGrids, int numberOfBottles, int width, int height, boolean hasWalls) {
         grids = new Grid[numberOfGrids];
 
-        for (int i = 0; i < numberOfGrids; ++i){
+        for (int i = 0; i < numberOfGrids; ++i) {
             grids[i] = new Grid();
             grids[i].generate(width, height, numberOfBottles, hasWalls);
         }
@@ -98,11 +102,12 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
     /**
      * Generates the given amount of random new grids. Number of bottles are distributed using normal distribution.
      * The parameters specify grid height and width. It is also possible to enable walls inside of the grid.
+     *
      * @param numberOfGirds the number of grids to be generated
-     * @param width the width of the grids
-     * @param height the height of the grids
-     * @param hasWalls a boolean flag indicating if the grid can have walls inside or not
-     * @param random random used for calculating the number of the bottles
+     * @param width         the width of the grids
+     * @param height        the height of the grids
+     * @param hasWalls      a boolean flag indicating if the grid can have walls inside or not
+     * @param random        random used for calculating the number of the bottles
      */
     public void generateGrids(int numberOfGirds, int width, int height, boolean hasWalls, Random random) {
         grids = new Grid[numberOfGirds];
@@ -129,7 +134,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
         int n = filePaths.size();
         grids = new Grid[n];
 
-        for (int i = 0; i < n; ++i){
+        for (int i = 0; i < n; ++i) {
             grids[i] = new Grid();
             grids[i].readFromFile(filePaths.get(i));
         }
@@ -140,7 +145,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      *
      * @param grid the grid that should be used.
      */
-    public void setGrid(IGrid grid){
+    public void setGrid(IGrid grid) {
         grids = new Grid[1];
         grids[0] = grid;
     }
@@ -151,14 +156,13 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      *
      * @param rnd a random number generator that is used to
      *            get a random move.
-     *
      * @return the random generated {@link Move}.
      */
-    private static Move getRandomMove(Random rnd){
+    private static Move getRandomMove(Random rnd) {
         Move nextMove = null;
 
         int moveID = rnd.nextInt(4);
-        switch (moveID){
+        switch (moveID) {
             case 0:
                 nextMove = Move.UP;
                 break;
@@ -180,14 +184,13 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      * Calculates the next move for the given {@link Robot} on the given
      * {@link IGrid}, from the current column and row.
      *
-     * @param robot the {@link Robot} who's being asked for his next move
-     * @param grid the current grid.
-     * @param row the current row.
+     * @param robot  the {@link Robot} who's being asked for his next move
+     * @param grid   the current grid.
+     * @param row    the current row.
      * @param column the current column.
-     *
      * @return the {@link Move} that the robot should make.
      */
-    private Move getNextMove(Robot robot, IGrid grid, int row, int column){
+    private Move getNextMove(Robot robot, IGrid grid, int row, int column) {
         Field current = grid.getField(row, column);
         Field left = grid.getField(row, column - 1);
         Field right = grid.getField(row, column + 1);
@@ -200,14 +203,14 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
     /**
      * Plays one game on the given grid. The game is executed without interrupting.
      *
-     * @param robot the {@link Robot} being tested
+     * @param robot        the {@link Robot} being tested
      * @param originalGrid the {@link IGrid} that should be used to play the game.
-     * @param rnd a random number generator, used to play a random move.
-     *
+     * @param rnd          a random number generator, used to play a random move.
      * @return a {@link Stats} object describing every detail about the game.
      */
-    protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd){
+    protected Stats playGame(Robot robot, IGrid originalGrid, Random rnd) {
         IGrid grid = originalGrid.copy();
+        robot.initialize();
 
         int moveNumber = 0;
         int wallsHit = 0;
@@ -217,7 +220,11 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
         int x = grid.getCurrentRow();
         int y = grid.getCurrentColumn();
 
-        while (moveNumber < maxMoves && grid.hasBottlesLeft()){
+        while (moveNumber < maxMoves && grid.hasBottlesLeft()) {
+            if (paused) {
+                pause();
+            }
+
             moveNumber++;
 
             Move nextMove = getNextMove(robot, grid, x, y);
@@ -225,10 +232,10 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
 
             int xMove = 0;
             int yMove = 0;
-            if (nextMove == Move.RANDOM){
+            if (nextMove == Move.RANDOM) {
                 nextMove = getRandomMove(rnd);
             }
-            switch (nextMove){
+            switch (nextMove) {
                 case UP:
                     xMove = -1;
                     break;
@@ -244,7 +251,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
                 case SKIP_TURN:
                     break;
                 case COLLECT:
-                    if (grid.getField(x, y) == Field.BOTTLE){
+                    if (grid.getField(x, y) == Field.BOTTLE) {
                         grid.setField(x, y, Field.EMPTY);
                     } else {
                         emptyPickups++;
@@ -260,7 +267,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
             // notify listeners, if there are any
             notifyListeners(originalGrid, nextMove, x, y, newX, newY);
 
-            if (grid.getField(newX, newY) == Field.WALL){
+            if (grid.getField(newX, newY) == Field.WALL) {
                 wallsHit++;
             } else {
                 x = newX;
@@ -268,11 +275,36 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
             }
         }
 
-
         int bottlesLeft = grid.getNumberOfBottles();
         int bottlesCollected = originalGrid.getNumberOfBottles() - bottlesLeft;
 
         return new Stats(moveNumber, bottlesCollected, bottlesLeft, wallsHit, emptyPickups, originalGrid, moves);
+    }
+
+    /**
+     * Method that suspends the simulator.
+     */
+    public void suspend() {
+        paused = true;
+    }
+
+    /**
+     * Method that resumes the simulator.
+     */
+    public synchronized void resume() {
+        paused = false;
+        notifyAll();
+    }
+
+    private void pause() {
+        synchronized (this) {
+            while (paused) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                }
+            }
+        }
     }
 
     /**
@@ -283,6 +315,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
     /**
      * Notifies the listeners with a {@link RobotActionTaken} object only if somebody is observing this
      * object.
+     *
      * @param grid grid that the move was taken on
      * @param move move taken
      * @param oldX previous X coordinate of the robot

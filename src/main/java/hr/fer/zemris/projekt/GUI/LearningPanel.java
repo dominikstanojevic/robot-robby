@@ -1,7 +1,6 @@
 package hr.fer.zemris.projekt.GUI;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,18 +14,15 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
-import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.Simulator;
 
 public class LearningPanel extends JPanel {
@@ -39,9 +35,14 @@ public class LearningPanel extends JPanel {
 	private Robot robot;
 	private Simulator simulator;
 
-	private JButton btnStart = new JButton("Run Algorithm");
+	private JButton btnStart = new JButton("Start Algorithm Training");
+	private JButton btnPause = new JButton("Pause");
+	private JButton btnResume = new JButton("Resume");
+	private JButton btnCancel = new JButton("Cancel");
 	private JButton btnExportRobot = new JButton("Save Robot to File");
-	private JButton btnRunSimulation = new JButton("Simulate");
+	private JButton btnRunSimulation = new JButton("Simulate Robot");
+	
+	private SwingWorker<Void, Integer> worker;
 
 	public LearningPanel(JTabbedPane parent) {
 		super();
@@ -59,7 +60,7 @@ public class LearningPanel extends JPanel {
 		ParametersPanel parameters = new ParametersPanel();
 		algorithmOptions.add(parameters, BorderLayout.CENTER);
 
-		//ADD ALL ALGORITHMS
+		// ADD ALL ALGORITHMS
 		ObservableAlgorithm[] algoritms = new ObservableAlgorithm[] { new GeneticProgramming() };
 		JComboBox<ObservableAlgorithm> cbAlgoritms = new JComboBox<>(algoritms);
 		add(cbAlgoritms, BorderLayout.PAGE_START);
@@ -104,40 +105,40 @@ public class LearningPanel extends JPanel {
 
 		mapEditor.add(lMapNumber);
 		mapEditor.add(slMapNumber);
-		
+
 		JSlider slMapRows = new JSlider(2, 15, 10);
 		slMapRows.createStandardLabels(5);
 		slMapRows.setMajorTickSpacing(5);
 		slMapRows.setPaintTicks(true);
 		slMapRows.setPaintLabels(true);
-		
+
 		JLabel lMapRows = new JLabel("Number of rows: " + slMapRows.getValue());
 		slMapRows.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				lMapRows.setText("Number of rows: " + slMapRows.getValue());
-				
+
 			}
 		});
 		mapEditor.add(lMapRows);
 		mapEditor.add(slMapRows);
-		
+
 		JSlider slMapColumns = new JSlider(2, 15, 10);
 		slMapColumns.createStandardLabels(5);
 		slMapColumns.setMajorTickSpacing(5);
 		slMapColumns.setPaintTicks(true);
 		slMapColumns.setPaintLabels(true);
-		
+
 		JLabel lMapColumns = new JLabel("Number of columns: " + slMapColumns.getValue());
 		slMapColumns.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				lMapColumns.setText("Number of columns: "  + slMapColumns.getValue());
-				
+				lMapColumns.setText("Number of columns: " + slMapColumns.getValue());
+
 			}
-		});		
+		});
 		mapEditor.add(lMapColumns);
 		mapEditor.add(slMapColumns);
 
@@ -208,18 +209,21 @@ public class LearningPanel extends JPanel {
 
 				btnExportRobot.setEnabled(false);
 				btnRunSimulation.setEnabled(false);
+				btnPause.setEnabled(true);
+				btnResume.setEnabled(false);
+				btnStart.setEnabled(false);
 
 				int mapNum = slMapNumber.getValue();
 				int mapRows = slMapRows.getValue();
 				int mapCols = slMapColumns.getValue();
 				int numOfBottles = (int) Math.round(slBottlePercentage.getValue() * 0.01 * mapRows * mapCols);
 
-				SwingWorker<Void, Integer> worker = new SwingWorker<Void, Integer>() {
+				 worker = new SwingWorker<Void, Integer>() {
 
 					@Override
 					protected Void doInBackground() throws Exception {
-						
-						simulator = new Simulator(2*mapCols*mapRows);
+
+						simulator = new Simulator(2 * mapCols * mapRows);
 						simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
 						robot = algorithm.run(simulator, parameters.getParameters());
 
@@ -228,14 +232,46 @@ public class LearningPanel extends JPanel {
 
 					@Override
 					protected void done() {
-						// TODO
+						
 						btnExportRobot.setEnabled(true);
 						btnRunSimulation.setEnabled(true);
+						btnPause.setEnabled(false);
+						btnResume.setEnabled(false);
 					}
 
 				};
 
 				worker.execute();
+
+			}
+		});
+
+		btnPause.setEnabled(false);
+		mapEditor.add(btnPause);
+		btnPause.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				simulator.suspend();
+				btnPause.setEnabled(false);
+				btnResume.setEnabled(true);
+				btnStart.setEnabled(true);
+
+			}
+		});
+
+		btnResume.setEnabled(false);
+		mapEditor.add(btnResume);
+		btnResume.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				simulator.resume();
+				btnResume.setEnabled(false);
+				btnPause.setEnabled(true);
+				btnStart.setEnabled(false);
 
 			}
 		});
