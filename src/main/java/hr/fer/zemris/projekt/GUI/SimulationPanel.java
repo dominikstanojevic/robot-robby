@@ -197,6 +197,7 @@ public class SimulationPanel extends JPanel {
 			}
 		});
 
+		//ADD ALL ALGORITHMS
 		optionsPanel.add(new JLabel("Select algorithm for loading robot:"));
 		Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming() };
 		JComboBox<Algorithm> cbAlgorithm = new JComboBox<>(algorithms);
@@ -265,6 +266,7 @@ public class SimulationPanel extends JPanel {
 
 						disableSetupButtons();
 						btnPause.setEnabled(true);
+						btnCancel.setEnabled(true);
 
 						simulator = new Simulator(map.getRows() * map.getColumns() * 2);
 						simulator.setGrid(grid);
@@ -305,17 +307,19 @@ public class SimulationPanel extends JPanel {
 
 		});
 
-//		btnCancel = new JButton("Cancel");
-//		btnCancel.setEnabled(false);
-//
-//		btnCancel.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				worker.cancel(true);
-//			}
-//		});
-//		optionsPanel.add(btnCancel);
+		btnCancel = new JButton("Cancel");
+		btnCancel.setEnabled(false);
+
+		btnCancel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				simulator.suspend();
+				btnSimulate.setEnabled(true);
+				disableSimulationButtons();
+			}
+		});
+		optionsPanel.add(btnCancel);
 
 		btnPause = new JButton("Pause");
 		btnPause.addActionListener(new ActionListener() {
@@ -377,7 +381,7 @@ public class SimulationPanel extends JPanel {
 	}
 
 	private void disableSimulationButtons() {
-//		btnCancel.setEnabled(false);
+		btnCancel.setEnabled(false);
 		btnPause.setEnabled(false);
 		btnResume.setEnabled(false);
 	}

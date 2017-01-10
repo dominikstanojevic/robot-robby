@@ -23,6 +23,9 @@ import javax.swing.event.ChangeListener;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
+import hr.fer.zemris.projekt.observer.Observable;
+import hr.fer.zemris.projekt.observer.Observer;
+import hr.fer.zemris.projekt.observer.observations.TrainingResult;
 import hr.fer.zemris.projekt.simulator.Simulator;
 
 public class LearningPanel extends JPanel {
@@ -41,7 +44,7 @@ public class LearningPanel extends JPanel {
 	private JButton btnCancel = new JButton("Cancel");
 	private JButton btnExportRobot = new JButton("Save Robot to File");
 	private JButton btnRunSimulation = new JButton("Simulate Robot");
-	
+
 	private SwingWorker<Void, Integer> worker;
 
 	public LearningPanel(JTabbedPane parent) {
@@ -194,6 +197,7 @@ public class LearningPanel extends JPanel {
 
 				parent.setSelectedIndex(1);
 				((SimulationPanel) parent.getSelectedComponent()).setRobot(robot);
+				System.out.println("Setam robota " + robot);
 
 			}
 		});
@@ -210,6 +214,7 @@ public class LearningPanel extends JPanel {
 				btnExportRobot.setEnabled(false);
 				btnRunSimulation.setEnabled(false);
 				btnPause.setEnabled(true);
+				btnCancel.setEnabled(true);
 				btnResume.setEnabled(false);
 				btnStart.setEnabled(false);
 
@@ -218,13 +223,23 @@ public class LearningPanel extends JPanel {
 				int mapCols = slMapColumns.getValue();
 				int numOfBottles = (int) Math.round(slBottlePercentage.getValue() * 0.01 * mapRows * mapCols);
 
-				 worker = new SwingWorker<Void, Integer>() {
+				worker = new SwingWorker<Void, Integer>() {
 
 					@Override
 					protected Void doInBackground() throws Exception {
 
 						simulator = new Simulator(2 * mapCols * mapRows);
 						simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
+						
+						algorithm.addObserver(new Observer<TrainingResult>() {
+
+							@Override
+							public void observationMade(Observable sender, TrainingResult observation) {
+								robot = observation.getBestResult();
+								//TODO Domagoj
+							}
+						});
+						
 						robot = algorithm.run(simulator, parameters.getParameters());
 
 						return null;
@@ -232,13 +247,14 @@ public class LearningPanel extends JPanel {
 
 					@Override
 					protected void done() {
-						
+
 						btnExportRobot.setEnabled(true);
 						btnRunSimulation.setEnabled(true);
+						btnStart.setEnabled(true);
 						btnPause.setEnabled(false);
 						btnResume.setEnabled(false);
+						btnCancel.setEnabled(false);
 					}
-
 				};
 
 				worker.execute();
@@ -256,7 +272,9 @@ public class LearningPanel extends JPanel {
 				simulator.suspend();
 				btnPause.setEnabled(false);
 				btnResume.setEnabled(true);
-				btnStart.setEnabled(true);
+
+				btnExportRobot.setEnabled(true);
+				btnRunSimulation.setEnabled(true);
 
 			}
 		});
@@ -271,7 +289,28 @@ public class LearningPanel extends JPanel {
 				simulator.resume();
 				btnResume.setEnabled(false);
 				btnPause.setEnabled(true);
-				btnStart.setEnabled(false);
+				
+				btnExportRobot.setEnabled(false);
+				btnRunSimulation.setEnabled(false);
+
+			}
+		});
+
+		btnCancel.setEnabled(false);
+		mapEditor.add(btnCancel);
+		btnCancel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				simulator.suspend();
+				btnPause.setEnabled(false);
+				btnResume.setEnabled(false);
+				btnCancel.setEnabled(false);
+				btnStart.setEnabled(true);
+
+				btnExportRobot.setEnabled(true);
+				btnRunSimulation.setEnabled(true);
 
 			}
 		});
