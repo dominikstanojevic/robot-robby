@@ -20,13 +20,16 @@ public class GAParameters implements Parameters<GA> {
     public static final int DEFAULT_MAX_GENERATIONS = 1_500;
 
     public static final String TOURNAMENT_SIZE = "tournamentSize";
-    public static final int DEFAULT_TOURNAMENT_SIZE = 3;
+    public static final int DEFAULT_TOURNAMENT_SIZE = 5;
 
     public static final String ALPHA = "alpha";
     public static final double DEFAULT_ALPHA = 0.5;
 
     public static final String SIGMA = "sigma";
-    public static final double DEFAULT_SIGMA = 0.1;
+    public static final double DEFAULT_SIGMA = 0.5;
+
+    public static final String STOP_CONDITION = "stopCondition";
+    public static final double DEFAULT_STOP_CONDITION = 1;
 
 
     public GAParameters() {
@@ -37,6 +40,7 @@ public class GAParameters implements Parameters<GA> {
                 DEFAULT_TOURNAMENT_SIZE));
         parameters.add(new Parameter(ALPHA, ParameterType.DOUBLE, 0, 5, DEFAULT_ALPHA));
         parameters.add(new Parameter(SIGMA, ParameterType.DOUBLE, 0, Parameter.DEFAULT_MAX_VALUE, DEFAULT_SIGMA));
+        parameters.add(new Parameter(STOP_CONDITION, ParameterType.DOUBLE, 0, 1, DEFAULT_STOP_CONDITION));
     }
 
     @Override

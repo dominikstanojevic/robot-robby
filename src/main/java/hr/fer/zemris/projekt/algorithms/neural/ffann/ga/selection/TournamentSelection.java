@@ -1,11 +1,11 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.selection;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Kristijan Vulinovic
@@ -24,7 +24,7 @@ public class TournamentSelection implements ISelection {
 
         int n = population.size();
         for (int i = 0; i < tournamentSize; ++i){
-            int index = Utils.RANDOM.nextInt(n);
+            int index = ThreadLocalRandom.current().nextInt(n);
             selected.add(population.get(index));
         }
         selected.sort(Comparator.reverseOrder());

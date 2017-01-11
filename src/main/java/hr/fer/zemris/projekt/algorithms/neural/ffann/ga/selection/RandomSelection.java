@@ -1,10 +1,10 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.selection;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Kristijan Vulinovic
@@ -16,7 +16,7 @@ public class RandomSelection implements ISelection {
         List<Chromosome> populationList = new ArrayList<>(population);
         int n = population.size();
 
-        int index = Utils.RANDOM.nextInt(n);
+        int index = ThreadLocalRandom.current().nextInt(n);
         return populationList.get(index);
     }
 }

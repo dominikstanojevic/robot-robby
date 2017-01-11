@@ -1,8 +1,7 @@
 package hr.fer.zemris.projekt.algorithms.neural.elman.ga;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
-
 import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Dominik Stanojevic, Kristijan Vulinovic
@@ -22,7 +21,7 @@ public class Chromosome implements Comparable<Chromosome>{
         weights = new double[size];
 
         for (int i = 0; i < size; i++) {
-            weights[i] = Utils.RANDOM.nextDouble() * (upperBound - lowerBound) + lowerBound;
+            weights[i] = ThreadLocalRandom.current().nextDouble() * (upperBound - lowerBound) + lowerBound;
         }
 
         hasHashCode = false;

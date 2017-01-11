@@ -4,7 +4,6 @@ import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.neural.ActivationFunction;
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ElmanNeuralNetwork;
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
@@ -15,14 +14,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -90,17 +92,22 @@ public class GA extends ObservableAlgorithm {
         int tournamentSize = (int) parameters.getParameter(GAParameters.TOURNAMENT_SIZE).getValue();
         double alpha = parameters.getParameter(GAParameters.ALPHA).getValue();
         double sigma = parameters.getParameter(GAParameters.SIGMA).getValue();
+        double stopCondition = parameters.getParameter(GAParameters.STOP_CONDITION).getValue();
 
         List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
 
         for (int i = 0; i < maxGenerations; i++) {
 
             if (i % 100 == 0) {
-                simulator.generateGrids(50, 10, 10, false, Utils.RANDOM);
+                simulator.generateGrids(30, 10, 10, false, ThreadLocalRandom.current());
             }
 
             evaluatePopulation(population, pool);
             population = sortPopulation(population);
+            if (population.get(0).getFitness() > stopCondition) {
+                break;
+            }
+
             ElmanNeuralNetwork best = prepareBest(population.get(0));
             this.notifyListeners(best, getAverageFitness(population), i);
 
@@ -131,6 +138,10 @@ public class GA extends ObservableAlgorithm {
                 for (Future<Pair> children : newPop) {
                     Pair c = children.get();
                     newPopulation.add(c.first);
+
+                    if (newPopulation.size() >= populationSize) {
+                        break;
+                    }
                     newPopulation.add(c.second);
                 }
             } catch (InterruptedException e) {
@@ -145,7 +156,7 @@ public class GA extends ObservableAlgorithm {
         population = sortPopulation(population);
         Chromosome best = population.get(0);
 
-        simulator.generateGrids(10000, 10, 10, false, Utils.RANDOM);
+        simulator.generateGrids(10000, 10, 10, false, ThreadLocalRandom.current());
         evaluateSolution(best);
         System.out.println(best);
 
@@ -164,7 +175,7 @@ public class GA extends ObservableAlgorithm {
         double[] chromosome = child.getWeights();
 
         for (int i = 0; i < chromosome.length; i++) {
-                chromosome[i] += Utils.RANDOM.nextGaussian() * sigma;
+            chromosome[i] += ThreadLocalRandom.current().nextGaussian() * sigma;
         }
     }
 
@@ -180,8 +191,8 @@ public class GA extends ObservableAlgorithm {
             double max = Math.max(firstParent[i], secondParent[i]);
             double delta = max - min;
 
-            firstChild[i] = Utils.RANDOM.nextDouble() * delta * (2 * alpha + 1) + min - delta * alpha;
-            secondChild[i] = Utils.RANDOM.nextDouble() * delta * (2 * alpha + 1) + min - delta * alpha;
+            firstChild[i] = ThreadLocalRandom.current().nextDouble() * delta * (2 * alpha + 1) + min - delta * alpha;
+            secondChild[i] = ThreadLocalRandom.current().nextDouble() * delta * (2 * alpha + 1) + min - delta * alpha;
         }
 
         return new Pair(new Chromosome(firstChild), new Chromosome(secondChild));
@@ -189,26 +200,30 @@ public class GA extends ObservableAlgorithm {
 
     private Pair selectParents(List<Chromosome> population, int tournamentSize) {
         Chromosome first = tournamentSelection(population, tournamentSize);
-        Chromosome second = tournamentSelection(population, tournamentSize);
+        Chromosome second;
+        do {
+            second = tournamentSelection(population, tournamentSize);
+        } while (first == second);
 
         return new Pair(first, second);
     }
 
     private Chromosome tournamentSelection(
             List<Chromosome> population, int tournamentSize) {
-        List<Chromosome> chosen = new ArrayList<>();
+        Set<Chromosome> chosen = new HashSet<>();
         int populationSize = population.size();
 
         int size = 0;
         while (size < tournamentSize) {
-            Chromosome chromosome = population.get(Utils.RANDOM.nextInt(populationSize));
+            Chromosome chromosome = population.get(ThreadLocalRandom.current().nextInt(populationSize));
             if (chosen.add(chromosome)) {
                 size++;
             }
         }
-        chosen = sortPopulation(chosen);
+        List<Chromosome> chosenList = new ArrayList<>(chosen);
+        chosenList = sortPopulation(chosenList);
 
-        return chosen.get(0);
+        return chosenList.get(0);
     }
 
     private List<Chromosome> sortPopulation(List<Chromosome> population) {

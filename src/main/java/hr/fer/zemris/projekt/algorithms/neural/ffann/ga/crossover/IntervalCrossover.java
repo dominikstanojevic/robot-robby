@@ -1,7 +1,8 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.crossover;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Kristijan Vulinovic
@@ -27,7 +28,7 @@ public class IntervalCrossover implements ICrossover {
             double max = Math.max(weights1[i], weights2[i]);
             double delta = max - min;
 
-            weights[i] = Utils.RANDOM.nextDouble() * delta * (2 * alpha + 1) + min - delta * alpha;
+            weights[i] = ThreadLocalRandom.current().nextDouble() * delta * (2 * alpha + 1) + min - delta * alpha;
         }
 
         return new Chromosome(weights);

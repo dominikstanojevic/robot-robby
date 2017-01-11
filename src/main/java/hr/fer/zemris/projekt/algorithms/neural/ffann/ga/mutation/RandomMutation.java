@@ -1,8 +1,8 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.mutation;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 /**
@@ -25,7 +25,7 @@ public abstract class RandomMutation implements IMutation {
         double[] weights = chromosome.getWeights();
 
         for (int i = 0; i < weights.length; ++i){
-            if (Utils.RANDOM.nextDouble() < mutationRate){
+            if (ThreadLocalRandom.current().nextDouble() < mutationRate){
                 weights[i] += change.apply(sigma);
             }
         }

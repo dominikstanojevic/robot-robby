@@ -1,9 +1,9 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.selection;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Kristijan Vulinovic
@@ -23,7 +23,7 @@ public class RouletteWheelSelection implements ISelection {
         }
         fitnessSum -= population.size() * worstFitness;
 
-        double roulette = Utils.RANDOM.nextDouble() * fitnessSum;
+        double roulette = ThreadLocalRandom.current().nextDouble() * fitnessSum;
         double currentSum = 0;
 
         for (Chromosome x : population){

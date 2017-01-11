@@ -1,7 +1,8 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.crossover;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Kristijan Vulinovic
@@ -14,8 +15,8 @@ public class TwoPointCrossover implements ICrossover {
         double[] weights2 = parent2.getWeights();
 
         int n = weights1.length;
-        int firstPoint = Utils.RANDOM.nextInt(n);
-        int secontPoint = Utils.RANDOM.nextInt(n);
+        int firstPoint = ThreadLocalRandom.current().nextInt(n);
+        int secontPoint = ThreadLocalRandom.current().nextInt(n);
 
         if (firstPoint > secontPoint){
             int tmp = firstPoint;

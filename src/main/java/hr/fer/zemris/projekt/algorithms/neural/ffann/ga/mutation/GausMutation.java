@@ -1,7 +1,6 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann.ga.mutation;
 
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
-
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 /**
@@ -9,7 +8,7 @@ import java.util.function.Function;
  * @version 1.0.0
  */
 public class GausMutation extends RandomMutation {
-    private static Function<Double, Double> change = x -> Utils.RANDOM.nextGaussian() * x;
+    private static Function<Double, Double> change = x -> ThreadLocalRandom.current().nextGaussian() * x;
 
     public GausMutation(double mutationRate, double sigma) {
         super(mutationRate, sigma, change);

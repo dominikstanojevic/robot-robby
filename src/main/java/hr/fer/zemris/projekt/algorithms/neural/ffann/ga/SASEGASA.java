@@ -4,7 +4,6 @@ import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.neural.ActivationFunction;
-import hr.fer.zemris.projekt.algorithms.neural.Utils;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.FFANN;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.compFactor.ICompFactor;
@@ -25,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static hr.fer.zemris.projekt.algorithms.neural.ActivationFunction.HYP_TAN;
 import static hr.fer.zemris.projekt.algorithms.neural.ActivationFunction.SIGMOID;
@@ -136,7 +136,7 @@ public class SASEGASA extends ObservableAlgorithm {
         compFactor.reset();
         while (selectionPressure < maxSelectionPressure && generation < maxGenerations){
             if (generation % 50 == 0){
-                simulator.generateGrids(50, 10, 10, false);
+                simulator.generateGrids(50, 10, 10, false, ThreadLocalRandom.current());
             }
             generation++;
             compFactor.nextFactor();
@@ -194,7 +194,7 @@ public class SASEGASA extends ObservableAlgorithm {
                 population = new ArrayList<>(newPopulation);
 
                 while (population.size() < expectedSize){
-                    population.add(population.get(Utils.RANDOM.nextInt(population.size())));
+                    population.add(population.get(ThreadLocalRandom.current().nextInt(population.size())));
                 }
                 break;
             }

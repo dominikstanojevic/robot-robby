@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Dominik on 5.12.2016..
@@ -79,7 +80,7 @@ public class Mapper {
         if (biggestIndexes.size() == 1) {
             return Move.values()[biggestIndexes.get(0)];
         } else {
-            int ordinal = biggestIndexes.get(Utils.RANDOM.nextInt(biggestIndexes.size()));
+            int ordinal = biggestIndexes.get(ThreadLocalRandom.current().nextInt(biggestIndexes.size()));
             return Move.values()[ordinal];
         }
     }
