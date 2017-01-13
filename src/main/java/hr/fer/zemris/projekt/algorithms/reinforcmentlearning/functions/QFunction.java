@@ -69,10 +69,11 @@ public class QFunction {
                 ReinforcmentLearningParameters.EXPLORATION_FACTOR_NAME).getValue();
     }
 
-    private double getQValue(State state, Move action) {
+    public double getQValue(State state, Move action) {
         if (!qValues.containsKey(state)) {
             initializeQValue(state);
         }
+
         return qValues.get(state).get(action);
     }
 
@@ -94,8 +95,9 @@ public class QFunction {
 
     public void updateFunction(State oldState, State currState, Move action, boolean randomAction) {
         if (oldState == null || action == null) {
-            return;
+            throw new IllegalArgumentException("Old state and action must not be null.");
         }
+
         if (randomAction == true) {
             updateStateActionCount(oldState, Move.RANDOM);
         } else {
@@ -108,13 +110,14 @@ public class QFunction {
     private void updateQValue(State oldState, State currState, Move action, boolean randomAction) {
 
         double reward = RewardFunction.calculateReward(oldState, action);
-        if (randomAction = true) {
+        if (randomAction == true) {
             action = Move.RANDOM;
         }
         double currentQValue = getQValue(oldState, action);
         double optimalFutureReward = calcOptimalFutureValue(currState);
         double newValue = (1 - learningRate) * currentQValue + learningRate
                 * (reward + discountFactor * optimalFutureReward);
+
         setQValue(oldState, action, newValue);
     }
 

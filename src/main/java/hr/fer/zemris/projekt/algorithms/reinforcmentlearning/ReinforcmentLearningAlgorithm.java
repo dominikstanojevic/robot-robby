@@ -25,6 +25,7 @@ import java.util.List;
 public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
 
     private QFunction currentQFunction;
+
     private static final String solutionFileCommentStart = "#";
 
     @Override

@@ -12,6 +12,10 @@ public class RewardFunction {
     private static double emptyPickUp = -2;
     private static double wallCollision = -10;
 
+    private RewardFunction() {
+
+    }
+
     public static double getLivingReward() {
         return livingReward;
     }
@@ -40,6 +44,9 @@ public class RewardFunction {
     }
 
     public static double calculateReward(State oldState, Move action) {
+        if (action.equals(Move.RANDOM)) {
+            throw new UnsupportedOperationException("Can't calculate reward for random move.");
+        }
         double reward = 0;
         reward += livingReward;
         if (checkBottlePickedUp(oldState, action)) {
