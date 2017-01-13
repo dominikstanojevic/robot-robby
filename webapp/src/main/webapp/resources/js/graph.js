@@ -71,7 +71,7 @@ function Graph(canvas, xAxis, yAxis, lineConfigs) {
 
             ctx.textBaseline = "middle";
             ctx.textAlign = "right";
-            ctx.fillText(round(j, 2), margins.left - 4, scaledY);
+            ctx.fillText(round(j, 2).toFixed(2), margins.left - 4, scaledY);
 
             if (Math.abs(j) < 1E-6) continue;
 

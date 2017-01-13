@@ -33,7 +33,7 @@ public class TrainServlet extends HttpServlet {
     private static final Random RANDOM = new Random();
 
     private static final int TIMEOUT_MINUTES = 10;
-    private static final int FLUSH_FREQUENCY = 20;
+    private static final int FLUSH_FREQUENCY = 10;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -96,6 +96,8 @@ public class TrainServlet extends HttpServlet {
         });
 
         req.getSession().setAttribute(Constants.SESSION_KEY_TRAINING_THREAD, executor);
+        req.getSession().setAttribute(Constants.SESSION_KET_TRAINING_TASK, futureTask);
+
         executor.submit(futureTask);
 
         try {
@@ -113,6 +115,7 @@ public class TrainServlet extends HttpServlet {
 
         } finally {
             req.getSession().removeAttribute(Constants.SESSION_KEY_TRAINING_THREAD);
+            req.getSession().removeAttribute(Constants.SESSION_KET_TRAINING_TASK);
             executor.shutdown();
 
             resp.getWriter().write("data: finished\n\n");

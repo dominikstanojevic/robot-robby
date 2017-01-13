@@ -12,6 +12,7 @@
 <script type="text/javascript">
 
     var graph;
+    var eventSource;
 
     function init() {
         optionSelected();
@@ -99,6 +100,7 @@
             if (!inputs[i].checkValidity()) {
                 return false;
             }
+            if (inputs[i].name == 'btnSubmit') continue;
 
             params += inputs[i].name;
             params += "=";
@@ -120,7 +122,7 @@
 
         graph.draw();
 
-        var eventSource = new EventSource("train" + params);
+        eventSource = new EventSource("train" + params);
         eventSource.onmessage = function(event) {
             if (event.data == "finished") {
                 eventSource.close();
@@ -130,7 +132,7 @@
             var result = JSON.parse(event.data);
             var iteration = result["iteration"];
 
-            if (iteration == 0 || iteration == 1 || iteration % 20 == 0) {
+            if (iteration == 0 || iteration == 1 || iteration % 10 == 0) {
                 graph.addPoint([
                     new Point(iteration, result["best"]),
                     new Point(iteration, result["average"])
@@ -139,6 +141,17 @@
                 document.getElementById("fitnessSpan").innerHTML = result["best"];
             }
         };
+    }
+
+    function stopAlgorithm() {
+        $.ajax({
+            url: "stopTraining",
+            method: "POST",
+            success: function () {
+                eventSource.close();
+                console.log("stopped");
+            }
+        });
     }
 </script>
 
@@ -156,8 +169,10 @@
     </table>
 
     <input id="algorithmID" type="hidden" name="algorithmID">
-    <input type="submit">
+    <input type="submit" name="btnSubmit">
 </form>
+
+<button id="btnStop" type="button" onclick="stopAlgorithm()">Stop training</button>
 
 <canvas id="plotCanvas" width="900" height="450"></canvas>
 <span id="fitnessSpan"></span>
