@@ -3,6 +3,7 @@ package hr.fer.zemris.projekt.algorithms.reinforcmentlearning;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
+import hr.fer.zemris.projekt.algorithms.RobotFormatException;
 import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.functions.QFunction;
 import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.functions.RewardFunction;
 import hr.fer.zemris.projekt.parameter.Parameters;
@@ -28,10 +29,15 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
 
     @Override
     public Robot readSolutionFromFile(Path filePath) throws IOException {
-        String solutionContent = readSolutionFile(filePath);
-        ReinforcmentLearningParameters params = new ReinforcmentLearningParameters();
-        params.setParameter(ReinforcmentLearningParameters.LEARNING_RATE_NAME, 0);
-        currentQFunction = QFunction.fromString(solutionContent, params);
+        try {
+            String solutionContent = readSolutionFile(filePath);
+            ReinforcmentLearningParameters params = new ReinforcmentLearningParameters();
+            params.setParameter(ReinforcmentLearningParameters.LEARNING_RATE_NAME, 0);
+            currentQFunction = QFunction.fromString(solutionContent, params);
+        } catch (IllegalArgumentException ex) {
+            // TODO
+            throw new RobotFormatException();
+        }
         return new Agent(currentQFunction);
 
     }
@@ -98,8 +104,16 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
             }
         }
 
-        // TODO
-        return null;
+        ReinforcmentLearningParameters params = new ReinforcmentLearningParameters();
+        params.setParameter(ReinforcmentLearningParameters.LEARNING_RATE_NAME, 0);
+        return new Agent(currentQFunction);
 
+    }
+
+    private static final String algorithmName = "Reinforcment Learning";
+
+    @Override
+    public String toString() {
+        return algorithmName;
     }
 }

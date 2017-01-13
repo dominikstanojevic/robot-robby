@@ -19,14 +19,14 @@ public class ReinforcmentLearningDemo {
         final boolean hasWalls = false;
 
         MultithreadedSimulator sim = new MultithreadedSimulator();
-        // sim.generateGrids(numberOfGrids, numberOfBottles, width, height,
-        // hasWalls);
+        sim.generateGrids(numberOfGrids, numberOfBottles, width, height, hasWalls);
         ReinforcmentLearningAlgorithm algorithm = new ReinforcmentLearningAlgorithm();
 
-        // algorithm.run(sim);
-        // algorithm.writeSolutionToFile(Paths.get("a.txt"), null);
+        algorithm.run(sim);
+        algorithm.writeSolutionToFile(Paths.get("robots/reinforcment_learning/b.txt"), null);
 
-        Robot roby = algorithm.readSolutionFromFile(Paths.get("a1.txt"));
+        Robot roby = algorithm
+                .readSolutionFromFile(Paths.get("robots/reinforcment_learning/b.txt"));
 
         for (int i = 0; i < 10; i++) {
             sim.generateGrids(100, 50, 10, 10, false);

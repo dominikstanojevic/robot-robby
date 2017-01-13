@@ -4,6 +4,7 @@ import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.RobotFormatException;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
+import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.ReinforcmentLearningAlgorithm;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
@@ -81,8 +82,9 @@ public class SimulationPanel extends JPanel {
                 lMapStatus.setText("Map successfully generated.");
 
                 btnSaveMap.setEnabled(true);
-                if (robot != null)
+                if (robot != null) {
                     btnSimulate.setEnabled(true);
+                }
 
             }
         });
@@ -106,8 +108,8 @@ public class SimulationPanel extends JPanel {
                 disableButtons();
 
                 createPanel
-                        .add(new JLabel(
-                                "Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
+                .add(new JLabel(
+                        "Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
                 JButton btnDone = new JButton("Done");
                 createPanel.add(btnDone);
                 btnDone.addActionListener(new ActionListener() {
@@ -119,8 +121,9 @@ public class SimulationPanel extends JPanel {
                         createPanel.removeAll();
 
                         enableButtons();
-                        if (robot == null)
+                        if (robot == null) {
                             btnSimulate.setEnabled(false);
+                        }
 
                         lMapStatus.setText("Map successfully created.");
                     }
@@ -149,8 +152,9 @@ public class SimulationPanel extends JPanel {
                         map.setGrid(grid);
                         lMapStatus.setText("Map successfully loaded.");
                         btnSaveMap.setEnabled(true);
-                        if (robot != null)
+                        if (robot != null) {
                             btnSimulate.setEnabled(true);
+                        }
 
                     } catch (Exception e1) {
                         lMapStatus.setText("Unable to load map.");
@@ -193,7 +197,8 @@ public class SimulationPanel extends JPanel {
         });
 
         optionsPanel.add(new JLabel("Select algorithm for loading robot:"));
-        Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming() };
+        Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming(),
+                new ReinforcmentLearningAlgorithm() };
         JComboBox<Algorithm> cbAlgorithm = new JComboBox<>(algorithms);
         cbAlgorithm.setSelectedItem(algorithms[0]);
         optionsPanel.add(cbAlgorithm);
@@ -219,11 +224,12 @@ public class SimulationPanel extends JPanel {
                         robot = a.readSolutionFromFile(Paths.get(file.getPath()));
                         if (robot != null) {
                             lRobotStatus.setText("Robot successfully loaded.");
-                            if (map.getGrid() != null)
+                            if (map.getGrid() != null) {
                                 btnSimulate.setEnabled(true);
+                            }
                         } else {
                             lRobotStatus
-                                    .setText("Selected file is not a valid robot for the given algorithm.");
+                            .setText("Selected file is not a valid robot for the given algorithm.");
                             robot = null;
                             btnSimulate.setEnabled(false);
                         }
@@ -232,7 +238,7 @@ public class SimulationPanel extends JPanel {
                         lRobotStatus.setText("An error occured while loading robot.");
                     } catch (RobotFormatException e2) {
                         lRobotStatus
-                                .setText("Selected file is not a valid robot for the given algorithm.");
+                        .setText("Selected file is not a valid robot for the given algorithm.");
                     }
 
                 }

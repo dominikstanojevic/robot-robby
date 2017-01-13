@@ -9,13 +9,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class that models q learning function.
+ *
+ * @author Domagoj Pluscec
+ * @version v1.0, 2.1.2017.
+ */
 public class QFunction {
 
+    /**
+     * Map of q values for state action pairs.
+     */
     private Map<State, Map<Move, Double>> qValues;
+    /**
+     * Frequency of occurrence of state action pairs.
+     */
     private Map<State, Map<Move, Integer>> stateActionCount;
 
+    /**
+     * Learning rate.
+     */
     private double learningRate;
+    /**
+     * New experience discount factor.
+     */
     private double discountFactor;
+    /**
+     * Exploration factor. Determines how much to prefer new state action pair
+     * over prize.
+     */
     private double explorationFactor;
 
     private final static double initialQValue = 0;
@@ -70,19 +92,26 @@ public class QFunction {
 
     }
 
-    public void updateFunction(State oldState, State currState, Move action) {
+    public void updateFunction(State oldState, State currState, Move action, boolean randomAction) {
         if (oldState == null || action == null) {
             return;
         }
-        updateStateActionCount(oldState, action);
-        updateQValue(oldState, currState, action);
+        if (randomAction == true) {
+            updateStateActionCount(oldState, Move.RANDOM);
+        } else {
+            updateStateActionCount(oldState, action);
+        }
+
+        updateQValue(oldState, currState, action, randomAction);
     }
 
-    private void updateQValue(State oldState, State currState, Move action) {
-        double currentQValue = getQValue(oldState, action);
+    private void updateQValue(State oldState, State currState, Move action, boolean randomAction) {
 
         double reward = RewardFunction.calculateReward(oldState, action);
-
+        if (randomAction = true) {
+            action = Move.RANDOM;
+        }
+        double currentQValue = getQValue(oldState, action);
         double optimalFutureReward = calcOptimalFutureValue(currState);
         double newValue = (1 - learningRate) * currentQValue + learningRate
                 * (reward + discountFactor * optimalFutureReward);

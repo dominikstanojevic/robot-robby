@@ -147,7 +147,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
      *
      * @return the random generated {@link Move}.
      */
-    private static Move getRandomMove(Random rnd) {
+    public static Move getRandomMove(Random rnd) {
         Move nextMove = null;
 
         int moveID = rnd.nextInt(4);
@@ -284,7 +284,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
     /**
      * Notifies the listeners with a {@link RobotActionTaken} object only if
      * somebody is observing this object.
-     * 
+     *
      * @param grid
      *            grid that the move was taken on
      * @param move

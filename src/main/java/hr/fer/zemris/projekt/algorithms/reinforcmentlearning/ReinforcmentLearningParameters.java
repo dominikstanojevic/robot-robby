@@ -45,7 +45,7 @@ public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLe
     private static final double MAX_EXPLORATION_FACTOR = 1000;
 
     public static final String ITERATIONS_NUMBER_NAME = "ITERATIONS_NUMBER";
-    private static final int DEFAULT_ITERATIONS_NUMBER = 100;
+    private static final int DEFAULT_ITERATIONS_NUMBER = 1000;
     private static final int MIN_ITERATIONS_NUMBER = 1;
     private static final int MAX_ITERATIONS_NUMBER = 10000000;
 
@@ -57,8 +57,8 @@ public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLe
                 ParameterType.INTEGER, MIN_ITERATIONS_NUMBER, MAX_ITERATIONS_NUMBER,
                 DEFAULT_ITERATIONS_NUMBER));
         parameterMap
-                .put(LIVING_REWARD_NAME, new Parameter(LIVING_REWARD_NAME, ParameterType.INTEGER,
-                        MIN_LIVING_REWARD, MAX_LIVING_REWARD, DEFAULT_LIVING_REWARD));
+        .put(LIVING_REWARD_NAME, new Parameter(LIVING_REWARD_NAME, ParameterType.INTEGER,
+                MIN_LIVING_REWARD, MAX_LIVING_REWARD, DEFAULT_LIVING_REWARD));
         parameterMap.put(PICKED_BOTTLE_REWARD_NAME, new Parameter(PICKED_BOTTLE_REWARD_NAME,
                 ParameterType.INTEGER, MIN_PICKED_BOTTLE_REWARD, MAX_PICKED_BOTTLE_REWARD,
                 DEFAULT_PICKED_BOTTLE_REWARD));
