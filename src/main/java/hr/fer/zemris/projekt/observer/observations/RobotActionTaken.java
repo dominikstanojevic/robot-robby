@@ -4,9 +4,9 @@ import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.grid.IGrid;
 
 /**
- * Represents the robot's action on a {@link hr.fer.zemris.projekt.grid.Grid
- * grid}. Contains a reference to the {@code Grid} that the {@code Move} was
- * played on, as well as the previous and current positions of the robot.
+ * Represents the robot's action on a {@link hr.fer.zemris.projekt.grid.Grid grid}.
+ * Contains a reference to the {@code Grid} that the {@code Move} was played on,
+ * as well as the previous and current positions of the robot.
  *
  * @author Leon Luttenberger
  * @version 1.0.0
@@ -44,24 +44,16 @@ public class RobotActionTaken {
     private int currentColumn;
 
     /**
-     * Constructs a {@link RobotActionTaken} object with the specified
-     * parameters.
+     * Constructs a {@link RobotActionTaken} object with the specified parameters.
      *
-     * @param grid
-     *            grid where the action was taken
-     * @param move
-     *            action taken
-     * @param previousRow
-     *            previous X position of the robot, before the action was taken
-     * @param previousColumn
-     *            previous Y position of the robot, before the action was taken
-     * @param currentRow
-     *            previous X position of the robot, after the action was taken
-     * @param currentColumn
-     *            previous Y position of the robot, after the action was taken
+     * @param grid           grid where the action was taken
+     * @param move           action taken
+     * @param previousRow    previous X position of the robot, before the action was taken
+     * @param previousColumn previous Y position of the robot, before the action was taken
+     * @param currentRow     previous X position of the robot, after the action was taken
+     * @param currentColumn  previous Y position of the robot, after the action was taken
      */
-    public RobotActionTaken(IGrid grid, Move move, int previousRow, int previousColumn,
-            int currentRow, int currentColumn) {
+    public RobotActionTaken(IGrid grid, Move move, int previousRow, int previousColumn, int currentRow, int currentColumn) {
         this.grid = grid;
         this.move = move;
         this.previousRow = previousRow;

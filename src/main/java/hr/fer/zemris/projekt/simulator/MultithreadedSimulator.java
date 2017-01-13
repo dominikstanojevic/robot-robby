@@ -15,9 +15,9 @@ import java.util.concurrent.Future;
 /**
  * A multi threaded game simulator that is able to take a reference to an
  * algorithm and use it to run it on multiple grids in order to generate
- * statistics of the game. Every game will be run on it's own thread, but there
- * is no guarantee on the order of the games played nor the order of algorithm
- * nexMove calls.
+ * statistics of the game. Every game will be run on it's own thread, but
+ * there is no guarantee on the order of the games played nor the order of
+ * algorithm nexMove calls.
  *
  * @author Kristijan Vulinovic
  * @version 1.0.2
@@ -30,12 +30,11 @@ public class MultithreadedSimulator extends AbstractSimulator {
     private ExecutorService pool;
 
     /**
-     * Creates a new {@link MultithreadedSimulator} with the maximal number of
-     * moves equal to the one given in the argument. Creates a thread pool that
-     * will be used for game playing.
+     * Creates a new {@link MultithreadedSimulator} with the maximal number
+     * of moves equal to the one given in the argument. Creates a thread
+     * pool that will be used for game playing.
      *
-     * @param maxMoves
-     *            the maximal number of moves.
+     * @param maxMoves the maximal number of moves.
      */
     public MultithreadedSimulator(int maxMoves) {
         super(maxMoves);
@@ -59,7 +58,7 @@ public class MultithreadedSimulator extends AbstractSimulator {
 
     @Override
     public List<Stats> playGames(Robot robot) {
-        if (grids == null) {
+        if (grids == null){
             throw new IllegalStateException("There are no defined grids for this simulation.");
         }
         Random rnd = new Random();
@@ -74,21 +73,20 @@ public class MultithreadedSimulator extends AbstractSimulator {
             try {
                 Stats stat = job.get();
                 stats.add(stat);
-            } catch (InterruptedException | ExecutionException e) {
-            }
+            } catch (InterruptedException | ExecutionException e) {}
         }
 
         return stats;
     }
 
     /**
-     * A {@link Callable} class that plays a single game on a single thread. The
-     * result of the game will be given as a stats class.
+     * A {@link Callable} class that plays a single game on a single thread.
+     * The result of the game will be given as a stats class.
      *
      * @author Kristijan Vulinovic
      * @version 1.0.0
      */
-    private class PlayGame implements Callable<Stats> {
+    private class PlayGame implements Callable<Stats>{
         /**
          * The robot playing the game.
          */
@@ -105,14 +103,11 @@ public class MultithreadedSimulator extends AbstractSimulator {
         /**
          * Creates a new {@link PlayGame} with the given robot and grid.
          *
-         * @param robot
-         *            The algorithm that should be used to play the game.
-         * @param grid
-         *            The grid that should be used to play the game on.
-         * @param rnd
-         *            Random number generator used to get a random move.
+         * @param robot The algorithm that should be used to play the game.
+         * @param grid The grid that should be used to play the game on.
+         * @param rnd Random number generator used to get a random move.
          */
-        public PlayGame(Robot robot, IGrid grid, Random rnd) {
+        public PlayGame(Robot robot, IGrid grid, Random rnd){
             this.robot = robot;
             this.grid = grid;
             this.rnd = rnd;

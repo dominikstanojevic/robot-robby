@@ -6,7 +6,6 @@ import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.State;
 import hr.fer.zemris.projekt.grid.Field;
 
 public class RewardFunction {
-    // TODO random move reward ??
 
     private static double livingReward = -0.5;
     private static double pickedBottle = 10;

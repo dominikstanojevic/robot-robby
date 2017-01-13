@@ -7,7 +7,7 @@ import hr.fer.zemris.projekt.grid.Field;
 /**
  * An implementation of {@link FunctionNode} with the condition checking whether
  * the {@link Field} left contains a wall.
- * 
+ *
  * @author Dunja Vesinger
  * @version 1.0.0
  */
@@ -17,7 +17,6 @@ public class IfLeftWall extends FunctionNode {
 
     public IfLeftWall() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public IfLeftWall(Node ifTrue, Node ifFalse) {
@@ -26,8 +25,9 @@ public class IfLeftWall extends FunctionNode {
 
     @Override
     protected boolean evaluateCondition(Field current, Field left, Field right, Field up, Field down) {
-        if (left == Field.WALL)
+        if (left == Field.WALL) {
             return true;
+        }
         return false;
     }
 

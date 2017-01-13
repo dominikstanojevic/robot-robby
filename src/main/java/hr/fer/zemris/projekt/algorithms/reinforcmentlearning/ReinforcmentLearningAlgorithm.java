@@ -35,7 +35,6 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
             params.setParameter(ReinforcmentLearningParameters.LEARNING_RATE_NAME, 0);
             currentQFunction = QFunction.fromString(solutionContent, params);
         } catch (IllegalArgumentException ex) {
-            // TODO
             throw new RobotFormatException();
         }
         return new Agent(currentQFunction);

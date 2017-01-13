@@ -36,7 +36,7 @@ public class GeneticProgrammingDemo {
         // System.out.println("Average fitness: " + avg);
         //
         // } catch (IOException e) {
-        // // TODO Auto-generated catch block
+        //
         // e.printStackTrace();
         // }
 
@@ -121,7 +121,7 @@ public class GeneticProgrammingDemo {
         // }
         //
         // } catch (IOException e) {
-        // // TODO Auto-generated catch block
+        //
         // e.printStackTrace();
         // }
 

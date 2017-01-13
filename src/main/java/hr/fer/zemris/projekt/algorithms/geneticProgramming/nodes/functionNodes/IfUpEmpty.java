@@ -7,7 +7,7 @@ import hr.fer.zemris.projekt.grid.Field;
 /**
  * An implementation of {@link FunctionNode} with the condition checking whether
  * the {@link Field} up is empty.
- * 
+ *
  * @author Dunja Vesinger
  * @version 1.0.0
  */
@@ -16,7 +16,6 @@ public class IfUpEmpty extends FunctionNode {
     public static final String NAME = "ifUpEmpty";
 
     public IfUpEmpty() {
-        // TODO Auto-generated constructor stub
     }
 
     public IfUpEmpty(Node ifTrue, Node ifFalse) {
@@ -25,8 +24,9 @@ public class IfUpEmpty extends FunctionNode {
 
     @Override
     protected boolean evaluateCondition(Field current, Field left, Field right, Field up, Field down) {
-        if (up == Field.EMPTY)
+        if (up == Field.EMPTY) {
             return true;
+        }
         return false;
     }
 

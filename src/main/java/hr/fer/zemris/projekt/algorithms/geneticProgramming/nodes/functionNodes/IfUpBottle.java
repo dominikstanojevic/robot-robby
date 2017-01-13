@@ -7,7 +7,7 @@ import hr.fer.zemris.projekt.grid.Field;
 /**
  * An implementation of {@link FunctionNode} with the condition checking whether
  * the {@link Field} up contains a bottle.
- * 
+ *
  * @author Dunja Vesinger
  * @version 1.0.0
  */
@@ -16,7 +16,6 @@ public class IfUpBottle extends FunctionNode {
     public static final String NAME = "ifUpBottle";
 
     public IfUpBottle() {
-        // TODO Auto-generated constructor stub
     }
 
     public IfUpBottle(Node ifTrue, Node ifFalse) {
@@ -25,8 +24,9 @@ public class IfUpBottle extends FunctionNode {
 
     @Override
     protected boolean evaluateCondition(Field current, Field left, Field right, Field up, Field down) {
-        if (up == Field.BOTTLE)
+        if (up == Field.BOTTLE) {
             return true;
+        }
         return false;
     }
 

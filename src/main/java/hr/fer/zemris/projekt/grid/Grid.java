@@ -58,7 +58,7 @@ public class Grid implements IGrid {
         checkArgument(row, -1, height + 1, "row");
         checkArgument(column, -1, width + 1, "column");
 
-        if (row == -1 || column == -1 || row == height || column == width) {
+        if (row == -1 || column == -1 || row == height || column == width){
             return Field.WALL;
         }
 
@@ -70,13 +70,13 @@ public class Grid implements IGrid {
         checkArgument(row, 0, height, "row");
         checkArgument(column, 0, width, "column");
 
-        if (newField == null) {
+        if (newField == null){
             throw new IllegalArgumentException("The field is not allowed to be null!");
         }
 
-        if (grid[row][column] == Field.BOTTLE && newField != Field.BOTTLE) {
+        if (grid[row][column] == Field.BOTTLE && newField != Field.BOTTLE){
             numberOfBottles--;
-        } else if (grid[row][column] != Field.BOTTLE && newField == Field.BOTTLE) {
+        } else if(grid[row][column] != Field.BOTTLE && newField == Field.BOTTLE){
             numberOfBottles++;
         }
         grid[row][column] = newField;
@@ -113,16 +113,16 @@ public class Grid implements IGrid {
 
     @Override
     public void generate(int width, int height, int numberOfBottles, boolean hasWalls) {
-        if (numberOfBottles > width * height) {
+        if (numberOfBottles > width * height){
             throw new IllegalArgumentException("Number of bottles too big!");
         }
-        if (numberOfBottles < 0) {
+        if (numberOfBottles < 0){
             throw new IllegalArgumentException("Number of bottles has to be an positive integer.");
         }
-        if (width < 0) {
+        if (width < 0){
             throw new IllegalArgumentException("Width must be positive!");
         }
-        if (height < 0) {
+        if (height < 0){
             throw new IllegalArgumentException("Height must be positive!");
         }
 
@@ -130,8 +130,8 @@ public class Grid implements IGrid {
         this.width = width;
         this.height = height;
 
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j) {
+        for (int i = 0; i < height; ++i){
+            for (int j = 0; j < width; ++j){
                 grid[i][j] = Field.EMPTY;
             }
         }
@@ -141,25 +141,24 @@ public class Grid implements IGrid {
         Random rnd = new Random();
         int bottlesPlaced = 0;
 
-        while (bottlesPlaced < numberOfBottles) {
+        while (bottlesPlaced < numberOfBottles){
             int row = rnd.nextInt(height);
             int column = rnd.nextInt(width);
 
-            if (grid[row][column] == Field.EMPTY) {
+            if (grid[row][column] == Field.EMPTY){
                 grid[row][column] = Field.BOTTLE;
                 bottlesPlaced++;
             }
         }
 
-        if (hasWalls) {
-            throw new UnsupportedOperationException(
-                    "The given option is not implemented right now :(");
+        if (hasWalls){
+            throw new UnsupportedOperationException("The given option is not implemented right now :(");
         }
     }
 
     @Override
     public void setGrid(Field[][] gridField, int startRow, int startColumn) {
-        if (gridField == null) {
+        if (gridField == null){
             throw new IllegalArgumentException("The grid should not be null!");
         }
 
@@ -178,15 +177,15 @@ public class Grid implements IGrid {
 
     @Override
     public void readFromFile(Path filePath) throws IOException {
-        if (filePath == null) {
+        if (filePath == null){
             throw new IllegalArgumentException("The given file path is null!");
         }
-        if (!Files.exists(filePath)) {
+        if (!Files.exists(filePath)){
             throw new IllegalArgumentException("The given file does not exist!");
         }
 
         List<String> lines = Files.readAllLines(filePath);
-        if (lines.size() < 2) {
+        if (lines.size() < 2){
             throw new GridFormatException("The given file is not valid.");
         }
 
@@ -201,21 +200,19 @@ public class Grid implements IGrid {
     /**
      * Parses the given string in order to get the grid width and height.
      *
-     * @param str
-     *            the string defining the width and height
+     * @param str the string defining the width and height
      */
-    private void parseSize(String str) {
+    private void parseSize(String str){
         str = str.trim();
         String[] numbers = str.split(" ");
-        if (numbers.length != 2) {
-            throw new GridFormatException(
-                    "The size should define two arguments, the height and width!");
+        if (numbers.length != 2){
+            throw new GridFormatException("The size should define two arguments, the height and width!");
         }
 
         try {
             this.width = Integer.parseInt(numbers[0]);
             this.height = Integer.parseInt(numbers[1]);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e){
             throw new GridFormatException("Unable to parse the file!", e);
         }
     }
@@ -223,59 +220,56 @@ public class Grid implements IGrid {
     /**
      * Parses the given string in order to get the starting position.
      *
-     * @param str
-     *            the string containing the starting position.
+     * @param str the string containing the starting position.
      */
-    private void parseStart(String str) {
+    private void parseStart(String str){
         str = str.trim();
         String[] numbers = str.split(" ");
-        if (numbers.length != 2) {
-            throw new GridFormatException(
-                    "The size should define two arguments, the height and width!");
+        if (numbers.length != 2){
+            throw new GridFormatException("The size should define two arguments, the height and width!");
         }
 
         try {
             this.startX = Integer.parseInt(numbers[0]);
             this.startY = Integer.parseInt(numbers[1]);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e){
             throw new GridFormatException("Unable to parse the file!", e);
         }
     }
 
     /**
-     * Parses the given list of strings in order to create a grid represented by
-     * the list.
+     * Parses the given list of strings in order to create a grid represented
+     * by the list.
      *
-     * @param lines
-     *            the list defining the grid.
+     * @param lines the list defining the grid.
      */
-    private void parseGrid(List<String> lines) {
-        if (lines.size() != height) {
+    private void parseGrid(List<String> lines){
+        if (lines.size() != height){
             throw new GridFormatException("The given file is not valid!");
         }
 
         grid = new Field[height][width];
         int row = 0;
-        for (String line : lines) {
+        for (String line : lines){
             line = line.trim();
-            if (line.length() != width) {
+            if (line.length() != width){
                 throw new GridFormatException("The given file is not valid!");
             }
 
             int column = 0;
-            for (char ch : line.toCharArray()) {
-                switch (ch) {
-                case '*':
-                    grid[row][column] = Field.BOTTLE;
-                    break;
-                case '.':
-                    grid[row][column] = Field.EMPTY;
-                    break;
-                case '#':
-                    grid[row][column] = Field.WALL;
-                    break;
-                default:
-                    throw new GridFormatException("The given file format is invalid.");
+            for (char ch : line.toCharArray()){
+                switch (ch){
+                    case '*':
+                        grid[row][column] = Field.BOTTLE;
+                        break;
+                    case '.':
+                        grid[row][column] = Field.EMPTY;
+                        break;
+                    case '#':
+                        grid[row][column] = Field.WALL;
+                        break;
+                    default:
+                        throw new GridFormatException("The given file format is invalid.");
                 }
                 column++;
             }
@@ -286,10 +280,10 @@ public class Grid implements IGrid {
 
     @Override
     public void writeToFile(Path filePath) throws IOException {
-        if (filePath == null) {
+        if (filePath == null){
             throw new IllegalArgumentException("The given file path is null!");
         }
-        if (!Files.exists(filePath)) {
+        if (!Files.exists(filePath)){
             Files.createFile(filePath);
         }
 
@@ -297,19 +291,19 @@ public class Grid implements IGrid {
         lines.add(width + " " + height);
         lines.add(startX + " " + startY);
 
-        for (int i = 0; i < height; ++i) {
+        for (int i = 0; i < height; ++i){
             StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < width; ++j) {
-                switch (grid[i][j]) {
-                case BOTTLE:
-                    sb.append("*");
-                    break;
-                case EMPTY:
-                    sb.append(".");
-                    break;
-                case WALL:
-                    sb.append("#");
-                    break;
+            for (int j = 0; j < width; ++j){
+                switch (grid[i][j]){
+                    case BOTTLE:
+                        sb.append("*");
+                        break;
+                    case EMPTY:
+                        sb.append(".");
+                        break;
+                    case WALL:
+                        sb.append("#");
+                        break;
                 }
             }
             lines.add(sb.toString());
@@ -324,7 +318,7 @@ public class Grid implements IGrid {
 
         Field[][] newField = new Field[height][width];
 
-        for (int i = 0; i < height; ++i) {
+        for (int i = 0; i < height; ++i){
             System.arraycopy(grid[i], 0, newField[i], 0, width);
         }
 
@@ -335,17 +329,13 @@ public class Grid implements IGrid {
     /**
      * A helper method to check if the given argument is inside the valid range.
      *
-     * @param arg
-     *            the value of the argument to be checked.
-     * @param min
-     *            the minimal value of the argument.
-     * @param max
-     *            the maximal value of the argument.
-     * @param name
-     *            the name of the argument.
+     * @param arg the value of the argument to be checked.
+     * @param min the minimal value of the argument.
+     * @param max the maximal value of the argument.
+     * @param name the name of the argument.
      */
-    private void checkArgument(int arg, int min, int max, String name) {
-        if (arg < min || arg >= max) {
+    private void checkArgument(int arg, int min, int max, String name){
+        if (arg < min || arg >= max){
             throw new IllegalArgumentException("The given " + name + " index is invalid.");
         }
     }
@@ -353,12 +343,12 @@ public class Grid implements IGrid {
     /**
      * Helper method to calculate the total number of bottles on the grid.
      */
-    private void calculateNumberOfBottles() {
+    private void calculateNumberOfBottles(){
         int bottleCount = 0;
 
-        for (int i = 0; i < height; ++i) {
-            for (int j = 0; j < width; ++j) {
-                if (grid[i][j] == Field.BOTTLE) {
+        for (int i = 0; i < height; ++i){
+            for (int j = 0; j < width; ++j){
+                if (grid[i][j] == Field.BOTTLE){
                     bottleCount++;
                 }
             }
@@ -366,5 +356,6 @@ public class Grid implements IGrid {
 
         this.numberOfBottles = bottleCount;
     }
+
 
 }

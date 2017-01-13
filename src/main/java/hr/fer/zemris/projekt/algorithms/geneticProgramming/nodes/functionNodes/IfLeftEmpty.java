@@ -7,7 +7,7 @@ import hr.fer.zemris.projekt.grid.Field;
 /**
  * An implementation of {@link FunctionNode} with the condition checking whether
  * the {@link Field} left is empty.
- * 
+ *
  * @author Dunja Vesinger
  * @version 1.0.0
  */
@@ -17,7 +17,6 @@ public class IfLeftEmpty extends FunctionNode {
 
     public IfLeftEmpty() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public IfLeftEmpty(Node ifTrue, Node ifFalse) {
@@ -26,8 +25,9 @@ public class IfLeftEmpty extends FunctionNode {
 
     @Override
     protected boolean evaluateCondition(Field current, Field left, Field right, Field up, Field down) {
-        if (left == Field.EMPTY)
+        if (left == Field.EMPTY) {
             return true;
+        }
         return false;
     }
 

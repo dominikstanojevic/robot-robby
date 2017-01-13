@@ -4,7 +4,6 @@ import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.functions.QFunction;
 import hr.fer.zemris.projekt.grid.Field;
-import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -31,7 +30,7 @@ public class Agent implements Robot {
 
         if (move.equals(Move.RANDOM)) {
             Random random = ThreadLocalRandom.current();
-            move = AbstractSimulator.getRandomMove(random);
+            move = getRandomMove(random);
             lastMoveRandom = true;
         }
 
@@ -50,4 +49,33 @@ public class Agent implements Robot {
         currStandardFitness = standardFitness;
     }
 
+    /**
+     * Returns a random move from the following ones: {@link Move#UP},
+     * {@link Move#DOWN}, {@link Move#LEFT}, {@link Move#RIGHT}.
+     *
+     * @param rnd
+     *            a random number generator that is used to get a random move.
+     * @return the random generated {@link Move}.
+     */
+    private static Move getRandomMove(Random rnd) {
+        Move nextMove = null;
+
+        int moveID = rnd.nextInt(4);
+        switch (moveID) {
+        case 0:
+            nextMove = Move.UP;
+            break;
+        case 1:
+            nextMove = Move.DOWN;
+            break;
+        case 2:
+            nextMove = Move.LEFT;
+            break;
+        case 3:
+            nextMove = Move.RIGHT;
+            break;
+        }
+
+        return nextMove;
+    }
 }
