@@ -1,8 +1,10 @@
 package hr.fer.zemris.projekt.GUI;
 
+import java.awt.Container;
 import java.awt.HeadlessException;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -31,10 +33,16 @@ public class MainFrame extends JFrame {
 		
 		JTabbedPane tabbedPane = new JTabbedPane();
 		add(tabbedPane);
+
 		
 		learningPanel = new LearningPanel(tabbedPane);
-		tabbedPane.addTab("Learning Algorithms", learningPanel);
+		//tabbedPane.addTab("Learning Algorithms", learningPanel);
 		
+		JScrollPane sp = new JScrollPane(learningPanel);
+		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		tabbedPane.addTab("Learning Algorithms", sp);
+
 		simulationPanel = new SimulationPanel();
 		tabbedPane.addTab("Simulation", simulationPanel);
 		

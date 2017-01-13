@@ -1,6 +1,8 @@
 package hr.fer.zemris.projekt.GUI;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingWorker;
@@ -53,12 +56,13 @@ public class LearningPanel extends JPanel {
 		this.parent = parent;
 
 		initGUI();
+		
 	}
 
 	private void initGUI() {
 		setLayout(new BorderLayout());
 
-		JPanel algorithmOptions = new JPanel();
+		JPanel algorithmOptions = new JPanel(new FlowLayout());
 
 		ParametersPanel parameters = new ParametersPanel();
 		algorithmOptions.add(parameters, BorderLayout.CENTER);
@@ -80,7 +84,6 @@ public class LearningPanel extends JPanel {
 				btnRunSimulation.setEnabled(false);
 			}
 		});
-
 		add(algorithmOptions, BorderLayout.LINE_START);
 
 		JPanel graphicalPanel = new JPanel();
@@ -197,8 +200,6 @@ public class LearningPanel extends JPanel {
 
 				parent.setSelectedIndex(1);
 				((SimulationPanel) parent.getSelectedComponent()).setRobot(robot);
-				System.out.println("Setam robota " + robot);
-
 			}
 		});
 		mapEditor.add(btnRunSimulation);
