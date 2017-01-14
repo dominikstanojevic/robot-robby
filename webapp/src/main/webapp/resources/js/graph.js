@@ -13,7 +13,7 @@ function Graph(canvas, xAxis, yAxis, lineConfigs) {
 
     this.lineConfigs = lineConfigs;
 
-    var margins = {top: 10, down: 10, left: 40, right: 20};
+    var margins = {top: 20, down: 20, left: 40, right: 20};
 
     this.draw = function () {
         this.reset();

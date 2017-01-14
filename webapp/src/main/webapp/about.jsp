@@ -17,7 +17,7 @@
         </div>
         <ul class="nav navbar-nav">
             <li id="navItemIndex"><a href="${pageContext.request.contextPath}/index.jsp">Training</a></li>
-            <li id="navItemSimulation"><a href="./simulation">Simulation</a></li>
+            <li id="navItemSimulation"><a href="${pageContext.request.contextPath}/simulation">Simulation</a></li>
         </ul>
     </div>
 </nav>

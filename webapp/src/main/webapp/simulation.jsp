@@ -13,6 +13,9 @@
         function init(){
             optionSelected();
             setMapCreation();
+
+            var link = document.getElementById("navItemSimulation");
+            link.setAttribute("class", "active");
         }
 
         function optionSelected() {

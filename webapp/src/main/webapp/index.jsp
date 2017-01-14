@@ -63,10 +63,10 @@
                         var inputDiv = document.createElement("div");
                         inputDiv.appendChild(input);
 
-                        label.setAttribute("class", "control-label col-sm-3");
+                        label.setAttribute("class", "control-label col-md-6");
                         input.setAttribute("class", "form-control");
 
-                        inputDiv.setAttribute("class", "col-sm-9");
+                        inputDiv.setAttribute("class", "col-md-6");
 
                         input.setAttribute("type", "number");
                         input.setAttribute("name", parameter.name);
@@ -195,9 +195,11 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-md-2">
+
+            <%-- Algorithm selection --%>
             <div class="row">
-                <div class="col-sm-offset-3 col-sm-6">
+                <div class="col-md-offset-3 col-md-6">
                     <select onchange="optionSelected()" id="algorithmSelection" class="selectpicker" data-width="auto">
                         <option value="ga">Genetic algorithm</option>
                         <option value="nn">Neural network</option>
@@ -206,6 +208,7 @@
                 </div>
             </div>
 
+            <%-- Algorithm parameters --%>
             <br>
             <div class="row">
                 <form id="trainingForm" class="form-horizontal" onsubmit="return validateTrainingForm()">
@@ -214,22 +217,75 @@
                     <input id="algorithmID" type="hidden" name="algorithmID">
 
                     <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-9">
+                        <div class="col-md-offset-3 col-md-6">
                             <input type="submit" name="btnSubmit" value="Start algorithm" class="btn btn-default">
                         </div>
                     </div>
                 </form>
             </div>
 
-        <div class="col-sm-8">
+            <%-- Simulator config --%>
+            <div class="row">
+                <form id="simulatorConfigForm" class="form-horizontal" onsubmit="return false;">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-6" for="maxMoves">Max moves</label>
+                        <div class="col-md-6">
+                            <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300" value="200"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-6" for="gridHeight">Grid height</label>
+                        <div class="col-md-6">
+                            <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15" value="10"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-6" for="gridWidth">Grid width</label>
+                        <div class="col-md-6">
+                            <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15" value="10"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-6" for="numberOfGrids">Number of grids</label>
+                        <div class="col-md-6">
+                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="200"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-6" for="numberOfBottles">Number of bottles</label>
+                        <div class="col-md-6">
+                            <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225" value="50"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-6" for="mapRegenFrequency">Map regeneration frequency</label>
+                        <div class="col-md-6">
+                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="50"/>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-8">
             <canvas id="plotCanvas" class="img-responsive" width="1200" height="600">
                 Sorry, your browser does not support the canvas tag.
             </canvas>
             <br><span id="fitnessSpan"></span>
+        </div>
 
-            <button id="btnStop" class="btn btn-default" type="button" onclick="stopAlgorithm()">Stop training</button>
-            <button id="btnPause" class="btn btn-default" type="button" onclick="pauseAlgorithm()">Pause training</button>
-            <button id="btnResume" class="btn btn-default" type="button" onclick="resumeAlgorithm()">Resume training</button>
+        <div class="col-md-2">
+            <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm()">Stop training</button>
+            <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm()">Pause training</button>
+            <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm()">Resume training</button>
         </div>
     </div>
 </div>
