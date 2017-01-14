@@ -4,8 +4,9 @@
     <meta charset="utf-8">
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript" src="resources/js/graph.js"></script>
 
+
+    <script type="text/javascript" src="resources/js/graph.js"></script>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css"/>
 </head>
 
@@ -26,14 +27,17 @@
                 { color: "#008000" }
             ]
         );
+
+        var link = document.getElementById("navItemIndex");
+        link.setAttribute("class", "active");
     }
 
     function optionSelected() {
         var algorithmSelection = document.getElementById("algorithmSelection");
         var selected = algorithmSelection.options[algorithmSelection.selectedIndex].value;
 
-        var table = document.getElementById("parametersTable");
-        table.innerHTML = "";
+        var inputs = document.getElementById("trainingFormInputs");
+        inputs.innerHTML = "";
 
         document.getElementById("algorithmID").setAttribute("value", selected);
 
@@ -50,13 +54,19 @@
                     for (var i = 0; i < parameters.length; i++) {
                         var parameter = parameters[i];
 
-                        var tableRow = document.createElement("tr");
-
-                        var labelCell = document.createElement("th");
-                        var inputCell = document.createElement("th");
+                        var div = document.createElement("div");
+                        div.setAttribute("class", "form-group");
 
                         var label = document.createElement("label");
                         var input = document.createElement("input");
+
+                        var inputDiv = document.createElement("div");
+                        inputDiv.appendChild(input);
+
+                        label.setAttribute("class", "control-label col-sm-2");
+                        input.setAttribute("class", "form-control");
+
+                        inputDiv.setAttribute("class", "col-sm-2");
 
                         input.setAttribute("type", "number");
                         input.setAttribute("name", parameter.name);
@@ -71,13 +81,10 @@
                             input.setAttribute("step", 0.001);
                         }
 
-                        tableRow.appendChild(labelCell);
-                        tableRow.appendChild(inputCell);
+                        div.appendChild(label);
+                        div.appendChild(inputDiv);
 
-                        labelCell.appendChild(label);
-                        inputCell.appendChild(input);
-
-                        table.appendChild(tableRow);
+                        inputs.appendChild(div);
 
                         //set scale for graph
                         if (parameter.name == 'Max generations') { //TODO this is even worse
@@ -101,6 +108,8 @@
                 return false;
             }
 
+            if (inputs[i].name == 'btnSubmit') continue;
+
             params += inputs[i].name;
             params += "=";
             params += inputs[i].value;
@@ -118,10 +127,10 @@
 
     function startAlgorithm(params, numberOfIterations) {
         graph.xMax = numberOfIterations;
-
         graph.draw();
 
         eventSource = new EventSource("train" + params);
+
         eventSource.onmessage = function(event) {
             if (event.data == "finished") {
                 eventSource.close();
@@ -177,19 +186,23 @@
 
 <jsp:include page="about.jsp"/>
 
-<p><select onchange="optionSelected()" id="algorithmSelection">
+<p><select onchange="optionSelected()" id="algorithmSelection" class="selectpicker">
     <option value="ga">Genetic algorithm</option>
     <option value="nn">Neural network</option>
 </select></p>
 
-<p><form id="trainingForm">
-    <table id="parametersTable">
-    </table>
+<p><form id="trainingForm" method="post" class="form-horizontal" onsubmit="return validateForm()">
+    <span id="trainingFormInputs"></span>
 
     <input id="algorithmID" type="hidden" name="algorithmID">
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" name="btnSubmit" value="Start algorithm" class="btn btn-default">
+        </div>
+    </div>
 </form>
 
-<button id="btnStart" type="button" onclick="validateForm()">Start training</button>
 <button id="btnStop" type="button" onclick="stopAlgorithm()">Stop training</button>
 <button id="btnPause" type="button" onclick="pauseAlgorithm()">Pause training</button>
 <button id="btnResume" type="button" onclick="resumeAlgorithm()">Resume training</button>
