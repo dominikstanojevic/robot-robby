@@ -67,8 +67,8 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
 
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
             Move[] moves = ((Chromosome) robot).getMoves();
-            for (int i = 0; i < moves.length; i++) {
-                writer.write(moves[i].ordinal());
+            for (Move move : moves) {
+                writer.write(move.ordinal());
             }
         }
     }
@@ -171,5 +171,10 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         }
 
         return fitness / stats.size();
+    }
+
+    @Override
+    public String toString() {
+        return "Genetic algorithm";
     }
 }
