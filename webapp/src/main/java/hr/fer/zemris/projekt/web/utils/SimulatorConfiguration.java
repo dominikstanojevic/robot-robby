@@ -5,6 +5,7 @@ import hr.fer.zemris.projekt.simulator.Simulator;
 public class SimulatorConfiguration {
 
     private transient Simulator simulator;
+
     private int maxMoves = 200;
 
     private int gridHeight = 10;
@@ -15,8 +16,6 @@ public class SimulatorConfiguration {
     private int numberOfBottles = 50;
 
     private int mapRegenFrequency = 40;
-
-    private boolean hasWalls = false;
 
     public Simulator getSimulator() {
         if (simulator == null) {

@@ -63,10 +63,10 @@
                         var inputDiv = document.createElement("div");
                         inputDiv.appendChild(input);
 
-                        label.setAttribute("class", "control-label col-sm-2");
+                        label.setAttribute("class", "control-label col-sm-3");
                         input.setAttribute("class", "form-control");
 
-                        inputDiv.setAttribute("class", "col-sm-2");
+                        inputDiv.setAttribute("class", "col-sm-9");
 
                         input.setAttribute("type", "number");
                         input.setAttribute("name", parameter.name);
@@ -79,6 +79,8 @@
 
                         if (parameter.type == 'DOUBLE') {
                             input.setAttribute("step", 0.001);
+                        } else {
+                            input.setAttribute("step", 1);
                         }
 
                         div.appendChild(label);
@@ -87,7 +89,10 @@
                         inputs.appendChild(div);
 
                         //set scale for graph
-                        if (parameter.name == 'Max generations') { //TODO this is even worse
+                        if (parameter.name == 'Max generations'
+                            || parameter.name == 'Max. generations'
+                            || parameter.name == 'maxGenerations') { //TODO this is even worse
+
                             graph.xMax = parameter.value;
                             graph.draw();
                         }
@@ -97,7 +102,7 @@
         );
     }
 
-    function validateForm() {
+    function validateTrainingForm() {
         var inputs = document.forms["trainingForm"].getElementsByTagName("input");
 
         var params = "?";
@@ -115,7 +120,9 @@
             params += inputs[i].value;
             params += "&";
 
-            if (inputs[i].name == 'Max generations') { //TODO this is even worse
+            if (inputs[i].name == 'Max generations'
+                || inputs[i].name == 'Max. generations'
+                || inputs[i].name == 'maxGenerations') { //TODO this is even worse
                 numberOfIterations = inputs[i].value;
             }
         }
@@ -140,7 +147,7 @@
             var result = JSON.parse(event.data);
             var iteration = result["iteration"];
 
-            if (iteration == 0 || iteration == 1 || iteration % 10 == 0) {
+            if (iteration == 0 || iteration == 1 || iteration % 5 == 0) {
                 graph.addPoint([
                     new Point(iteration, result["best"]),
                     new Point(iteration, result["average"])
@@ -186,30 +193,45 @@
 
 <jsp:include page="about.jsp"/>
 
-<p><select onchange="optionSelected()" id="algorithmSelection" class="selectpicker">
-    <option value="ga">Genetic algorithm</option>
-    <option value="nn">Neural network</option>
-</select></p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-offset-3 col-sm-6">
+                    <select onchange="optionSelected()" id="algorithmSelection" class="selectpicker" data-width="auto">
+                        <option value="ga">Genetic algorithm</option>
+                        <option value="nn">Neural network</option>
+                        <option value="elman">Elman neural network</option>
+                    </select>
+                </div>
+            </div>
 
-<p><form id="trainingForm" method="post" class="form-horizontal" onsubmit="return validateForm()">
-    <span id="trainingFormInputs"></span>
+            <br>
+            <div class="row">
+                <form id="trainingForm" class="form-horizontal" onsubmit="return validateTrainingForm()">
+                    <span id="trainingFormInputs"></span>
 
-    <input id="algorithmID" type="hidden" name="algorithmID">
+                    <input id="algorithmID" type="hidden" name="algorithmID">
 
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <input type="submit" name="btnSubmit" value="Start algorithm" class="btn btn-default">
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <input type="submit" name="btnSubmit" value="Start algorithm" class="btn btn-default">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        <div class="col-sm-8">
+            <canvas id="plotCanvas" class="img-responsive" width="1200" height="600">
+                Sorry, your browser does not support the canvas tag.
+            </canvas>
+            <br><span id="fitnessSpan"></span>
+
+            <button id="btnStop" class="btn btn-default" type="button" onclick="stopAlgorithm()">Stop training</button>
+            <button id="btnPause" class="btn btn-default" type="button" onclick="pauseAlgorithm()">Pause training</button>
+            <button id="btnResume" class="btn btn-default" type="button" onclick="resumeAlgorithm()">Resume training</button>
         </div>
     </div>
-</form>
-
-<button id="btnStop" type="button" onclick="stopAlgorithm()">Stop training</button>
-<button id="btnPause" type="button" onclick="pauseAlgorithm()">Pause training</button>
-<button id="btnResume" type="button" onclick="resumeAlgorithm()">Resume training</button>
-
-<br>
-<canvas id="plotCanvas" width="900" height="450"></canvas>
-<span id="fitnessSpan"></span>
-
+</div>
 </body>
 </html>

@@ -14,8 +14,6 @@ import java.util.function.Consumer;
 @WebServlet(name = "SimulatorConfigServlet", urlPatterns = "/simulatorConfig")
 public class SimulatorConfigServlet extends HttpServlet {
 
-    private static final Gson GSON = new Gson();
-
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json;charset=UTF-8");
 
@@ -23,11 +21,10 @@ public class SimulatorConfigServlet extends HttpServlet {
             return;
         }
 
-
         SimulatorConfiguration simulatorConfig = (SimulatorConfiguration)
                 req.getSession().getAttribute(Constants.SESSION_KEY_SIMULATOR_CONFIG);
 
-        String json = GSON.toJson(simulatorConfig);
+        String json = new Gson().toJson(simulatorConfig);
 
         resp.getWriter().write(json);
         resp.getWriter().flush();
