@@ -8,6 +8,7 @@ import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.Simulator;
+import hr.fer.zemris.projekt.web.utils.MapGeneration;
 import hr.fer.zemris.projekt.web.utils.SimulatorConfiguration;
 import org.json.JSONObject;
 
@@ -59,14 +60,14 @@ public class TrainServlet extends HttpServlet {
         SimulatorConfiguration config = (SimulatorConfiguration) req.getSession().getAttribute(Constants.SESSION_KEY_SIMULATOR_CONFIG);
         Simulator simulator = config.getSimulator();
 
-        generateGrids(simulator, config);
+        MapGeneration.generateGrids(simulator, config);
 
         int mapRegenFrequency = config.getMapRegenFrequency();
 
         //configure the observer
         algorithm.addObserver((sender, observation) -> {
             if (mapRegenFrequency > 0 && observation.getIteration() % mapRegenFrequency == 0) {
-                generateGrids(simulator, config);
+                MapGeneration.generateGrids(simulator, config);
             }
 
             JSONObject jsonObject = new JSONObject();
@@ -156,23 +157,4 @@ public class TrainServlet extends HttpServlet {
         return parameters;
     }
 
-    private static void generateGrids(Simulator simulator, SimulatorConfiguration config) {
-        if (config.isVariableBottles()) {
-            simulator.generateGrids(
-                    config.getNumberOfGrids(),
-                    config.getGridWidth(),
-                    config.getGridHeight(),
-                    false,
-                    RANDOM
-            );
-        } else {
-            simulator.generateGrids(
-                    config.getNumberOfGrids(),
-                    config.getNumberOfBottles(),
-                    config.getGridWidth(),
-                    config.getGridHeight(),
-                    false
-            );
-        }
-    }
 }
