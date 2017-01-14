@@ -21,6 +21,8 @@ import java.util.Set;
  *     generation which should remain in the next generation</li>
  *     <li>Tournament size - the size of the tournament, which is used for selecting
  *     which parents should be used in the crossover operation</li>
+ *     <li>Stop threshold - indicated the stop condition for the algorithm. When the
+ *     population's best fitness exceeds the specified value, the algorithm stops</li>
  * </ul></p>
  *
  * @author Leon Luttenberger
@@ -48,6 +50,11 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
     public static final String TOURNAMENT_SIZE_ID = "Tournament size";
 
     /**
+     * ID of the ${code stop threshold} parameter.
+     */
+    public static final String STOP_THRESHOLD_ID = "Stop threshold";
+
+    /**
      * Default value of the {@code maximum generations} parameter.
      */
     public static final int DEFAULT_MAX_GENERATIONS = 1_500;
@@ -66,6 +73,11 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
      * Default value of the {@code tournament size} parameter.
      */
     public static final int DEFAULT_TOURNAMENT_SIZE = 3;
+
+    /**
+     * Default value of the ${code stop threshold} parameter.
+     */
+    public static final int DEFAULT_THRESHOLD = 1;
 
     /**
      * {@code Maximum generations} parameter.
@@ -87,6 +99,11 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
      */
     Parameter tournamentSize;
 
+    /**
+     * ${code Stop threshold} parameter.
+     */
+    Parameter stopThreshold;
+
     private Map<String, Parameter> parametersMap = new HashMap<>();
 
     /**
@@ -97,23 +114,31 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
         Parameter populationSize = new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 0, 1_000, DEFAULT_POPULATION_SIZE);
         Parameter elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 0.2, DEFAULT_ELITISM_RATIO);
         Parameter tournamentSize = new Parameter(TOURNAMENT_SIZE_ID, ParameterType.INTEGER, 1, 10, DEFAULT_TOURNAMENT_SIZE);
+        Parameter stopThreshold = new Parameter(STOP_THRESHOLD_ID, ParameterType.DOUBLE, 0, 1, DEFAULT_THRESHOLD);
 
-        init(maxGenerations, populationSize, elitismRatio, tournamentSize);
+        init(maxGenerations, populationSize, elitismRatio, tournamentSize, stopThreshold);
+    }
+
+    private GAParameters(Parameter maxGenerations, Parameter populationSize,
+                         Parameter elitismRatio, Parameter tournamentSize, Parameter stopThreshold) {
+
+        init(maxGenerations, populationSize, elitismRatio, tournamentSize, stopThreshold);
     }
 	
 	private void init(Parameter maxGenerations, Parameter populationSize,
-                      Parameter elitismRatio, Parameter tournamentSize) {
+                      Parameter elitismRatio, Parameter tournamentSize, Parameter stopThreshold) {
 
 		this.maxGenerations = maxGenerations;
 		this.populationSize = populationSize;
 		this.elitismRatio = elitismRatio;
 		this.tournamentSize = tournamentSize;
-		
+		this.stopThreshold = stopThreshold;
 		
 		parametersMap.put(MAX_GEN_ID, maxGenerations);
         parametersMap.put(POP_SIZE_ID, populationSize);
         parametersMap.put(ELITISM_RATIO_ID, elitismRatio);
         parametersMap.put(TOURNAMENT_SIZE_ID, tournamentSize);
+        parametersMap.put(STOP_THRESHOLD_ID, stopThreshold);
 	}
 
     @Override
@@ -144,16 +169,13 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
      * @return a copy of the current {@link GAParameters} object
      */
     public GAParameters copy() {
-        GAParameters copy = new GAParameters();
-
-        copy.init(
+        return new GAParameters(
                 copyParameter(maxGenerations),
                 copyParameter(populationSize),
                 copyParameter(elitismRatio),
-                copyParameter(tournamentSize)
+                copyParameter(tournamentSize),
+                copyParameter(stopThreshold)
         );
-
-        return copy;
     }
 
     /**

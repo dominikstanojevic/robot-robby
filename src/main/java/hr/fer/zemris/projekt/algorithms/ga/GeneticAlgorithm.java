@@ -100,6 +100,7 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
         int maxGenerations = (int) gaParameters.maxGenerations.getValue();
         double elitismRatio = gaParameters.elitismRatio.getValue();
         int tournamentSize = (int) gaParameters.tournamentSize.getValue();
+        double stopThreshold = gaParameters.stopThreshold.getValue();
 
         Population population = Population.generatePopulation(populationSize);
         evaluatePopulation(simulator, population, pool);
@@ -111,6 +112,10 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
             Chromosome best = population.getBest();
 
             this.notifyListeners(best, population.calculateAvgFitness(), i);
+
+            if (best.getFitness() >= stopThreshold) {
+                break;
+            }
         }
 
         pool.shutdown();
