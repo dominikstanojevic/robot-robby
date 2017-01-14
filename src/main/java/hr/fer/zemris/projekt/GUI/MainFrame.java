@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Robot Robby");
         initGUI();
-        setSize(900, 600);
+        setSize(1100, 600);
         setLocationRelativeTo(null);
         setVisible(true);
 	}
@@ -36,7 +36,6 @@ public class MainFrame extends JFrame {
 
 		
 		learningPanel = new LearningPanel(tabbedPane);
-		//tabbedPane.addTab("Learning Algorithms", learningPanel);
 		
 		JScrollPane sp = new JScrollPane(learningPanel);
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

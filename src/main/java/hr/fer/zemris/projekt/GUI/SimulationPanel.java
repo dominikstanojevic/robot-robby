@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,6 +25,7 @@ import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.RobotActionTaken;
 import hr.fer.zemris.projekt.simulator.Simulator;
+import hr.fer.zemris.projekt.simulator.Stats;
 
 public class SimulationPanel extends JPanel {
 
@@ -58,6 +60,7 @@ public class SimulationPanel extends JPanel {
 
 	public void setRobot(Robot robot) {
 		this.robot = robot;
+		lRobotStatus.setText("Robot successfully set.");
 	}
 
 	private void initGUI() {
@@ -281,11 +284,13 @@ public class SimulationPanel extends JPanel {
 
 						worker = new SwingWorker<Void, Void>() {
 
+							private List<Stats> stats;
+
 							@Override
 							protected Void doInBackground() throws Exception {
 
 								map.setGrid(grid);
-								simulator.playGames(robot);
+								stats = simulator.playGames(robot);
 
 								return null;
 							}
@@ -294,6 +299,12 @@ public class SimulationPanel extends JPanel {
 							protected void done() {
 								enableSetupButtons();
 								disableSimulationButtons();
+								
+								JStatsDialog d = new JStatsDialog(stats.get(0));
+								d.setModal(true);
+								d.setLocationRelativeTo(null);
+								d.setVisible(true);
+								
 							}
 						};
 
