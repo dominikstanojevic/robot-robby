@@ -23,14 +23,14 @@ function GridLoader(canvas, width, height){
         imagesLoaded++;
     };
 
-    grass.src = "pictures/grass.png";
+    grass.src = "resources/pictures/grass.png";
     grass.alt = "Empty field with grass.";
 
-    bottle.src = "pictures/bottle.png";
+    bottle.src = "resources/pictures/bottle.png";
     bottle.alt = "Field of grass with a bottle.";
 
     this.draw = function(){
-        if (imagesLoaded != 8){
+        if (imagesLoaded != 2){
             setTimeout(self.draw, 100);
         }
         var posX = 0;

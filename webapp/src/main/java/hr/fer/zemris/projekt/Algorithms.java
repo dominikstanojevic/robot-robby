@@ -42,5 +42,13 @@ public final class Algorithms {
         return ALGORITHM_MAP.get(id).getDefaultParameters();
     }
 
+    public static Map<String, String> getAvailableAlgoritmhs(){
+        Map<String, String> algorithms = new HashMap<>();
+
+        ALGORITHM_MAP.forEach((key, value) -> algorithms.put(key, value.toString()));
+
+        return algorithms;
+    }
+
     private Algorithms() {}
 }

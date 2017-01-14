@@ -11,5 +11,7 @@ public final class Constants {
     public static final String SESSION_KEY_ROBOT = "Robot";
     public static final String SESSION_KEY_ALGORITHM = "Algorithm";
 
+    public static final String SESSION_KEY_GRID = "Grid";
+
     private Constants() {}
 }
