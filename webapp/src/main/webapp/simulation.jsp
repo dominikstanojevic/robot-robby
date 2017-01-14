@@ -13,6 +13,7 @@
     <button id = "btn1" onclick="simulation.previous()" > Previous </button>
     <button id = "btn2" onclick="toggle()" > Play </button>
     <button id = "btn3" onclick="simulation.next()" > Next </button>
+    <button id = "btn4" onclick="reset()" > Reset </button>
 
     <script type="text/javascript">
         var grid = {"grid":[["BOTTLE","EMPTY","BOTTLE","EMPTY"],
@@ -45,7 +46,16 @@
                 document.getElementById("btn2").innerHTML = "Play";
                 document.getElementById("btn3").disabled = false;
             }
-        }
+        };
+
+        var reset = function(){
+            isPaused = true;
+            document.getElementById("btn1").disabled = false;
+            document.getElementById("btn2").innerHTML = "Play";
+            document.getElementById("btn3").disabled = false;
+
+            simulation.reset();
+        };
     </script>
 </body>
 </html>

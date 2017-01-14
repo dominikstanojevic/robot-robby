@@ -13,6 +13,7 @@ function Simulation(canvas, grid, moves){
     var robyY = grid.startY;
     var performingPickup = false;
     var isWallHit = false;
+    var firstMove = true;
 
     var imagesLoaded = 0;
     var grass = new Image();
@@ -74,6 +75,8 @@ function Simulation(canvas, grid, moves){
 
     var moveIndex = 0;
     this.draw = function(){
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
         if (imagesLoaded != 8){
             setTimeout(self.draw, 100);
         }
@@ -87,32 +90,32 @@ function Simulation(canvas, grid, moves){
                 if (robyX == i && robyY == j){
                     if (performingPickup == true){
                         if (grid.grid[i][j] == "EMPTY"){
-                            context.drawImage(emptyPickup, posX, posY, tileWidth, tileHeight);
+                            context.drawImage(emptyPickup, posX, posY, tileWidth - 1, tileHeight - 1);
                         }
                         if (grid.grid[i][j] == "BOTTLE"){
-                            context.drawImage(pickup, posX, posY, tileWidth, tileHeight);
+                            context.drawImage(pickup, posX, posY, tileWidth - 1, tileHeight - 1);
                         }
                     } else if (isWallHit == true) {
                         if (grid.grid[i][j] == "EMPTY"){
-                            context.drawImage(wallHit, posX, posY, tileWidth, tileHeight);
+                            context.drawImage(wallHit, posX, posY, tileWidth - 1, tileHeight - 1);
                         }
                         if (grid.grid[i][j] == "BOTTLE"){
-                            context.drawImage(bottleWall, posX, posY, tileWidth, tileHeight);
+                            context.drawImage(bottleWall, posX, posY, tileWidth - 1, tileHeight - 1);
                         }
                     } else {
                         if (grid.grid[i][j] == "EMPTY"){
-                            context.drawImage(roby, posX, posY, tileWidth, tileHeight);
+                            context.drawImage(roby, posX, posY, tileWidth - 1, tileHeight - 1);
                         }
                         if (grid.grid[i][j] == "BOTTLE"){
-                            context.drawImage(robyBottle, posX, posY, tileWidth, tileHeight);
+                            context.drawImage(robyBottle, posX, posY, tileWidth - 1, tileHeight - 1);
                         }
                     }
                 } else {
                     if (grid.grid[i][j] == "EMPTY"){
-                        context.drawImage(grass, posX, posY, tileWidth, tileHeight);
+                        context.drawImage(grass, posX, posY, tileWidth - 1, tileHeight - 1);
                     }
                     if (grid.grid[i][j] == "BOTTLE"){
-                        context.drawImage(bottle, posX, posY, tileWidth, tileHeight);
+                        context.drawImage(bottle, posX, posY, tileWidth - 1, tileHeight - 1);
                     }
                 }
 
@@ -120,11 +123,16 @@ function Simulation(canvas, grid, moves){
             }
             posX = 0;
             posY += tileHeight;
+
+            context.rect(0, 0, canvas.width, canvas.height);
+            context.stroke();
         }
     };
 
     var toDo = null;
     this.next = function(){
+        firstMove = false;
+
         if (toDo != null){
             grid.grid[toDo.x][toDo.y] = "EMPTY";
             toDo = null;
@@ -189,9 +197,11 @@ function Simulation(canvas, grid, moves){
 
     this.pause = function(){
         clearInterval(interval);
-    }
+    };
 
     this.previous = function(){
+        if (firstMove) return;
+
         self.pause();
         moveIndex -= 2;
         toDo = null;
@@ -210,5 +220,21 @@ function Simulation(canvas, grid, moves){
             robyY = grid.startY;
             self.next();
         }
-    }
+    };
+
+    this.reset = function(){
+        if (firstMove) return;
+        self.pause();
+        toDo = null;
+
+        moveIndex = 0;
+        performingPickup = false;
+        isWallHit = false;
+
+        grid = JSON.stringify(grids[moveIndex]);
+        grid = JSON.parse(grid);
+        robyX = grid.startX;
+        robyY = grid.startY;
+        self.draw();
+    };
 }
