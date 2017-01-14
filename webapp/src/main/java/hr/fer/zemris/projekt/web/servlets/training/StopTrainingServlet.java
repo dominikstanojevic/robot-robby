@@ -1,6 +1,7 @@
-package hr.fer.zemris.projekt.web.servlets;
+package hr.fer.zemris.projekt.web.servlets.training;
 
 import hr.fer.zemris.projekt.algorithms.Robot;
+import hr.fer.zemris.projekt.web.servlets.Constants;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

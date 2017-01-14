@@ -100,7 +100,6 @@
             if (!inputs[i].checkValidity()) {
                 return false;
             }
-            if (inputs[i].name == 'btnSubmit') continue;
 
             params += inputs[i].name;
             params += "=";
@@ -149,7 +148,26 @@
             method: "POST",
             success: function () {
                 eventSource.close();
-                console.log("stopped");
+            }
+        });
+    }
+
+    function pauseAlgorithm() {
+        $.ajax({
+            url: "pauseTraining",
+            method: "POST",
+            success: function () {
+                //TODO
+            }
+        });
+    }
+
+    function resumeAlgorithm() {
+        $.ajax({
+           url: "resumeTraining",
+            method: "POST",
+            success: function () {
+                //TODO
             }
         });
     }
@@ -164,16 +182,19 @@
     <option value="nn">Neural network</option>
 </select></p>
 
-<p><form id="trainingForm" method="post" onsubmit="return validateForm()">
+<p><form id="trainingForm">
     <table id="parametersTable">
     </table>
 
     <input id="algorithmID" type="hidden" name="algorithmID">
-    <input type="submit" name="btnSubmit">
 </form>
 
+<button id="btnStart" type="button" onclick="validateForm()">Start training</button>
 <button id="btnStop" type="button" onclick="stopAlgorithm()">Stop training</button>
+<button id="btnPause" type="button" onclick="pauseAlgorithm()">Pause training</button>
+<button id="btnResume" type="button" onclick="resumeAlgorithm()">Resume training</button>
 
+<br>
 <canvas id="plotCanvas" width="900" height="450"></canvas>
 <span id="fitnessSpan"></span>
 

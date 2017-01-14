@@ -1,4 +1,4 @@
-package hr.fer.zemris.projekt.web.servlets;
+package hr.fer.zemris.projekt.web.servlets.training;
 
 import hr.fer.zemris.projekt.Algorithms;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
@@ -8,6 +8,7 @@ import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.Simulator;
+import hr.fer.zemris.projekt.web.servlets.Constants;
 import hr.fer.zemris.projekt.web.utils.MapGeneration;
 import hr.fer.zemris.projekt.web.utils.SimulatorConfiguration;
 import org.json.JSONObject;
@@ -18,7 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -31,25 +31,10 @@ import java.util.stream.Collectors;
 @WebServlet(name = "TrainServlet", urlPatterns = {"/train"})
 public class TrainServlet extends HttpServlet {
 
-    private static final Random RANDOM = new Random();
-
     private static final int TIMEOUT_MINUTES = 10;
     private static final int FLUSH_FREQUENCY = 10;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        //content type must be set to text/event-stream
-        resp.setContentType("text/event-stream");
-
-        //encoding must be set to UTF-8
-        resp.setCharacterEncoding("UTF-8");
-
-        //don't start a new training session is one is already running
-        if (req.getSession().getAttribute(Constants.SESSION_KEY_TRAINING_THREAD) != null) {
-            resp.getWriter().write("data: finished\n\n");
-            resp.getWriter().flush();
-            return;
-        }
 
         //read the parameters and generate grids
         String algorithmID = req.getParameter("algorithmID");
@@ -66,6 +51,8 @@ public class TrainServlet extends HttpServlet {
 
         //configure the observer
         algorithm.addObserver((sender, observation) -> {
+            req.getSession().setAttribute(Constants.SESSION_KEY_ROBOT, observation.getBestResult());
+
             if (mapRegenFrequency > 0 && observation.getIteration() % mapRegenFrequency == 0) {
                 MapGeneration.generateGrids(simulator, config);
             }
@@ -96,8 +83,10 @@ public class TrainServlet extends HttpServlet {
             return t;
         });
 
+        req.getSession().setAttribute(Constants.SESSION_KEY_SIMULATOR, simulator);
         req.getSession().setAttribute(Constants.SESSION_KEY_TRAINING_THREAD, executor);
         req.getSession().setAttribute(Constants.SESSION_KET_TRAINING_TASK, futureTask);
+        req.getSession().setAttribute(Constants.SESSION_KEY_ALGORITHM, algorithm);
 
         executor.submit(futureTask);
 
@@ -117,6 +106,8 @@ public class TrainServlet extends HttpServlet {
         } finally {
             req.getSession().removeAttribute(Constants.SESSION_KEY_TRAINING_THREAD);
             req.getSession().removeAttribute(Constants.SESSION_KET_TRAINING_TASK);
+            req.getSession().removeAttribute(Constants.SESSION_KEY_SIMULATOR);
+
             executor.shutdown();
 
             resp.getWriter().write("data: finished\n\n");
