@@ -34,7 +34,7 @@ public final class Algorithms {
         ALGORITHM_MAP.put(GA_KEY, new GeneticAlgorithm());
         ALGORITHM_MAP.put(ELMAN_KEY, new GA());
         ALGORITHM_MAP.put(FFANN_KEY, new FFANNGA());
-        ALGORITHM_MAP.put(GA_KEY, new GeneticProgramming());
+        ALGORITHM_MAP.put(GP_KEY, new GeneticProgramming());
         ALGORITHM_MAP.put(REINFORCEMENT_KEY, new ReinforcmentLearningAlgorithm());
     }
 
