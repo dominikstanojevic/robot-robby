@@ -41,11 +41,13 @@ public class SimulationServlet extends HttpServlet {
 
         resp.setContentType("application/json;charset=UTF-8");
 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("gridObject", GSON.toJson(grid));
-        jsonObject.put("moves", GSON.toJson(stats.getMoves()));
+        String jsonObject = "{\"gridObject\": " +
+                GSON.toJson(grid) +
+                ", \"moves\": " +
+                GSON.toJson(stats.getMoves()) +
+                "}";
 
-        resp.getWriter().write(jsonObject.toString());
+        resp.getWriter().write(jsonObject);
         resp.getWriter().flush();
     }
 
