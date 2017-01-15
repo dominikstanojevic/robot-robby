@@ -1,14 +1,15 @@
 package hr.fer.zemris.projekt.simulator;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 import hr.fer.zemris.projekt.Move;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Field;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.grid.IGrid;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -25,11 +26,10 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.mockito.Mockito;
 
 // Parametrized test class which tests both the Simulator and MultithreadedSimulator
 @SuppressWarnings("javadoc")
@@ -39,17 +39,19 @@ public class SimulatorTest {
     private Function<Integer, AbstractSimulator> simulatorConstructor;
     private Supplier<AbstractSimulator> defaultConstructor;
 
-    public SimulatorTest(Function<Integer, AbstractSimulator> simulatorConstructor, Supplier<AbstractSimulator> defaultConstructor) {
+    public SimulatorTest(Function<Integer, AbstractSimulator> simulatorConstructor,
+            Supplier<AbstractSimulator> defaultConstructor) {
         this.simulatorConstructor = simulatorConstructor;
         this.defaultConstructor = defaultConstructor;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList( new Object[][] {
-                {(Function<Integer, AbstractSimulator>) Simulator::new, (Supplier<AbstractSimulator>) Simulator::new},
-                {(Function<Integer, AbstractSimulator>) MultithreadedSimulator::new, (Supplier<AbstractSimulator>) MultithreadedSimulator::new}
-        });
+        return Arrays.asList(new Object[][] {
+                { (Function<Integer, AbstractSimulator>) Simulator::new,
+                        (Supplier<AbstractSimulator>) Simulator::new },
+                { (Function<Integer, AbstractSimulator>) MultithreadedSimulator::new,
+                        (Supplier<AbstractSimulator>) MultithreadedSimulator::new } });
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -61,31 +63,31 @@ public class SimulatorTest {
     private Stats playSimulatorGame1() {
         IGrid grid = new Grid();
 
-        Field[][] fields = new Field[][] {
-                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
-                { Field.EMPTY, Field.EMPTY, Field.BOTTLE /*start*/, Field.EMPTY },
+        Field[][] fields = new Field[][] { { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.EMPTY, Field.EMPTY, Field.BOTTLE /* start */, Field.EMPTY },
                 { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY },
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE } };
         grid.setGrid(fields, 1, 2);
 
         Robot robot = mock(Robot.class);
 
-        //collect
+        // collect
         when(robot.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
-        //move left
-        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY)).thenReturn(Move.LEFT);
+        // move left
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.LEFT);
 
-        //move down
+        // move down
         when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.BOTTLE))
                 .thenReturn(Move.DOWN);
 
-        //collect
+        // collect
         when(robot.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
-        //do an empty pickup
+        // do an empty pickup
         when(robot.nextMove(Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
@@ -127,28 +129,29 @@ public class SimulatorTest {
     private Stats playSimulatorGame2() {
         IGrid grid = new Grid();
 
-        Field[][] fields = new Field[][] {
-                { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+        Field[][] fields = new Field[][] { { Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY },
                 { Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY },
                 { Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY },
-                { Field.EMPTY, Field.EMPTY, Field.EMPTY/*start*/, Field.BOTTLE } };
+                { Field.EMPTY, Field.EMPTY, Field.EMPTY/* start */, Field.BOTTLE } };
         grid.setGrid(fields, 3, 2);
 
         Robot robot = mock(Robot.class);
 
-        //move right
+        // move right
         when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.BOTTLE, Field.EMPTY, Field.WALL))
                 .thenReturn(Move.RIGHT);
 
-        //collect
+        // collect
         when(robot.nextMove(Field.BOTTLE, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL))
                 .thenReturn(Move.COLLECT);
 
-        //move up
-        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL)).thenReturn(Move.UP);
+        // move up
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.WALL))
+                .thenReturn(Move.UP);
 
-        //move right
-        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.EMPTY)).thenReturn(Move.RIGHT);
+        // move right
+        when(robot.nextMove(Field.EMPTY, Field.EMPTY, Field.WALL, Field.EMPTY, Field.EMPTY))
+                .thenReturn(Move.RIGHT);
 
         AbstractSimulator simulator = simulatorConstructor.apply(5);
         return simulator.playGame(robot, grid, new Random());
@@ -184,28 +187,27 @@ public class SimulatorTest {
         assertEquals(2, stats.getWallsHit());
     }
 
-    //collects all bottles in less than max turns
+    // collects all bottles in less than max turns
     private Stats playSimulatorGame3() {
         IGrid grid = new Grid();
 
-        Field[][] fields = new Field[][] {
-                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
-                { Field.BOTTLE/*start*/, Field.BOTTLE, Field.EMPTY, Field.EMPTY },
+        Field[][] fields = new Field[][] { { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.BOTTLE/* start */, Field.BOTTLE, Field.EMPTY, Field.EMPTY },
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY } };
         grid.setGrid(fields, 1, 0);
 
         Robot robot = mock(Robot.class);
 
-        //collect
+        // collect
         when(robot.nextMove(Field.BOTTLE, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
-        //move right
+        // move right
         when(robot.nextMove(Field.EMPTY, Field.WALL, Field.BOTTLE, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.RIGHT);
 
-        //move up
+        // move up
         when(robot.nextMove(Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.COLLECT);
 
@@ -243,20 +245,19 @@ public class SimulatorTest {
         assertEquals(0, stats.getWallsHit());
     }
 
-    //skip all the turns
+    // skip all the turns
     private Stats playSimulatorGame4() {
         IGrid grid = new Grid();
 
-        Field[][] fields = new Field[][] {
-                { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
-                { Field.BOTTLE, Field.BOTTLE /*start*/, Field.EMPTY, Field.EMPTY },
+        Field[][] fields = new Field[][] { { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
+                { Field.BOTTLE, Field.BOTTLE /* start */, Field.EMPTY, Field.EMPTY },
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY },
                 { Field.EMPTY, Field.EMPTY, Field.EMPTY, Field.EMPTY } };
         grid.setGrid(fields, 1, 1);
 
         Robot robot = mock(Robot.class);
 
-        //random move
+        // random move
         when(robot.nextMove(Field.BOTTLE, Field.BOTTLE, Field.EMPTY, Field.EMPTY, Field.EMPTY))
                 .thenReturn(Move.SKIP_TURN);
 
@@ -295,7 +296,8 @@ public class SimulatorTest {
     }
 
     @Test
-    public void testRandomness() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testRandomness() throws NoSuchMethodException, InvocationTargetException,
+            IllegalAccessException {
         Random random = mock(Random.class);
 
         Method method = AbstractSimulator.class.getDeclaredMethod("getRandomMove", Random.class);
@@ -331,15 +333,17 @@ public class SimulatorTest {
     @Test
     public void testLoadingGridFromFile() throws IOException {
         Robot robot = mock(Robot.class);
-        when(robot.nextMove(Mockito.any(Field.class), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
-                .thenReturn(Move.RANDOM);
+        when(
+                robot.nextMove(Mockito.any(Field.class), Mockito.any(), Mockito.any(),
+                        Mockito.any(), Mockito.any())).thenReturn(Move.RANDOM);
 
         AbstractSimulator simulator = simulatorConstructor.apply(5);
         simulator.readGridFromFile(getPaths());
 
         AbstractSimulator spy = Mockito.spy(simulator);
         spy.playGames(robot);
-        Mockito.verify(spy, times(3)).playGame(eq(robot), Mockito.any(IGrid.class), Mockito.any(Random.class));
+        Mockito.verify(spy, times(3)).playGame(eq(robot), Mockito.any(IGrid.class),
+                Mockito.any(Random.class));
     }
 
     @Test
@@ -358,7 +362,7 @@ public class SimulatorTest {
         IGrid[] grids = (IGrid[]) field.get(simulator);
         assertEquals(3, grids.length);
 
-        for(IGrid grid : grids) {
+        for (IGrid grid : grids) {
             assertEquals(numberOfBottles, grid.getNumberOfBottles());
             assertEquals(width, grid.getWidth());
             assertEquals(height, grid.getHeight());
@@ -381,13 +385,12 @@ public class SimulatorTest {
         assertEquals(grid, grids[0]);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testInvalidFile() throws IOException {
         AbstractSimulator simulator = defaultConstructor.get();
 
         List<Path> paths = new ArrayList<>();
         paths.add(Paths.get("ovajFileSigurnoNePostoji"));
-
 
         simulator.readGridFromFile(paths);
     }

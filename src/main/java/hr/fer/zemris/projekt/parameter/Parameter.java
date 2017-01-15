@@ -6,7 +6,7 @@ package hr.fer.zemris.projekt.parameter;
  * @author Kristijan Vulinovic
  * @version 1.0.1
  */
-public class Parameter {
+public class Parameter{
     /**
      * The default value for the minimal value.
      */

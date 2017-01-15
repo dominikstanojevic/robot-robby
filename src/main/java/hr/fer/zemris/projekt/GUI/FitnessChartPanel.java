@@ -38,7 +38,7 @@ public class FitnessChartPanel extends JPanel {
     }
 
     private JFreeChart createChart(final XYDataset dataset) {
-        final JFreeChart result = ChartFactory.createXYLineChart("Title", "Iterations",
+        final JFreeChart result = ChartFactory.createXYLineChart("Training progress", "Iterations",
                 "Standard fitness", dataset, PlotOrientation.VERTICAL, true, true, false);
         final XYPlot plot = result.getXYPlot();
         result.setBackgroundPaint(getBackground());

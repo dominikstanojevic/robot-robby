@@ -299,12 +299,12 @@ public class SimulationPanel extends JPanel {
 							protected void done() {
 								enableSetupButtons();
 								disableSimulationButtons();
-								
+
 								JStatsDialog d = new JStatsDialog(stats.get(0));
 								d.setModal(true);
 								d.setLocationRelativeTo(null);
 								d.setVisible(true);
-								
+
 							}
 						};
 

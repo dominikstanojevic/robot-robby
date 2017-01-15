@@ -1,0 +1,1 @@
+ifLeftEmpty(ifUpBottle(UP,ifRightBottle(LEFT,ifCurrentBottle(ifCurrentEmpty(COLLECT,DOWN),ifDownBottle(LEFT,SKIP_TURN)))),ifCurrentBottle(COLLECT,SKIP_TURN))
