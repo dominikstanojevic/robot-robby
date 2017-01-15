@@ -106,7 +106,7 @@
                         input.required = true;
 
                         var errorDiv = document.createElement("div");
-                        errorDiv.setAttribute("class", "help-block with-errors col-xs-offset-1");
+                        errorDiv.setAttribute("class", "help-block with-errors col-md-offset-1 col-xs-offset-6");
 
                         div.appendChild(label);
                         div.appendChild(inputDiv);
@@ -123,6 +123,10 @@
                             graph.draw();
                         }
                     }
+
+                    // it's a kind of magic
+                    $('#trainingForm')
+                        .validator('update');
                 }
             }
         );
@@ -266,7 +270,7 @@
 
             <%-- Algorithm parameters --%>
             <div class="row">
-                <form id="trainingForm" class="form-horizontal" onsubmit="return validateTrainingForm(this)">
+                <form id="trainingForm" class="form-horizontal" onsubmit="return validateTrainingForm(this)" data-toggle="validator" role="form">
                     <span id="trainingFormInputs"></span>
 
                     <input id="algorithmID" type="hidden" name="algorithmID">
@@ -288,7 +292,7 @@
                         <div class="col-sm-6">
                             <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300" value="200" required/>
                         </div>
-                        <div class="help-block with-errors col-xs-offset-1"></div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>
 
                     <div class="form-group">
@@ -296,7 +300,7 @@
                         <div class="col-sm-6">
                             <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
                         </div>
-                        <div class="help-block with-errors col-xs-offset-1"></div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>
 
                     <div class="form-group">
@@ -304,7 +308,7 @@
                         <div class="col-sm-6">
                             <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
                         </div>
-                        <div class="help-block with-errors col-xs-offset-1"></div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>
 
                     <div class="form-group">
@@ -312,7 +316,7 @@
                         <div class="col-sm-6">
                             <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="200" required/>
                         </div>
-                        <div class="help-block with-errors col-xs-offset-1"></div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>
 
                     <div class="form-group">
@@ -320,15 +324,15 @@
                         <div class="col-sm-6">
                             <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225" value="50" required/>
                         </div>
-                        <div class="help-block with-errors col-xs-offset-1"></div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-sm-6" for="mapRegenFrequency">Map regeneration frequency</label>
+                        <label class="control-label col-sm-6" for="mapRegenFrequency">Map regen frequency</label>
                         <div class="col-sm-6">
                             <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="50" required/>
                         </div>
-                        <div class="help-block with-errors col-xs-offset-1"></div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>
 
                     <div class="form-group">
