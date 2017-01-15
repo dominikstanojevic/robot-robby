@@ -19,6 +19,8 @@ public class FFANN implements Robot {
     private Layer[] layers;
     private int numberOfWeights;
 
+    private double standardizedFitness;
+
     public FFANN(int[] layout, ActivationFunction[] activationFunctions){
         Objects.requireNonNull(layout, "No layout given!");
         Objects.requireNonNull(activationFunctions, "No activation functions given!");
@@ -39,8 +41,6 @@ public class FFANN implements Robot {
         for (Layer layer : layers){
             numberOfWeights += layer.numberOfWeights();
         }
-
-        System.out.println(numberOfWeights);
     }
 
     public int getNumberOfWeights(){
@@ -86,10 +86,13 @@ public class FFANN implements Robot {
         return mapper.decodeOutput(output);
     }
 
-    //TODO: Override fitness
+    public void setStandardizedFitness(double standardizedFitness){
+        this.standardizedFitness = standardizedFitness;
+    }
+
     @Override
     public double standardizedFitness() {
-        return 0;
+        return standardizedFitness;
     }
 
     private RealVector calculateOutput(RealVector input) {
@@ -101,5 +104,19 @@ public class FFANN implements Robot {
         }
 
         return output;
+    }
+
+    public FFANN copy() {
+        int[] layout = new int[layers.length];
+        ActivationFunction[] activationFunctions = new ActivationFunction[layers.length];
+
+        for (int i = 0; i < layers.length; ++i){
+            layout[i] = layers[i].numberOfNeurons();
+            activationFunctions[i] = layers[i].getActivationFunction();
+        }
+
+        FFANN copy = new FFANN(layout, activationFunctions);
+
+        return copy;
     }
 }
