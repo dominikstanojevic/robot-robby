@@ -1,7 +1,7 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann;
 
-import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.SASEGASA;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANGAParameters;
+import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANNGA;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.TrainingResult;
@@ -17,7 +17,7 @@ public class FFANNTest {
         AbstractSimulator simulator = new Simulator(200);
         simulator.generateGrids(50, 50, 10, 10, false);
 
-        SASEGASA ga = new SASEGASA();
+        FFANNGA ga = new FFANNGA();
         ga.addObserver(new Result());
         ga.run(simulator, new FFANGAParameters());
     }
