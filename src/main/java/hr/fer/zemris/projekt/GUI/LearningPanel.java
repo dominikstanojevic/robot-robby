@@ -9,15 +9,6 @@ import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.TrainingResult;
 import hr.fer.zemris.projekt.simulator.Simulator;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Hashtable;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,6 +21,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Hashtable;
 
 public class LearningPanel extends JPanel {
 
@@ -236,8 +235,7 @@ public class LearningPanel extends JPanel {
 
                         simulator = new Simulator(2 * mapCols * mapRows);
 
-                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false,
-                                false);
+                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
 
                         algorithm.addObserver(new Observer<TrainingResult>() {
 
