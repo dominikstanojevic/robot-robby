@@ -57,8 +57,9 @@
 
     function isNumberOfIteration(inputName) {
         if (inputName == 'Max generations') return true;
-        if (inputName == 'maxGenerations') return true
+        if (inputName == 'Max iterations') return true;
         if (inputName == 'Number of generations') return true;
+        if (inputName == "Max. iterations") return true;
 
         return false;
     }
