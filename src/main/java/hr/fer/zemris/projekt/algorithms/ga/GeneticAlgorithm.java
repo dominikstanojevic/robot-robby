@@ -86,40 +86,47 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
 
         GAParameters gaParameters = (GAParameters) parameters;
 
-        ExecutorService pool = Executors.newFixedThreadPool(
-                Runtime.getRuntime().availableProcessors(),
-                r -> {
-                    Thread t = new Thread(r);
-                    t.setDaemon(true);
-                    return t;
-                }
-        );
+        ExecutorService pool = null;
+        try {
+            pool = Executors.newFixedThreadPool(
+                    Runtime.getRuntime().availableProcessors(),
+                    r -> {
+                        Thread t = new Thread(r);
+                        t.setDaemon(true);
+                        return t;
+                    }
+            );
 
-        // load parameters
-        int populationSize = (int) gaParameters.populationSize.getValue();
-        int maxGenerations = (int) gaParameters.maxGenerations.getValue();
-        double elitismRatio = gaParameters.elitismRatio.getValue();
-        int tournamentSize = (int) gaParameters.tournamentSize.getValue();
-        double stopThreshold = gaParameters.stopThreshold.getValue();
+            // load parameters
+            int populationSize = (int) gaParameters.populationSize.getValue();
+            int maxGenerations = (int) gaParameters.maxGenerations.getValue();
+            double elitismRatio = gaParameters.elitismRatio.getValue();
+            int tournamentSize = (int) gaParameters.tournamentSize.getValue();
+            double stopThreshold = gaParameters.stopThreshold.getValue();
 
-        Population population = Population.generatePopulation(populationSize);
-        evaluatePopulation(simulator, population, pool);
-
-        for (int i = 1; i <= maxGenerations; i++) {
-            population.evolve(elitismRatio, tournamentSize);
+            Population population = Population.generatePopulation(populationSize);
             evaluatePopulation(simulator, population, pool);
 
-            Chromosome best = population.getBest();
+            for (int i = 1; i <= maxGenerations; i++) {
+                population.evolve(elitismRatio, tournamentSize);
+                evaluatePopulation(simulator, population, pool);
 
-            this.notifyListeners(best, population.calculateAvgFitness(), i);
+                Chromosome best = population.getBest();
 
-            if (best.getFitness() >= stopThreshold) {
-                break;
+                this.notifyListeners(best, population.calculateAvgFitness(), i);
+
+                if (best.getFitness() >= stopThreshold) {
+                    break;
+                }
+            }
+
+            return population.getBest();
+
+        } finally {
+            if (pool != null) {
+                pool.shutdown();
             }
         }
-
-        pool.shutdown();
-        return population.getBest();
     }
 
     /**
