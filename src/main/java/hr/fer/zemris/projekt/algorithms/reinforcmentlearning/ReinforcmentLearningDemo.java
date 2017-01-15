@@ -1,13 +1,19 @@
 package hr.fer.zemris.projekt.algorithms.reinforcmentlearning;
 
 import hr.fer.zemris.projekt.algorithms.Robot;
-import hr.fer.zemris.projekt.simulator.MultithreadedSimulator;
+import hr.fer.zemris.projekt.simulator.Simulator;
 import hr.fer.zemris.projekt.simulator.Stats;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Method demonstrates function of reinforcment learning algorithm.
+ *
+ * @author Domagoj Pluscec
+ * @version v1.0, 15.1.2017.
+ */
 public class ReinforcmentLearningDemo {
 
     public static void main(String[] args) throws IOException {
@@ -18,7 +24,7 @@ public class ReinforcmentLearningDemo {
         final int height = 10;
         final boolean hasWalls = false;
 
-        MultithreadedSimulator sim = new MultithreadedSimulator();
+        Simulator sim = new Simulator();
         sim.generateGrids(numberOfGrids, numberOfBottles, width, height, hasWalls);
         ReinforcmentLearningAlgorithm algorithm = new ReinforcmentLearningAlgorithm();
 

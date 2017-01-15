@@ -5,29 +5,100 @@ import hr.fer.zemris.projekt.grid.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class models robot state with states of robot's current field and neighbor
+ * fields.
+ *
+ * @author Domagoj Pluscec
+ * @version v1.0, 15.1.2017.
+ */
 public class State {
 
+    /**
+     * Map which maps inner state positions to field states.
+     */
     private Map<StateFields, Field> groupFieldStates;
 
+    /**
+     * Number of state fields.
+     */
     public static final int DEFAULT_STATE_FIELD_NUMBER = 5;
 
+    /**
+     * Enumeration which describe inner state position.
+     *
+     * @author Domagoj Pluscec
+     * @version v1.0, 15.1.2017.
+     */
     public static enum StateFields {
-        CURRENT, LEFT, RIGHT, UP, DOWN;
+        /**
+         * Current field.
+         */
+        CURRENT,
+        /**
+         * Left field.
+         */
+        LEFT,
+        /**
+         * Right field.
+         */
+        RIGHT,
+        /**
+         * Upper field.
+         */
+        UP,
+        /**
+         * Down field.
+         */
+        DOWN;
 
     }
 
+    /**
+     * Constructor which initializes empty state.
+     */
     public State() {
         groupFieldStates = new HashMap<>(DEFAULT_STATE_FIELD_NUMBER);
     }
 
+    /**
+     * Method adds field to the current state at given state field position.
+     *
+     * @param field
+     *            state field position
+     * @param fieldState
+     *            field state
+     */
     public void addFieldState(StateFields field, Field fieldState) {
         groupFieldStates.put(field, fieldState);
     }
 
+    /**
+     * Method obtains field state at given position.
+     *
+     * @param field
+     *            field position
+     * @return field state
+     */
     public Field getFieldState(StateFields field) {
         return groupFieldStates.get(field);
     }
 
+    /**
+     * Factory method that constructs state from field states.
+     *
+     * @param current
+     *            current field state
+     * @param left
+     *            left field state
+     * @param right
+     *            right field state
+     * @param up
+     *            upper field state
+     * @param down
+     *            down field state
+     * @return initialized state
+     */
     public static State fromFieldStates(Field current, Field left, Field right, Field up, Field down) {
         State state = new State();
         state.addFieldState(StateFields.CURRENT, current);
@@ -45,9 +116,21 @@ public class State {
                 + getFieldState(StateFields.DOWN);
     }
 
+    /**
+     * Method initializes state from given state string. Format of the string is
+     * field states separated by space. For example: BOTTLE BOTTLE EMPTY EMPTY
+     * BOTTLE.
+     *
+     * @param stateString
+     *            string containing default state field number of fields
+     * @return initialized state
+     * @throws IllegalArgumentException
+     *             if the string is bad formated or if the string has illegal
+     *             number of states
+     */
     public static State fromString(String stateString) {
         String[] fields = stateString.split(" ");
-        if (fields.length != 5) {
+        if (fields.length != DEFAULT_STATE_FIELD_NUMBER) {
             throw new IllegalArgumentException("Illegal state string");
         }
         return fromFieldStates(fieldFromString(fields[0]), fieldFromString(fields[1]),

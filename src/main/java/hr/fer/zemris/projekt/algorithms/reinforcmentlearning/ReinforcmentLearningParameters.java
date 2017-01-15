@@ -7,50 +7,158 @@ import hr.fer.zemris.projekt.parameter.Parameters;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 
+/**
+ * Parameters for reinforcment learning algorithm.
+ *
+ * @author Domagoj Pluscec
+ * @version v1.0, 15.1.2017.
+ */
 public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLearningAlgorithm> {
 
-    public static final String LIVING_REWARD_NAME = "LIVING_REWARD";
+    /**
+     * Living reward parameter name.
+     */
+    public static final String LIVING_REWARD_NAME = "Leaving reward";
+    /**
+     * Default living reward.
+     */
     private static final double DEFAULT_LIVING_REWARD = -2;
+    /**
+     * Minimal living reward.
+     */
     private static final double MIN_LIVING_REWARD = -100;
+    /**
+     * Maximal living reward.
+     */
     private static final double MAX_LIVING_REWARD = 100;
 
-    public static final String PICKED_BOTTLE_REWARD_NAME = "PICKED_BOTTLE_REWARD";
+    /**
+     * Picked bottle reward parameter name.
+     */
+    public static final String PICKED_BOTTLE_REWARD_NAME = "Prize for picking up a bottle";
+    /**
+     * Default picked bottle reward.
+     */
     private static final double DEFAULT_PICKED_BOTTLE_REWARD = 10;
+    /**
+     * Minimal picked bottle reward.
+     */
     private static final double MIN_PICKED_BOTTLE_REWARD = -100;
+    /**
+     * Maximal picked bottle reward.
+     */
     private static final double MAX_PICKED_BOTTLE_REWARD = 100;
 
-    public static final String EMPTY_PICK_UP_REWARD_NAME = "EMPTY_PICK_UP_REWARD";
+    /**
+     * Empty pickup reward parameter name.
+     */
+    public static final String EMPTY_PICK_UP_REWARD_NAME = "Penalty for empty pickup";
+    /**
+     * Default empty pickup reward.
+     */
     private static final double DEFAULT_EMPTY_PICK_UP_REWARD = -1;
+    /**
+     * Minimal empty pickup reward.
+     */
     private static final double MIN_EMPTY_PICK_UP_REWARD = -100;
+    /**
+     * Maximal empty pickup reward.
+     */
     private static final double MAX_EMPTY_PICK_UP_REWARD = 100;
 
-    public static final String WALL_COLLISION_REWARD_NAME = "WALL_COLLISION_REWARD";
+    /**
+     * Wall collision reward parameter name.
+     */
+    public static final String WALL_COLLISION_REWARD_NAME = "Penalty for hitting a wall";
+    /**
+     * Default wall collision reward.
+     */
     private static final double DEFAULT_WALL_COLLISION_REWARD = -5;
+    /**
+     * Minimal wall collision reward.
+     */
     private static final double MIN_WALL_COLLISION_REWARD = -1000;
+    /**
+     * Maximal wall collision reward.
+     */
     private static final double MAX_WALL_COLLISION_REWARD = 1000;
 
-    public static final String LEARNING_RATE_NAME = "LEARNING_RATE";
+    /**
+     * Learning rate parameter name.
+     */
+    public static final String LEARNING_RATE_NAME = "Learning rate";
+    /**
+     * Default learning rate value.
+     */
     private static final double DEAFULT_LEARNING_RATE = 0.15;
+    /**
+     * Minimal learning rate value.
+     */
     private static final double MIN_LEARNING_RATE = 0;
+    /**
+     * Maximal learning rate value.
+     */
     private static final double MAX_LEARNING_RATE = 1;
 
-    public static final String FUTURE_DISCOUNT_FACTOR_NAME = "FUTURE_DISCOUNT_FACTOR";
+    /**
+     * Future reward discount factor parameter name.
+     */
+    public static final String FUTURE_DISCOUNT_FACTOR_NAME = "Future reward discount factor";
+    /**
+     * Default future reward discount factor.
+     */
     private static final double DEFAULT_FUTURE_DISCOUNT_FACTOR = 0.5;
+    /**
+     * Minimal future reward discount factor.
+     */
     private static final double MIN_FUTURE_DISCOUNT_FACTOR = 0;
+    /**
+     * Maximal future reward discount factor.
+     */
     private static final double MAX_FUTURE_DISCOUNT_FACTOR = 1;
 
-    public static final String EXPLORATION_FACTOR_NAME = "EXPLORATION_FACTOR";
+    /**
+     * Exploration factor parameter name.
+     */
+    public static final String EXPLORATION_FACTOR_NAME = "Exploration factor";
+    /**
+     * Default exploration factor value.
+     */
     private static final double DEFAULT_EXPLORATION_FACTOR = 2;
+    /**
+     * Minimal exploration factor value.
+     */
     private static final double MIN_EXPLORATION_FACTOR = -1000;
+    /**
+     * Maximal exploration factor value.
+     */
     private static final double MAX_EXPLORATION_FACTOR = 1000;
 
-    public static final String ITERATIONS_NUMBER_NAME = "ITERATIONS_NUMBER";
+    /**
+     * Number of iterations parameter name.
+     */
+    public static final String ITERATIONS_NUMBER_NAME = "Number of iterations";
+    /**
+     * Default number of iterations.
+     */
     private static final int DEFAULT_ITERATIONS_NUMBER = 1000;
+    /**
+     * Minimal number of iterations.
+     */
     private static final int MIN_ITERATIONS_NUMBER = 1;
-    private static final int MAX_ITERATIONS_NUMBER = 10000000;
+    /**
+     * Maximal number of iterations.
+     */
+    private static final int MAX_ITERATIONS_NUMBER = 1000000;
 
+    /**
+     * Parameters map.
+     */
     private HashMap<String, Parameter> parameterMap;
 
+    /**
+     * Default parameters constructor.
+     */
     public ReinforcmentLearningParameters() {
         parameterMap = new HashMap<String, Parameter>();
         parameterMap.put(ITERATIONS_NUMBER_NAME, new Parameter(ITERATIONS_NUMBER_NAME,
