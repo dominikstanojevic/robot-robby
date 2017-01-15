@@ -283,7 +283,7 @@
 
 <body onload="init()" onbeforeunload="stopAlgorithm(false)">
 
-<jsp:include page="about.jsp"/>
+<jsp:include page="navbar.jsp"/>
 
 <div class="container-fluid">
     <div class="row">

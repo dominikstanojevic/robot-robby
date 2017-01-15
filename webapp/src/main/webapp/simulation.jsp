@@ -138,7 +138,7 @@
 
 </head>
 <body onload="init()">
-    <jsp:include page="about.jsp"/>
+    <jsp:include page="navbar.jsp"/>
 
     <div class="container-fluid" style="margin: 10px 10px 10px 10px">
         <div class="row">
