@@ -89,6 +89,38 @@
             });
         }
 
+        var grid = null;
+        var moves = null;
+        function startSimulation(){
+            $.ajax({
+                url: "./simulation",
+                method: "POST",
+                dataType: "json",
+                success: loadSimulation,
+                error: loadSimulationErr
+            });
+        }
+
+        function loadSimulationErr(data){
+            console.log("ERRROR!!!");
+            console.log(data);
+        }
+
+        function loadSimulation(data){
+            console.log(data);
+
+            grid = data.gridObject;
+            moves = data.moves;
+
+            console.log(grid);
+            console.log(moves);
+
+            document.getElementById("simulationDiv").className = "row";
+
+            simulation = new Simulation(canvas, grid, moves);
+            simulation.draw();
+        }
+
         function setMapCreation(){
             var form = document.forms["createGridForm"];
 
@@ -138,209 +170,245 @@
 
 </head>
 <body onload="init()">
-    <jsp:include page="navbar.jsp"/>
+<jsp:include page="navbar.jsp"/>
 
-    <div class="container-fluid" style="margin: 10px 10px 10px 10px">
-        <div class="row">
-            <div class="col-md-6">
+<div class="container-fluid" style="margin: 10px 10px 10px 10px">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="btn-group btn-group-justified" role="group">
+                    <div class="btn-group" role="group">
+                        <button id="btnA" type="button" class="btn btn-default active" onclick="sectionA()">Generate</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btnB" type="button" class="btn btn-default" onclick="sectionB()">Import</button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btnC" type="button" class="btn btn-default" onclick="sectionC()">Create</button>
+                    </div>
+                </div>
+            </div>
+            <br/>
+
+            <div id="sectionA" class="row">
+                <form id="generateGridForm" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-md-offset-1" for="width">Width</label>
+                        <div class="col-md-8">
+                            <input type="text" name="width" id="width" value="10" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-md-offset-1" for="height">Height</label>
+                        <div class="col-md-8">
+                            <input type="text" name="height" id="height" value="10" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-md-offset-1" for="percent">% bottles</label>
+                        <div class="col-md-8">
+                            <input type="text" name="percentage" id="percent" value="0.5" class="form-control">
+                        </div>
+                    </div>
+
+                </form>
+
                 <div class="row">
-                    <div class="btn-group btn-group-justified" role="group">
-                        <div class="btn-group" role="group">
-                            <button id="btnA" type="button" class="btn btn-default active" onclick="sectionA()">Generate</button>
-                        </div>
-                        <div class="btn-group" role="group">
-                            <button id="btnB" type="button" class="btn btn-default" onclick="sectionB()">Import</button>
-                        </div>
-                        <div class="btn-group" role="group">
-                            <button id="btnC" type="button" class="btn btn-default" onclick="sectionC()">Create</button>
-                        </div>
+                    <div class="col-md-3 col-md-offset-9">
+                        <button onclick="generateMap()" class="btn btn-default btn-block"> Generate map </button>
                     </div>
                 </div>
-                <br/>
-
-                <div id="sectionA" class="row">
-                    <form id="generateGridForm" class="form-horizontal">
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-md-offset-1" for="width">Width</label>
-                            <div class="col-md-8">
-                                <input type="text" name="width" id="width" value="10" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-md-offset-1" for="height">Height</label>
-                            <div class="col-md-8">
-                                <input type="text" name="height" id="height" value="10" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-md-offset-1" for="percent">% bottles</label>
-                            <div class="col-md-8">
-                                <input type="text" name="percentage" id="percent" value="0.5" class="form-control">
-                            </div>
-                        </div>
-
-                    </form>
-
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-9">
-                            <button onclick="generateMap()" class="btn btn-default btn-block"> Generate map </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="sectionB" class="row">
-                    <div class="row">
-                        <form id="importGridForm" class="form-horizontal">
-                            <div class="form-group">
-                                <label class="control-label col-md-3" for="gridFile">Load grid</label>
-                                <div class="col-md-8">
-                                    <input id="gridFile" type="file" name="gridFile" class="filestyle"
-                                           data-buttonText="Find file" data-buttonName="btn-primary">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-md-3 col-md-offset-8">
-                            <button onclick="importMap()" class="btn btn-default btn-block">Import map</button> <br/>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="sectionC" class="row">
-                    <div id="sectionC1">
-                        <div class="row">
-                            <form id="createGridForm" class="form-horizontal">
-                                <div class="form-group col-md-6">
-                                    <label class="control-label col-md-3 col-md-offset-2" for="widthCreate">Width</label>
-                                    <div class="col-md-7">
-                                        <input type="text" name="width" id="widthCreate" value="10" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label class="control-label col-md-3 col-md-offset-1" for="heightCreate">Height</label>
-                                    <div class="col-md-8">
-                                        <input type="text" name="height" id="heightCreate" value="10" class="form-control">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-3 col-md-offset-8">
-                                <button onclick="setMapCreation()" class="btn btn-default btn-block">Set</button> <br/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="sectionC2" class="row collapse">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <canvas id="gridCanvas" height="480" width="640"> </canvas>
-                            </div>
-                        </div>
-
-                        <br/>
-                        <div class="row">
-                            <div class="col-md-3 col-md-offset-9">
-                                <button onclick="createMap()" class="btn btn-default btn-block">Create map</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-            <div class="col-md-6">
+            <div id="sectionB" class="row">
                 <div class="row">
-                    <div class="col-md-6 col-md-offset-1">
-                        <select onchange="optionSelected()" id="algorithmSelection" class="selectpicker" data-width="auto">
-                            <c:forEach var="algorithm" items="${algorithms.entrySet()}">
-                                <option value="${algorithm.key}">${algorithm.value}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                </div>
-                <br/>
-
-                <div class="row">
-                    <form id="robotForm" class="form-horizontal">
-                        <input name="algorithmID" id="algorithmID" type="hidden">
-
+                    <form id="importGridForm" class="form-horizontal">
                         <div class="form-group">
-                            <label class="control-label col-md-3" for="robotFile">Load robot</label>
+                            <label class="control-label col-md-3" for="gridFile">Load grid</label>
                             <div class="col-md-8">
-                                <input id="robotFile" type="file" name="robotFile" class="filestyle"
+                                <input id="gridFile" type="file" name="gridFile" class="filestyle"
                                        data-buttonText="Find file" data-buttonName="btn-primary">
                             </div>
                         </div>
                     </form>
                 </div>
 
+
                 <div class="row">
                     <div class="col-md-3 col-md-offset-8">
-                        <button onclick="loadRobot()" class="btn btn-default btn-block">Import robot</button>
+                        <button onclick="importMap()" class="btn btn-default btn-block">Import map</button> <br/>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sectionC" class="row">
+                <div id="sectionC1">
+                    <div class="row">
+                        <form id="createGridForm" class="form-horizontal">
+                            <div class="form-group col-md-6">
+                                <label class="control-label col-md-3 col-md-offset-2" for="widthCreate">Width</label>
+                                <div class="col-md-7">
+                                    <input type="text" name="width" id="widthCreate" value="10" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label class="control-label col-md-3 col-md-offset-1" for="heightCreate">Height</label>
+                                <div class="col-md-8">
+                                    <input type="text" name="height" id="heightCreate" value="10" class="form-control">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-8">
+                            <button onclick="setMapCreation()" class="btn btn-default btn-block">Set</button> <br/>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sectionC2" class="row collapse">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="gridCanvas" height="480" width="640"> </canvas>
+                        </div>
+                    </div>
+
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-9">
+                            <button onclick="createMap()" class="btn btn-default btn-block">Create map</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-1">
+                    <select onchange="optionSelected()" id="algorithmSelection" class="selectpicker" data-width="auto">
+                        <c:forEach var="algorithm" items="${algorithms.entrySet()}">
+                            <option value="${algorithm.key}">${algorithm.value}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+            </div>
+            <br/>
+
+            <div class="row">
+                <form id="robotForm" class="form-horizontal">
+                    <input name="algorithmID" id="algorithmID" type="hidden">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="robotFile">Load robot</label>
+                        <div class="col-md-8">
+                            <input id="robotFile" type="file" name="robotFile" class="filestyle"
+                                   data-buttonText="Find file" data-buttonName="btn-primary">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 col-md-offset-8">
+                    <button onclick="loadRobot()" class="btn btn-default btn-block">Import robot</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+    <hr/>
+    <br/>
+
+    <div class="row">
+        <div class="col-md-3 col-md-offset-1">
+            <button onclick="startSimulation()" class="btn btn-default btn-block">
+                Start simulation
+            </button>
+        </div>
+    </div>
+
+    <div class="row collapse" id = "simulationDiv">
+        <div class="row">
+            <div class="col-md-7 col-md-offset-1">
+                <form method="post" class="form-horizontal">
+                    <canvas id="canvas" class="img-responsive" height="720" width="1280"> </canvas>
+                </form>
+            </div>
+
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id = "btn1" onclick="simulation.previous()" class="btn btn-default btn-block">
+                            Previous
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id = "btn2" onclick="toggle()" class="btn btn-default btn-block">
+                            Play
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id = "btn3" onclick="simulation.next()" class="btn btn-default btn-block">
+                            Next
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id = "btn4" onclick="reset()" class="btn btn-default btn-block btn-block">
+                            Reset
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-
-        <br/>
-        <hr/>
-        <br/>
-
-        <div class="row" id = "simulationDiv">
-            <form method="post" class="form-horizontal">
-                <input type="submit" value="Start simulation" class="btn btn-default">
-            </form>
-
-            <canvas id="canvas" height="480" width="640"> </canvas>
-            <button id = "btn1" onclick="simulation.previous()" class="btn btn-default"> Previous </button>
-            <button id = "btn2" onclick="toggle()" class="btn btn-default"> Play </button>
-            <button id = "btn3" onclick="simulation.next()" class="btn btn-default"> Next </button>
-            <button id = "btn4" onclick="reset()" class="btn btn-default"> Reset </button>
-
-        </div>
     </div>
-    <script type="text/javascript">
-        var grid = ${grid};
-        var moves = ${moves};
+</div>
+<script type="text/javascript">
+    var canvas = document.getElementById("canvas");
+    var simulation = new Simulation(canvas, grid, moves);
 
-        var canvas = document.getElementById("canvas");
-        var simulation = new Simulation(canvas, grid, moves);
+    simulation.draw();
 
-        simulation.draw();
-
-        var isPaused = true;
-        var toggle = function(){
-            if (isPaused){
-                simulation.play();
-                isPaused = false;
-                document.getElementById("btn1").disabled = true;
-                document.getElementById("btn2").innerHTML = "Pause";
-                document.getElementById("btn3").disabled = true;
-            } else {
-                simulation.pause();
-                isPaused = true;
-                document.getElementById("btn1").disabled = false;
-                document.getElementById("btn2").innerHTML = "Play";
-                document.getElementById("btn3").disabled = false;
-            }
-        };
-
-        var reset = function(){
+    var isPaused = true;
+    var toggle = function(){
+        if (isPaused){
+            simulation.play();
+            isPaused = false;
+            document.getElementById("btn1").disabled = true;
+            document.getElementById("btn2").innerHTML = "Pause";
+            document.getElementById("btn3").disabled = true;
+        } else {
+            simulation.pause();
             isPaused = true;
             document.getElementById("btn1").disabled = false;
             document.getElementById("btn2").innerHTML = "Play";
             document.getElementById("btn3").disabled = false;
+        }
+    };
 
-            simulation.reset();
-        };
-    </script>
+    var reset = function(){
+        isPaused = true;
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("btn2").innerHTML = "Play";
+        document.getElementById("btn3").disabled = false;
+
+        simulation.reset();
+    };
+</script>
 </body>
 </html>

@@ -8,6 +8,7 @@ import hr.fer.zemris.projekt.simulator.Simulator;
 import hr.fer.zemris.projekt.simulator.Stats;
 import hr.fer.zemris.projekt.web.servlets.Constants;
 import hr.fer.zemris.projekt.web.utils.SimulatorConfiguration;
+import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +30,6 @@ public class SimulationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson GSON = new Gson();
 
-        req.setAttribute("algorithms", Algorithms.getAvailableAlgorithms());
-
         SimulatorConfiguration simulatorConfiguration = new SimulatorConfiguration();
         Simulator simulator = simulatorConfiguration.getSimulator();
 
@@ -40,10 +39,14 @@ public class SimulationServlet extends HttpServlet {
         simulator.setGrid(grid);
         Stats stats = simulator.playGames(robot).get(0);
 
-        req.setAttribute("grid", GSON.toJson(grid));
-        req.setAttribute("moves", GSON.toJson(stats.getMoves()));
+        resp.setContentType("application/json;charset=UTF-8");
 
-        req.getRequestDispatcher("./simulation.jsp").forward(req, resp);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("gridObject", GSON.toJson(grid));
+        jsonObject.put("moves", GSON.toJson(stats.getMoves()));
+
+        resp.getWriter().write(jsonObject.toString());
+        resp.getWriter().flush();
     }
 
 }
