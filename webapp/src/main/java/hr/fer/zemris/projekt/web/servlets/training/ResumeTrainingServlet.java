@@ -18,6 +18,7 @@ public class ResumeTrainingServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ExecutorService executor = (ExecutorService) req.getSession().getAttribute(Constants.SESSION_KEY_TRAINING_THREAD);
         if (executor == null) {
+            resp.setStatus(400);
             return;
         }
 

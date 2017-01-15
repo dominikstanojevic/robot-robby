@@ -73,6 +73,8 @@
 
         document.getElementById("algorithmID").setAttribute("value", selected);
 
+        stopAlgorithm(true);
+
         $.ajax(
             {
                 url: "parameters",
@@ -196,17 +198,20 @@
         };
     }
 
-    function stopAlgorithm() {
+    function stopAlgorithm(triggerPopover) {
         $.ajax({
             url: "stopTraining",
             method: "POST",
             success: function () {
                 eventSource.close();
-                $('#btnStop').popover({content: "Training stopped", placement: "left"}).popover('show');
 
-                setTimeout(function () {
-                    $('#btnStop').popover('hide');
-                }, 2000);
+                if (triggerPopover) {
+                    $('#btnStop').popover({content: "Training stopped", placement: "left"}).popover('show');
+
+                    setTimeout(function () {
+                        $('#btnStop').popover('hide');
+                    }, 2000);
+                }
             }
         });
     }
@@ -276,7 +281,7 @@
     }
 </script>
 
-<body onload="init()" onbeforeunload="stopAlgorithm()">
+<body onload="init()" onbeforeunload="stopAlgorithm(false)">
 
 <jsp:include page="about.jsp"/>
 
@@ -290,7 +295,7 @@
                     <div class="form-group">
                         <select onchange="optionSelected(this)" id="algorithmSelection" class="selectpicker form-control">
                             <option value="ga">Genetic algorithm</option>
-                            <option value="nn">Neural network</option>
+                            <option value="nn">Feedforward neural network</option>
                             <option value="reinforcement">Reinforcement learning</option>
                             <option value="gp">Genetic programming</option>
                             <option value="elman">Elman neural network</option>
@@ -402,7 +407,7 @@
 
         <%-- Training control --%>
         <div class="col-md-2">
-            <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm()">Stop training</button>
+            <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm(true)">Stop training</button>
             <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm()">Pause training</button>
             <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm()">Resume training</button>
             <button id="btnExport" class="btn btn-default btn-lg btn-block" type="button" onclick="location.href='exportRobot'">Export robot</button>

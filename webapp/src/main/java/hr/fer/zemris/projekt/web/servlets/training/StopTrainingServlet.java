@@ -18,6 +18,7 @@ public class StopTrainingServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ExecutorService executor = (ExecutorService) req.getSession().getAttribute(Constants.SESSION_KEY_TRAINING_THREAD);
         if (executor == null) {
+            resp.setStatus(400);
             return;
         }
 
@@ -27,6 +28,5 @@ public class StopTrainingServlet extends HttpServlet {
         req.getSession().removeAttribute(Constants.SESSION_KET_TRAINING_TASK);
 
         task.cancel(true);
-        executor.shutdown();
     }
 }
