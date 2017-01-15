@@ -57,7 +57,8 @@
 
     function isNumberOfIteration(inputName) {
         if (inputName == 'Max generations') return true;
-        if (inputName == 'maxGenerations') return true;
+        if (inputName == 'maxGenerations') return true
+        if (inputName == 'Number of generations') return true;
 
         return false;
     }
@@ -125,8 +126,9 @@
                         inputs.appendChild(div);
 
                         //set scale for graph
-                        if (isNumberOfIteration(input.name)) {
+                        if (isNumberOfIteration(parameter.name)) {
                             graph.xMax = parameter.value;
+                            graph.xName = parameter.name;
                             graph.draw();
                         }
                     }
@@ -288,6 +290,7 @@
                         <select onchange="optionSelected(this)" id="algorithmSelection" class="selectpicker form-control">
                             <option value="ga">Genetic algorithm</option>
                             <option value="nn">Neural network</option>
+                            <option value="gp">Genetic programming</option>
                             <option value="elman">Elman neural network</option>
                         </select>
                     </div>

@@ -20,7 +20,7 @@ import java.io.IOException;
 public class SimulationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("algorithms", Algorithms.getAvailableAlgoritmhs());
+        req.setAttribute("algorithms", Algorithms.getAvailableAlgorithms());
 
         req.getRequestDispatcher("./simulation.jsp").forward(req, resp);
     }
@@ -29,7 +29,7 @@ public class SimulationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Gson GSON = new Gson();
 
-        req.setAttribute("algorithms", Algorithms.getAvailableAlgoritmhs());
+        req.setAttribute("algorithms", Algorithms.getAvailableAlgorithms());
 
         SimulatorConfiguration simulatorConfiguration = new SimulatorConfiguration();
         Simulator simulator = simulatorConfiguration.getSimulator();
