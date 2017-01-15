@@ -86,7 +86,7 @@ public class Mapper {
     }
 
     private void checkNull(Field field) {
-        Objects.requireNonNull(field, field.name() + " field cannot be null.");
+        Objects.requireNonNull(field, "Field cannot be null.");
     }
 
     private int fillVector(RealVector vector, Field field, int position) {
