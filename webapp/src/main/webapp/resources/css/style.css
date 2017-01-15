@@ -1,11 +1,4 @@
-#nav ul {
-    background-color: lightgray;
-    overflow: hidden;
-}
-
-#nav li {
-    float: left;
-    text-align: center;
-    padding: 14px 16px;
-    display: block
+.container-fluid {
+    padding-left: 2%;
+    padding-right: 2%;
 }

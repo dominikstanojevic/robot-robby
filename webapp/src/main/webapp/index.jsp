@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Index</title>
+    <title>Robot Robby - Training</title>
     <meta charset="utf-8">
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
