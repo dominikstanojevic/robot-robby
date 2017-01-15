@@ -11,6 +11,9 @@
     <script type="text/javascript" src="resources/js/bootstrap-filestyle.min.js"> </script>
 
     <script type="text/javascript">
+        var canvas = null;
+        var simulation = null;
+
         function init(){
             optionSelected();
             setMapCreation();
@@ -18,6 +21,8 @@
 
             var link = document.getElementById("navItemSimulation");
             link.setAttribute("class", "active");
+
+            canvas = document.getElementById("canvas");
         }
 
         function optionSelected() {
@@ -89,28 +94,18 @@
             });
         }
 
-        var grid = null;
-        var moves = null;
         function startSimulation(){
             $.ajax({
                 url: "./simulation",
                 method: "POST",
                 dataType: "json",
                 success: loadSimulation,
-                error: loadSimulationErr
             });
         }
 
-        function loadSimulationErr(data){
-            console.log("ERRROR!!!");
-            console.log(data);
-        }
-
         function loadSimulation(data){
-            console.log(data);
-
-            grid = data.gridObject;
-            moves = data.moves;
+            var grid = data.gridObject;
+            var moves = data.moves;
 
             console.log(grid);
             console.log(moves);
@@ -166,6 +161,32 @@
             document.getElementById("btnB").className = "btn btn-default";
             document.getElementById("btnC").className = "btn btn-default active";
         }
+
+        var isPaused = true;
+        var toggle = function(){
+            if (isPaused){
+                simulation.play();
+                isPaused = false;
+                document.getElementById("btn1").disabled = true;
+                document.getElementById("btn2").innerHTML = "Pause";
+                document.getElementById("btn3").disabled = true;
+            } else {
+                simulation.pause();
+                isPaused = true;
+                document.getElementById("btn1").disabled = false;
+                document.getElementById("btn2").innerHTML = "Play";
+                document.getElementById("btn3").disabled = false;
+            }
+        };
+
+        var reset = function(){
+            isPaused = true;
+            document.getElementById("btn1").disabled = false;
+            document.getElementById("btn2").innerHTML = "Play";
+            document.getElementById("btn3").disabled = false;
+
+            simulation.reset();
+        };
     </script>
 
 </head>
@@ -272,7 +293,7 @@
 
                 <div id="sectionC2" class="row collapse">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-11 col-md-offset-1">
                             <canvas id="gridCanvas" height="480" width="640"> </canvas>
                         </div>
                     </div>
@@ -334,11 +355,13 @@
         </div>
     </div>
 
+    <br/>
+
     <div class="row collapse" id = "simulationDiv">
         <div class="row">
             <div class="col-md-7 col-md-offset-1">
                 <form method="post" class="form-horizontal">
-                    <canvas id="canvas" class="img-responsive" height="720" width="1280"> </canvas>
+                    <canvas id="canvas" class="img-responsive" height="768" width="1024"> </canvas>
                 </form>
             </div>
 
@@ -379,36 +402,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    var canvas = document.getElementById("canvas");
-    var simulation = new Simulation(canvas, grid, moves);
 
-    simulation.draw();
-
-    var isPaused = true;
-    var toggle = function(){
-        if (isPaused){
-            simulation.play();
-            isPaused = false;
-            document.getElementById("btn1").disabled = true;
-            document.getElementById("btn2").innerHTML = "Pause";
-            document.getElementById("btn3").disabled = true;
-        } else {
-            simulation.pause();
-            isPaused = true;
-            document.getElementById("btn1").disabled = false;
-            document.getElementById("btn2").innerHTML = "Play";
-            document.getElementById("btn3").disabled = false;
-        }
-    };
-
-    var reset = function(){
-        isPaused = true;
-        document.getElementById("btn1").disabled = false;
-        document.getElementById("btn2").innerHTML = "Play";
-        document.getElementById("btn3").disabled = false;
-
-        simulation.reset();
-    };
 </script>
 </body>
 </html>
