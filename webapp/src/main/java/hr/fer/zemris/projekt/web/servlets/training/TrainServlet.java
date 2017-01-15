@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @WebServlet(name = "TrainServlet", urlPatterns = {"/train"})
 public class TrainServlet extends HttpServlet {
 
-    private static final int TIMEOUT_MINUTES = 10;
+    private static final int TIMEOUT_MINUTES = 15;
     private static final int FLUSH_FREQUENCY = 10;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

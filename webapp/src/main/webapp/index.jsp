@@ -18,6 +18,13 @@
     function init() {
         optionSelected();
 
+        $.ajax({
+            url: "simulatorConfig",
+            method: "GET",
+            dataType: "json",
+            success: refreshSimulatorConfig
+        });
+
         graph = new Graph(
             document.getElementById("plotCanvas"),
             { name: "Iterations", min: 0, max: 1000 },
@@ -31,6 +38,19 @@
         var link = document.getElementById("navItemIndex");
         link.setAttribute("class", "active");
     }
+
+    var refreshSimulatorConfig = function (data) {
+        var config = data;
+        var form = document.getElementById("simulatorConfigForm");
+
+        form["maxMoves"].value = config.maxMoves;
+        form["gridHeight"].value = config.gridHeight;
+        form["gridWidth"].value = config.gridWidth;
+        form["numberOfGrids"].value = config.numberOfGrids;
+        form["numberOfBottles"].value = config.numberOfBottles;
+        form["mapRegenFrequency"].value = config.mapRegenFrequency;
+        form["variableBottles"].checked = config.variableBottles;
+    };
 
     function optionSelected() {
         var algorithmSelection = document.getElementById("algorithmSelection");
@@ -102,8 +122,8 @@
         );
     }
 
-    function validateTrainingForm() {
-        var inputs = document.forms["trainingForm"].getElementsByTagName("input");
+    function validateTrainingForm(form) {
+        var inputs = form.getElementsByTagName("input");
 
         var params = "?";
         var numberOfIterations = 1000; //TODO this is bad
@@ -153,7 +173,7 @@
                     new Point(iteration, result["average"])
                 ]);
 
-                document.getElementById("fitnessSpan").innerHTML = result["best"];
+                document.getElementById("fitnessDisplay").innerHTML = result["best"];
             }
         };
     }
@@ -187,6 +207,34 @@
             }
         });
     }
+
+    function validateSimConfigForm(form) {
+        var maxMoves = form["maxMoves"].value;
+        var gridHeight = form["gridHeight"].value;
+        var gridWidth = form["gridWidth"].value;
+        var numberOfGrids = form["numberOfGrids"].value;
+        var numberOfBottles = form["numberOfBottles"].value;
+        var mapRegenFrequency = form["mapRegenFrequency"].value;
+        var variableBottles = form["variableBottles"].checked;
+
+        $.ajax({
+            url: "simulatorConfig",
+            method: "POST",
+            data: {
+                "maxMoves": maxMoves,
+                "gridHeight": gridHeight,
+                "gridWidth": gridWidth,
+                "numberOfGrids": numberOfGrids,
+                "numberOfBottles": numberOfBottles,
+                "mapRegenFrequency": mapRegenFrequency,
+                "variableBottles": variableBottles
+            },
+            dataType: "json",
+            success: refreshSimulatorConfig
+        });
+
+        return false;
+    }
 </script>
 
 <body onload="init()">
@@ -199,26 +247,27 @@
 
             <%-- Algorithm selection --%>
             <div class="row">
-                <div class="col-md-offset-3 col-md-6">
-                    <select onchange="optionSelected()" id="algorithmSelection" class="selectpicker" data-width="auto">
-                        <option value="ga">Genetic algorithm</option>
-                        <option value="nn">Neural network</option>
-                        <option value="elman">Elman neural network</option>
-                    </select>
+                <div class="col-md-13">
+                    <div class="form-group">
+                        <select onchange="optionSelected(this)" id="algorithmSelection" class="selectpicker form-control">
+                            <option value="ga">Genetic algorithm</option>
+                            <option value="nn">Neural network</option>
+                            <option value="elman">Elman neural network</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <%-- Algorithm parameters --%>
-            <br>
             <div class="row">
-                <form id="trainingForm" class="form-horizontal" onsubmit="return validateTrainingForm()">
+                <form id="trainingForm" class="form-horizontal" onsubmit="return validateTrainingForm(this)">
                     <span id="trainingFormInputs"></span>
 
                     <input id="algorithmID" type="hidden" name="algorithmID">
 
                     <div class="form-group">
-                        <div class="col-md-offset-3 col-md-6">
-                            <input type="submit" name="btnSubmit" value="Start algorithm" class="btn btn-default">
+                        <div class="col-md-12">
+                            <input type="submit" name="btnSubmit" value="Start algorithm" class="btn btn-default btn-lg btn-block">
                         </div>
                     </div>
                 </form>
@@ -226,66 +275,90 @@
 
             <%-- Simulator config --%>
             <div class="row">
-                <form id="simulatorConfigForm" class="form-horizontal" onsubmit="return false;">
+                <form id="simulatorConfigForm" class="form-horizontal" onsubmit="return validateSimConfigForm(this);">
 
                     <div class="form-group">
                         <label class="control-label col-md-6" for="maxMoves">Max moves</label>
                         <div class="col-md-6">
-                            <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300" value="200"/>
+                            <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-md-6" for="gridHeight">Grid height</label>
                         <div class="col-md-6">
-                            <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15" value="10"/>
+                            <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-md-6" for="gridWidth">Grid width</label>
                         <div class="col-md-6">
-                            <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15" value="10"/>
+                            <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-md-6" for="numberOfGrids">Number of grids</label>
                         <div class="col-md-6">
-                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="200"/>
+                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-md-6" for="numberOfBottles">Number of bottles</label>
                         <div class="col-md-6">
-                            <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225" value="50"/>
+                            <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-md-6" for="mapRegenFrequency">Map regeneration frequency</label>
                         <div class="col-md-6">
-                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="50"/>
+                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000"/>
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <div class="col-md-offset-6 col-md-10">
+                            <div class="checkbox">
+                                <label><input id="variableBottles" type="checkbox">Variable bottles</label>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input type="submit" name="btnSubmit" value="Configure simulator" class="btn btn-default btn-lg btn-block">
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
 
+        <%-- Canvas --%>
         <div class="col-md-8">
-            <canvas id="plotCanvas" class="img-responsive" width="1200" height="600">
-                Sorry, your browser does not support the canvas tag.
-            </canvas>
-            <br><span id="fitnessSpan"></span>
+            <div class="row">
+                <canvas id="plotCanvas" class="img-responsive" width="1200" height="600">
+                    Sorry, your browser does not support the canvas tag.
+                </canvas>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="well">
+                        <h4 class="text-center" id="fitnessDisplay">-</h4>
+                    </div>
+                </div>
+            </div>
         </div>
 
+        <%-- Training control --%>
         <div class="col-md-2">
             <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm()">Stop training</button>
             <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm()">Pause training</button>
             <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm()">Resume training</button>
+            <button id="btnExport" class="btn btn-default btn-lg btn-block" type="button" onclick="location.href='exportRobot'">Export robot</button>
         </div>
     </div>
 </div>
