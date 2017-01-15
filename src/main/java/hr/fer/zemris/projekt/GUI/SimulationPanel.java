@@ -1,20 +1,5 @@
 package hr.fer.zemris.projekt.GUI;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingWorker;
-
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.RobotFormatException;
@@ -24,366 +9,402 @@ import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.RobotActionTaken;
 import hr.fer.zemris.projekt.simulator.Simulator;
+import hr.fer.zemris.projekt.simulator.Stats;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class SimulationPanel extends JPanel {
 
-	private static final long serialVersionUID = -7933105213494475778L;
+    private static final long serialVersionUID = -7933105213494475778L;
 
-	private Robot robot;
-	private Simulator simulator;
-	private MapPanel map = new MapPanel();
+    private Robot robot;
+    private Simulator simulator;
+    private MapPanel map = new MapPanel();
 
-	private JButton btnSimulate;
-	private JButton btnCancel;
-	private JButton btnPause;
-	private JButton btnResume;
+    private JButton btnSimulate;
+    private JButton btnCancel;
+    private JButton btnPause;
+    private JButton btnResume;
 
-	private SwingWorker<Void, Void> worker;
+    private SwingWorker<Void, Void> worker;
 
-	private JButton btnGenerateMap;
-	private JButton btnCreateMap;
-	private JButton btnLoadMap;
-	private JButton btnSaveMap;
-	private JButton btnLoadRobot;
+    private JButton btnGenerateMap;
+    private JButton btnCreateMap;
+    private JButton btnLoadMap;
+    private JButton btnSaveMap;
+    private JButton btnLoadRobot;
 
-	private JLabel lMapStatus = new JLabel("");
-	private JLabel lRobotStatus;
+    private JLabel lMapStatus = new JLabel("");
+    private JLabel lRobotStatus;
 
-	public SimulationPanel() {
-		super();
+    public SimulationPanel() {
+        super();
 
-		setLayout(new BorderLayout());
-		initGUI();
-	}
+        setLayout(new BorderLayout());
+        initGUI();
+    }
 
-	public void setRobot(Robot robot) {
-		this.robot = robot;
-	}
+    public void setRobot(Robot robot) {
+        this.robot = robot;
+        lRobotStatus.setText("Robot successfully set.");
+    }
 
-	private void initGUI() {
+    private void initGUI() {
 
-		JPanel createPanel = new JPanel();
-		add(createPanel, BorderLayout.PAGE_START);
+        JPanel createPanel = new JPanel();
+        add(createPanel, BorderLayout.PAGE_START);
 
-		JPanel optionsPanel = new JPanel(new GridLayout(0, 1));
-		add(optionsPanel, BorderLayout.LINE_START);
-		add(map, BorderLayout.CENTER);
+        JPanel optionsPanel = new JPanel(new GridLayout(0, 1));
+        add(optionsPanel, BorderLayout.LINE_START);
+        add(map, BorderLayout.CENTER);
 
-		btnGenerateMap = new JButton("Generate Map");
-		optionsPanel.add(btnGenerateMap);
+        btnGenerateMap = new JButton("Generate Map");
+        optionsPanel.add(btnGenerateMap);
 
-		btnGenerateMap.addActionListener(new ActionListener() {
+        btnGenerateMap.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-				GenerateMapDialog d = new GenerateMapDialog(optionsPanel);
-				d.setModal(true);
-				d.setVisible(true);
+                GenerateMapDialog d = new GenerateMapDialog(optionsPanel);
+                d.setModal(true);
+                d.setVisible(true);
 
-				Grid grid = new Grid();
-				grid.generate(d.getColumns(), d.getRows(), d.getNumberOfBottles(), false);
-				map.setGrid(grid);
-				lMapStatus.setText("Map successfully generated.");
+                Grid grid = new Grid();
+                grid.generate(d.getColumns(), d.getRows(), d.getNumberOfBottles(), false);
+                map.setGrid(grid);
+                lMapStatus.setText("Map successfully generated.");
 
-				btnSaveMap.setEnabled(true);
-				if (robot != null)
-					btnSimulate.setEnabled(true);
+                btnSaveMap.setEnabled(true);
+                if (robot != null) {
+                    btnSimulate.setEnabled(true);
+                }
 
-			}
-		});
+            }
+        });
 
-		btnCreateMap = new JButton("Create Map");
-		optionsPanel.add(btnCreateMap);
+        btnCreateMap = new JButton("Create Map");
+        optionsPanel.add(btnCreateMap);
 
-		btnCreateMap.addActionListener(new ActionListener() {
+        btnCreateMap.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-				JCreateMapDialog d = new JCreateMapDialog();
-				d.setModal(true);
-				d.setVisible(true);
+                JCreateMapDialog d = new JCreateMapDialog();
+                d.setModal(true);
+                d.setVisible(true);
 
-				map.setSides(d.getRows(), d.getColumns());
-				map.enableEditing(true);
-				lMapStatus.setText("Creating map.");
+                map.setSides(d.getRows(), d.getColumns());
+                map.enableEditing(true);
+                lMapStatus.setText("Creating map.");
 
-				disableSetupButtons();
+                disableSetupButtons();
 
-				createPanel.add(new JLabel(
-						"Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
-				JButton btnDone = new JButton("Done");
-				createPanel.add(btnDone);
-				btnDone.addActionListener(new ActionListener() {
+                createPanel
+                        .add(new JLabel(
+                                "Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
+                JButton btnDone = new JButton("Done");
+                createPanel.add(btnDone);
+                btnDone.addActionListener(new ActionListener() {
 
-					@Override
-					public void actionPerformed(ActionEvent e) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
 
-						map.generateGrid();
-						createPanel.removeAll();
+                        map.enableEditing(false);
 
-						enableSetupButtons();
-						if (robot == null)
-							btnSimulate.setEnabled(false);
+                        map.generateGrid();
+                        createPanel.removeAll();
 
-						lMapStatus.setText("Map successfully created.");
-					}
-				});
-			}
-		});
-
-		btnLoadMap = new JButton("Load Map");
-		optionsPanel.add(btnLoadMap);
+                        enableSetupButtons();
+                        if (robot == null) {
+                            btnSimulate.setEnabled(false);
+                        }
 
-		btnLoadMap.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				JFileChooser chooser = new JFileChooser();
-				int returnVal = chooser.showDialog(optionsPanel, "Load");
+                        lMapStatus.setText("Map successfully created.");
+                    }
+                });
+            }
+        });
 
-				Grid grid = new Grid();
-
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = chooser.getSelectedFile();
-
-					try {
-						grid.readFromFile(Paths.get(file.getPath()));
-						map.setGrid(grid);
-						lMapStatus.setText("Map successfully loaded.");
-						btnSaveMap.setEnabled(true);
-						if (robot != null)
-							btnSimulate.setEnabled(true);
-
-					} catch (Exception e1) {
-						lMapStatus.setText("Unable to load map.");
-					}
+        btnLoadMap = new JButton("Load Map");
+        optionsPanel.add(btnLoadMap);
+
+        btnLoadMap.addActionListener(new ActionListener() {
 
-				}
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showDialog(optionsPanel, "Load");
+
+                Grid grid = new Grid();
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+
+                    try {
+                        grid.readFromFile(Paths.get(file.getPath()));
+                        map.setGrid(grid);
+                        lMapStatus.setText("Map successfully loaded.");
+                        btnSaveMap.setEnabled(true);
+                        if (robot != null) {
+                            btnSimulate.setEnabled(true);
+                        }
+
+                    } catch (Exception e1) {
+                        lMapStatus.setText("Unable to load map.");
+                    }
 
-			}
-		});
+                }
+
+            }
+        });
+
+        btnSaveMap = new JButton("Save Map");
+        btnSaveMap.setEnabled(false);
+        optionsPanel.add(btnSaveMap);
+        optionsPanel.add(lMapStatus);
+
+        btnSaveMap.addActionListener(new ActionListener() {
 
-		btnSaveMap = new JButton("Save Map");
-		btnSaveMap.setEnabled(false);
-		optionsPanel.add(btnSaveMap);
-		optionsPanel.add(lMapStatus);
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-		btnSaveMap.addActionListener(new ActionListener() {
+                Grid grid = map.getGrid();
+
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showDialog(optionsPanel, "Save");
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
 
-				Grid grid = map.getGrid();
+                    try {
+                        grid.writeToFile((Paths.get(file.getPath())));
+                        lMapStatus.setText("Map saved.");
+                        btnSaveMap.setEnabled(true);
 
-				JFileChooser chooser = new JFileChooser();
-				int returnVal = chooser.showDialog(optionsPanel, "Save");
+                    } catch (Exception e1) {
+                        lMapStatus.setText("Unable to save map.");
+                    }
+                }
 
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = chooser.getSelectedFile();
+            }
+        });
 
-					try {
-						grid.writeToFile((Paths.get(file.getPath())));
-						lMapStatus.setText("Map saved.");
-						btnSaveMap.setEnabled(true);
+        // ADD ALL ALGORITHMS
+        optionsPanel.add(new JLabel("Select algorithm for loading robot:"));
+        Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming() };
+        JComboBox<Algorithm> cbAlgorithm = new JComboBox<>(algorithms);
+        cbAlgorithm.setSelectedItem(algorithms[0]);
+        optionsPanel.add(cbAlgorithm);
 
-					} catch (Exception e1) {
-						lMapStatus.setText("Unable to save map.");
-					}
-				}
+        btnLoadRobot = new JButton("Load Robot");
+        optionsPanel.add(btnLoadRobot);
+        lRobotStatus = new JLabel("No Robot Selected.");
+        optionsPanel.add(lRobotStatus);
 
-			}
-		});
+        btnLoadRobot.addActionListener(new ActionListener() {
 
-		//ADD ALL ALGORITHMS
-		optionsPanel.add(new JLabel("Select algorithm for loading robot:"));
-		Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming() };
-		JComboBox<Algorithm> cbAlgorithm = new JComboBox<>(algorithms);
-		cbAlgorithm.setSelectedItem(algorithms[0]);
-		optionsPanel.add(cbAlgorithm);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Algorithm a = (Algorithm) cbAlgorithm.getSelectedItem();
 
-		btnLoadRobot = new JButton("Load Robot");
-		optionsPanel.add(btnLoadRobot);
-		lRobotStatus = new JLabel("No Robot Selected.");
-		optionsPanel.add(lRobotStatus);
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showDialog(optionsPanel, "Load");
 
-		btnLoadRobot.addActionListener(new ActionListener() {
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Algorithm a = (Algorithm) cbAlgorithm.getSelectedItem();
+                    try {
+                        robot = a.readSolutionFromFile(Paths.get(file.getPath()));
+                        if (robot != null) {
+                            lRobotStatus.setText("Robot successfully loaded.");
+                            if (map.getGrid() != null) {
+                                btnSimulate.setEnabled(true);
+                            }
+                        } else {
+                            lRobotStatus
+                                    .setText("Selected file is not a valid robot for the given algorithm.");
+                            robot = null;
+                            btnSimulate.setEnabled(false);
+                        }
 
-				JFileChooser chooser = new JFileChooser();
-				int returnVal = chooser.showDialog(optionsPanel, "Load");
+                    } catch (IOException e1) {
+                        lRobotStatus.setText("An error occured while loading robot.");
+                    } catch (RobotFormatException e2) {
+                        lRobotStatus
+                                .setText("Selected file is not a valid robot for the given algorithm.");
+                    }
 
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File file = chooser.getSelectedFile();
+                }
+            }
+        });
 
-					try {
-						robot = a.readSolutionFromFile(Paths.get(file.getPath()));
-						if (robot != null) {
-							lRobotStatus.setText("Robot successfully loaded.");
-							if (map.getGrid() != null)
-								btnSimulate.setEnabled(true);
-						} else {
-							lRobotStatus.setText("Selected file is not a valid robot for the given algorithm.");
-							robot = null;
-							btnSimulate.setEnabled(false);
-						}
+        btnSimulate = new JButton("Start Simulation");
+        btnSimulate.setEnabled(false);
+        optionsPanel.add(btnSimulate);
+        JLabel lSimulationStatus = new JLabel("");
+        optionsPanel.add(lSimulationStatus);
 
-					} catch (IOException e1) {
-						lRobotStatus.setText("An error occured while loading robot.");
-					} catch (RobotFormatException e2) {
-						lRobotStatus.setText("Selected file is not a valid robot for the given algorithm.");
-					}
+        btnSimulate.addActionListener(new ActionListener() {
 
-				}
-			}
-		});
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-		btnSimulate = new JButton("Start Simulation");
-		btnSimulate.setEnabled(false);
-		optionsPanel.add(btnSimulate);
-		JLabel lSimulationStatus = new JLabel("");
-		optionsPanel.add(lSimulationStatus);
-
-		btnSimulate.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
+                if (robot == null) {
+                    lSimulationStatus.setText("Unable to start simulation, no robot was given.");
 
-				if (robot == null) {
-					lSimulationStatus.setText("Unable to start simulation, no robot was given.");
-
-				} else {
-					Grid grid = map.getGrid();
+                } else {
+                    Grid grid = map.getGrid();
+
+                    if (grid == null) {
+                        lSimulationStatus.setText("Unable to start simulation, no map was given.");
+                    } else {
 
-					if (grid == null) {
-						lSimulationStatus.setText("Unable to start simulation, no map was given.");
-					} else {
-
-						disableSetupButtons();
-						btnPause.setEnabled(true);
-						btnCancel.setEnabled(true);
+                        disableSetupButtons();
+                        btnPause.setEnabled(true);
+                        btnCancel.setEnabled(true);
 
-						simulator = new Simulator(map.getRows() * map.getColumns() * 2);
-						simulator.setGrid(grid);
-						simulator.addObserver(new Observer<RobotActionTaken>() {						
-
-							@Override
-							public void observationMade(Observable sender, RobotActionTaken observation) {
-
-								map.simulateAction(observation);
-							}
-						});
-
-						worker = new SwingWorker<Void, Void>() {
-
-							@Override
-							protected Void doInBackground() throws Exception {
-
-								map.setGrid(grid);
-								simulator.playGames(robot);
-
-								return null;
-							}
-
-							@Override
-							protected void done() {
-								enableSetupButtons();
-								disableSimulationButtons();
-							}
-						};
-
-						worker.execute();
-
-					}
-
-				}
-
-			}
-
-		});
-
-		btnCancel = new JButton("Cancel");
-		btnCancel.setEnabled(false);
-
-		btnCancel.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				simulator.suspend();
-				btnSimulate.setEnabled(true);
-				disableSimulationButtons();
-			}
-		});
-		optionsPanel.add(btnCancel);
-
-		btnPause = new JButton("Pause");
-		btnPause.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!worker.isDone() && !worker.isCancelled()) {
-					simulator.suspend();
-					btnResume.setEnabled(true);
-					btnPause.setEnabled(false);
-				}
-			}
-		});
-		btnPause.setEnabled(false);
-		optionsPanel.add(btnPause);
-
-		btnResume = new JButton("Resume");
-		btnResume.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!worker.isDone() && !worker.isCancelled()) {
-					simulator.resume();
-					btnResume.setEnabled(false);
-					btnPause.setEnabled(true);
-				}
-			}
-		});
-		btnResume.setEnabled(false);
-		optionsPanel.add(btnResume);
-
-	}
-
-	/**
-	 * Enables the buttons operating with maps and robots in OptionsPanel.
-	 */
-	private void disableSetupButtons() {
-
-		btnCreateMap.setEnabled(false);
-		btnGenerateMap.setEnabled(false);
-		btnLoadRobot.setEnabled(false);
-		btnLoadMap.setEnabled(false);
-		btnSaveMap.setEnabled(false);
-		btnSimulate.setEnabled(false);
-
-	}
-
-	/**
-	 * Disables the buttons operating with maps and robots in OptionsPanel.
-	 */
-	private void enableSetupButtons() {
-
-		btnCreateMap.setEnabled(true);
-		btnGenerateMap.setEnabled(true);
-		btnLoadRobot.setEnabled(true);
-		btnLoadMap.setEnabled(true);
-		btnSaveMap.setEnabled(true);
-		btnSimulate.setEnabled(true);
-	}
-
-	private void disableSimulationButtons() {
-		btnCancel.setEnabled(false);
-		btnPause.setEnabled(false);
-		btnResume.setEnabled(false);
-	}
+                        simulator = new Simulator(map.getRows() * map.getColumns() * 2);
+                        simulator.setGrid(grid);
+                        simulator.addObserver(new Observer<RobotActionTaken>() {
+
+                            @Override
+                            public void observationMade(Observable sender,
+                                    RobotActionTaken observation) {
+
+                                map.simulateAction(observation);
+                            }
+                        });
+
+                        worker = new SwingWorker<Void, Void>() {
+
+                            private List<Stats> stats;
+
+                            @Override
+                            protected Void doInBackground() throws Exception {
+
+                                map.setGrid(grid);
+                                stats = simulator.playGames(robot);
+
+                                return null;
+                            }
+
+                            @Override
+                            protected void done() {
+                                enableSetupButtons();
+                                disableSimulationButtons();
+
+                                JStatsDialog d = new JStatsDialog(stats.get(0));
+                                d.setModal(true);
+                                d.setLocationRelativeTo(null);
+                                d.setVisible(true);
+
+                            }
+                        };
+
+                        worker.execute();
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        btnCancel = new JButton("Cancel");
+        btnCancel.setEnabled(false);
+
+        btnCancel.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                simulator.suspend();
+                btnSimulate.setEnabled(true);
+                disableSimulationButtons();
+            }
+        });
+        optionsPanel.add(btnCancel);
+
+        btnPause = new JButton("Pause");
+        btnPause.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!worker.isDone() && !worker.isCancelled()) {
+                    simulator.suspend();
+                    btnResume.setEnabled(true);
+                    btnPause.setEnabled(false);
+                }
+            }
+        });
+        btnPause.setEnabled(false);
+        optionsPanel.add(btnPause);
+
+        btnResume = new JButton("Resume");
+        btnResume.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!worker.isDone() && !worker.isCancelled()) {
+                    simulator.resume();
+                    btnResume.setEnabled(false);
+                    btnPause.setEnabled(true);
+                }
+            }
+        });
+        btnResume.setEnabled(false);
+        optionsPanel.add(btnResume);
+
+    }
+
+    /**
+     * Enables the buttons operating with maps and robots in OptionsPanel.
+     */
+    private void disableSetupButtons() {
+
+        btnCreateMap.setEnabled(false);
+        btnGenerateMap.setEnabled(false);
+        btnLoadRobot.setEnabled(false);
+        btnLoadMap.setEnabled(false);
+        btnSaveMap.setEnabled(false);
+        btnSimulate.setEnabled(false);
+
+    }
+
+    /**
+     * Disables the buttons operating with maps and robots in OptionsPanel.
+     */
+    private void enableSetupButtons() {
+
+        btnCreateMap.setEnabled(true);
+        btnGenerateMap.setEnabled(true);
+        btnLoadRobot.setEnabled(true);
+        btnLoadMap.setEnabled(true);
+        btnSaveMap.setEnabled(true);
+        btnSimulate.setEnabled(true);
+    }
+
+    private void disableSimulationButtons() {
+        btnCancel.setEnabled(false);
+        btnPause.setEnabled(false);
+        btnResume.setEnabled(false);
+    }
 
 }

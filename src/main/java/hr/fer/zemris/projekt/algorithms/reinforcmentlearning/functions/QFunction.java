@@ -40,8 +40,17 @@ public class QFunction {
      */
     private double explorationFactor;
 
+    /**
+     * Initial q value.
+     */
     private final static double initialQValue = 0;
+    /**
+     * Initial state count value.
+     */
     private final static int initialCountValue = 0;
+    /**
+     * Initial optimal future reward value.
+     */
     private final static double initialOptimalFutureReward = 0;
 
     public QFunction(Map<State, Map<Move, Double>> qValues,
@@ -52,6 +61,15 @@ public class QFunction {
 
     }
 
+    /**
+     * Method initializes q function with given qfunction and current
+     * reinforcment learining parameters.
+     *
+     * @param qFunction
+     *            qfunction
+     * @param params
+     *            learning parameters
+     */
     public QFunction(QFunction qFunction, ReinforcmentLearningParameters params) {
         this(params);
         qValues = qFunction.qValues;
@@ -77,6 +95,16 @@ public class QFunction {
         return qValues.get(state).get(action);
     }
 
+    /**
+     * Method sets q value of given state action pair to given value.
+     *
+     * @param state
+     *            state for which to set q value
+     * @param action
+     *            action in the state for which to set q value
+     * @param newValue
+     *            new q value for action state pair
+     */
     private void setQValue(State state, Move action, double newValue) {
         if (!qValues.containsKey(state)) {
             initializeQValue(state);
@@ -84,6 +112,12 @@ public class QFunction {
         qValues.get(state).put(action, newValue);
     }
 
+    /**
+     * Method initializes q values for given state.
+     *
+     * @param state
+     *            state for which to initialize q value
+     */
     private void initializeQValue(State state) {
         Map<Move, Double> qValueMap = new HashMap<>();
         for (Move move : Move.values()) {
@@ -95,7 +129,7 @@ public class QFunction {
 
     public void updateFunction(State oldState, State currState, Move action, boolean randomAction) {
         if (oldState == null || action == null) {
-            throw new IllegalArgumentException("Old state and action must not be null.");
+            return;
         }
 
         if (randomAction == true) {
@@ -147,6 +181,8 @@ public class QFunction {
     }
 
     private double calcOptimalFutureValue(State currState) {
+        // TODO provjeri da li je uredu tu pridruživati inicijalnu optimalnu
+        // nagradu
         double optimalFutureReward = initialOptimalFutureReward;
         for (Move action : Move.values()) {
             int stateActionCount = getStateActionCount(currState, action);
@@ -165,6 +201,13 @@ public class QFunction {
         return explorationValue;
     }
 
+    /**
+     * Method obtains optimal move according to q function for current state.
+     *
+     * @param currState
+     *            current state
+     * @return calculated move
+     */
     public Move getMove(State currState) {
 
         if (!qValues.containsKey(currState)) {
@@ -233,6 +276,7 @@ public class QFunction {
             int delimiterIndex = entry.indexOf(":");
 
             Move currMove = extractMoveFromString(entry.substring(0, delimiterIndex).trim());
+            @SuppressWarnings("unchecked")
             T currValue = (T) extractValueFromString(entry.substring(delimiterIndex + 1).trim());
             innerMap.put(currMove, currValue);
         }
@@ -241,6 +285,17 @@ public class QFunction {
 
     }
 
+    /**
+     * Method extracts move from given string. It expects string representation
+     * of the Move described in {@link Move}. String needs to be trimed before
+     * calling this function.
+     *
+     * @param moveString
+     *            string containing a move
+     * @return extracted move
+     * @throws IllegalArgumentException
+     *             if given string doesn't match legal move
+     */
     private static Move extractMoveFromString(String moveString) {
         for (Move move : Move.values()) {
             if (moveString.equals(move.toString())) {
@@ -250,6 +305,16 @@ public class QFunction {
         throw new IllegalArgumentException("Illegal move string");
     }
 
+    /**
+     * Method extracts number value from string. If the number contains "." it
+     * returns a double, otherwise it returns integer.
+     *
+     * @param valueString
+     *            trimed number value string
+     * @return number representation of the string
+     * @throws NumberFormatException
+     *             if the given string has illegal number format
+     */
     private static Number extractValueFromString(String valueString) {
         if (valueString.contains(".")) {
             return Double.parseDouble(valueString);

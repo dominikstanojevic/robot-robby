@@ -1,6 +1,7 @@
 package hr.fer.zemris.projekt.algorithms.reinforcmentlearning;
 
 import hr.fer.zemris.projekt.algorithms.Algorithm;
+import hr.fer.zemris.projekt.algorithms.AlgorithmUtils;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.RobotFormatException;
@@ -22,10 +23,22 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+/**
+ * Class models reinforcment learning algorithm based on model free q learning.
+ *
+ * @author Domagoj Pluscec
+ * @version v1.0, 15.1.2017.
+ */
 public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
 
+    /**
+     * Algorithm's q function.
+     */
     private QFunction currentQFunction;
 
+    /**
+     * Robot solution line comment start.
+     */
     private static final String solutionFileCommentStart = "#";
 
     @Override
@@ -42,6 +55,15 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
 
     }
 
+    /**
+     * Method reads robot solution from given path.
+     *
+     * @param filePath
+     *            path to robot definition
+     * @return file content string without comments
+     * @throws IOException
+     *             if there was a problem while reading file
+     */
     private String readSolutionFile(Path filePath) throws IOException {
         StringBuilder solution = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(
@@ -71,6 +93,7 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
 
     @Override
     public Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
+
         if (currentQFunction == null) {
             currentQFunction = new QFunction((ReinforcmentLearningParameters) parameters);
         } else {
@@ -81,9 +104,12 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
 
         for (int i = 0, end = (int) parameters.getParameter(
                 ReinforcmentLearningParameters.ITERATIONS_NUMBER_NAME).getValue(); i < end; i++) {
-            Agent roby = new Agent(currentQFunction);
-            List<Stats> statistics = simulator.playGames(roby);
 
+            Agent roby = new Agent(currentQFunction);
+
+            List<Stats> statistics = simulator.playGames(roby);
+            roby.setStandardFitness(AlgorithmUtils.calculateFitness(statistics));
+            notifyListeners(roby, AlgorithmUtils.calculateFitness(statistics), i);
             if (i == end - 1 || i % 100 == 0) {
                 double averageBottlePickUp = statistics.stream()
                         .mapToInt(x -> x.getBottlesCollected()).average().getAsDouble();
@@ -106,10 +132,14 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
 
         ReinforcmentLearningParameters params = new ReinforcmentLearningParameters();
         params.setParameter(ReinforcmentLearningParameters.LEARNING_RATE_NAME, 0);
+
         return new Agent(currentQFunction);
 
     }
 
+    /**
+     * Algorithm name.
+     */
     private static final String algorithmName = "Reinforcment Learning";
 
     @Override

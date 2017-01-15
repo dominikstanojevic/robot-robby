@@ -3,6 +3,7 @@ package hr.fer.zemris.projekt.GUI;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
+import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.ReinforcmentLearningAlgorithm;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.TrainingResult;
@@ -67,7 +68,8 @@ public class LearningPanel extends JPanel {
         algorithmOptions.add(parameters, BorderLayout.CENTER);
 
         // ADD ALL ALGORITHMS
-        ObservableAlgorithm[] algoritms = new ObservableAlgorithm[] { new GeneticProgramming() };
+        ObservableAlgorithm[] algoritms = new ObservableAlgorithm[] { new GeneticProgramming(),
+                new ReinforcmentLearningAlgorithm() };
         JComboBox<ObservableAlgorithm> cbAlgoritms = new JComboBox<>(algoritms);
         add(cbAlgoritms, BorderLayout.PAGE_START);
 
@@ -233,7 +235,9 @@ public class LearningPanel extends JPanel {
                     protected Void doInBackground() throws Exception {
 
                         simulator = new Simulator(2 * mapCols * mapRows);
-                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
+
+                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false,
+                                false);
 
                         algorithm.addObserver(new Observer<TrainingResult>() {
 

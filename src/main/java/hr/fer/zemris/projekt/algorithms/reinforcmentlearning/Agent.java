@@ -8,16 +8,46 @@ import hr.fer.zemris.projekt.grid.Field;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Class that models reinforcement learning agent.
+ *
+ * @author Domagoj Pluscec
+ * @version v1.0, 15.1.2017.
+ */
 public class Agent implements Robot {
 
+    /**
+     * Robot q function.
+     */
     private QFunction qFunction;
-    private double currStandardFitness;
+    /**
+     * Current agent standard fitness.
+     */
+    private Double currStandardFitness;
 
+    /**
+     * Last state.
+     */
     private State lastState;
+    /**
+     * Last move.
+     */
     private Move lastMove;
+    /**
+     * Flag which indicates if the last move was random.
+     */
     private boolean lastMoveRandom;
 
+    /**
+     * Robot constructor which initializes q function.
+     *
+     * @param qFunction
+     *            q function
+     */
     public Agent(QFunction qFunction) {
+        if (qFunction == null) {
+            throw new IllegalArgumentException("Q function must not be null.");
+        }
         this.qFunction = qFunction;
     }
 
@@ -42,9 +72,18 @@ public class Agent implements Robot {
 
     @Override
     public double standardizedFitness() {
+        if (currStandardFitness == null) {
+            throw new IllegalStateException("Agent standard fitness hasn't been initialized.");
+        }
         return currStandardFitness;
     }
 
+    /**
+     * Method sets standard fitness of the robot.
+     *
+     * @param standardFitness
+     *            standard fitness value
+     */
     public void setStandardFitness(double standardFitness) {
         currStandardFitness = standardFitness;
     }
@@ -74,6 +113,8 @@ public class Agent implements Robot {
         case 3:
             nextMove = Move.RIGHT;
             break;
+        default:
+            nextMove = getRandomMove(rnd);
         }
 
         return nextMove;
