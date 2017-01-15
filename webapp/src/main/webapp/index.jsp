@@ -290,6 +290,7 @@
                         <select onchange="optionSelected(this)" id="algorithmSelection" class="selectpicker form-control">
                             <option value="ga">Genetic algorithm</option>
                             <option value="nn">Neural network</option>
+                            <option value="reinforcement">Reinforcement learning</option>
                             <option value="gp">Genetic programming</option>
                             <option value="elman">Elman neural network</option>
                         </select>
@@ -343,7 +344,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-6" for="numberOfGrids">Number of grids</label>
                         <div class="col-sm-6">
-                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="200" required/>
+                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="100" required/>
                         </div>
                         <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>

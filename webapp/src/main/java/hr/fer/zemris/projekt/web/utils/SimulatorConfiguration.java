@@ -10,7 +10,7 @@ public class SimulatorConfiguration {
 
     private int gridHeight = 10;
     private int gridWidth = 10;
-    private int numberOfGrids = 200;
+    private int numberOfGrids = 100;
 
     private boolean variableBottles = true;
     private int numberOfBottles = 50;

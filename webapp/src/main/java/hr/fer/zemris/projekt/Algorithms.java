@@ -6,6 +6,7 @@ import hr.fer.zemris.projekt.algorithms.ga.GeneticAlgorithm;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.GA;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.SASEGASA;
+import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.ReinforcmentLearningAlgorithm;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
 import java.util.HashMap;
@@ -22,11 +23,13 @@ public final class Algorithms {
         ALGORITHM_SUPPLIERS.put("elman", GA::new);
         ALGORITHM_SUPPLIERS.put("nn", SASEGASA::new);
         ALGORITHM_SUPPLIERS.put("gp", GeneticProgramming::new);
+        ALGORITHM_SUPPLIERS.put("reinforcement", ReinforcmentLearningAlgorithm::new);
 
         ALGORITHM_MAP.put("ga", new GeneticAlgorithm());
         ALGORITHM_MAP.put("elman", new GA());
         ALGORITHM_MAP.put("nn", new SASEGASA());
         ALGORITHM_MAP.put("gp", new GeneticProgramming());
+        ALGORITHM_MAP.put("reinforcement", new ReinforcmentLearningAlgorithm());
     }
 
     public static ObservableAlgorithm getAlgorithm(String id) {
