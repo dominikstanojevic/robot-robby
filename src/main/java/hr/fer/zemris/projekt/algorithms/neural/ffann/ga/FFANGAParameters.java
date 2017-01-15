@@ -4,10 +4,7 @@ import hr.fer.zemris.projekt.parameter.Parameter;
 import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Kristijan Vulinovic
@@ -150,7 +147,7 @@ public class FFANGAParameters implements Parameters<FFANNGA> {
     }
 
     @Override
-    public Set<Parameter> getParameters() {
-        return new HashSet<>(parameters.values());
+    public LinkedHashSet<Parameter> getParameters() {
+        return new LinkedHashSet<>(parameters.values());
     }
 }
