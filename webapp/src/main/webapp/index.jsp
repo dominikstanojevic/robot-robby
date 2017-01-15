@@ -18,6 +18,7 @@
     function init() {
         optionSelected();
 
+        // load simulator configuration
         $.ajax({
             url: "simulatorConfig",
             method: "GET",
@@ -25,6 +26,7 @@
             success: refreshSimulatorConfig
         });
 
+        // init graph
         graph = new Graph(
             document.getElementById("plotCanvas"),
             { name: "Iterations", min: 0, max: 1000 },
@@ -35,6 +37,7 @@
             ]
         );
 
+        // make the navigation show the selected page
         var link = document.getElementById("navItemIndex");
         link.setAttribute("class", "active");
     }
@@ -51,6 +54,13 @@
         form["mapRegenFrequency"].value = config.mapRegenFrequency;
         form["variableBottles"].checked = config.variableBottles;
     };
+
+    function isNumberOfIteration(inputName) {
+        if (inputName == 'Max generations') return true;
+        if (inputName == 'maxGenerations') return true;
+
+        return false;
+    }
 
     function optionSelected() {
         var algorithmSelection = document.getElementById("algorithmSelection");
@@ -115,10 +125,7 @@
                         inputs.appendChild(div);
 
                         //set scale for graph
-                        if (parameter.name == 'Max generations'
-                            || parameter.name == 'Max. generations'
-                            || parameter.name == 'maxGenerations') { //TODO this is even worse
-
+                        if (isNumberOfIteration(input.name)) {
                             graph.xMax = parameter.value;
                             graph.draw();
                         }
@@ -150,9 +157,7 @@
             params += inputs[i].value;
             params += "&";
 
-            if (inputs[i].name == 'Max generations'
-                || inputs[i].name == 'Max. generations'
-                || inputs[i].name == 'maxGenerations') { //TODO this is even worse
+            if (isNumberOfIteration(inputs[i].name)) {
                 numberOfIterations = inputs[i].value;
             }
         }
@@ -194,6 +199,11 @@
             method: "POST",
             success: function () {
                 eventSource.close();
+                $('#btnStop').popover({content: "Training stopped", placement: "left"}).popover('show');
+
+                setTimeout(function () {
+                    $('#btnStop').popover('hide');
+                }, 2000);
             }
         });
     }
@@ -203,17 +213,25 @@
             url: "pauseTraining",
             method: "POST",
             success: function () {
-                //TODO
+                $('#btnPause').popover({content: "Training paused", placement: "left"}).popover('show');
+
+                setTimeout(function () {
+                    $('#btnPause').popover('hide');
+                }, 2000);
             }
         });
     }
 
     function resumeAlgorithm() {
         $.ajax({
-           url: "resumeTraining",
+            url: "resumeTraining",
             method: "POST",
             success: function () {
-                //TODO
+                $('#btnResume').popover({content: "Training resumed", placement: "left"}).popover('show');
+
+                setTimeout(function () {
+                    $('#btnResume').popover('hide');
+                }, 2000);
             }
         });
     }
@@ -240,7 +258,15 @@
                 "variableBottles": variableBottles
             },
             dataType: "json",
-            success: refreshSimulatorConfig
+            success: function (data) {
+                refreshSimulatorConfig(data);
+
+                $('#btnSimConfig').popover({content: "Simulator configured", placement: "right"}).popover('show');
+
+                setTimeout(function () {
+                    $('#btnSimConfig').popover('hide');
+                }, 2000);
+            }
         });
 
         return false;
@@ -345,7 +371,7 @@
 
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="submit" name="btnSubmit" value="Configure simulator" class="btn btn-default btn-lg btn-block">
+                            <input id="btnSimConfig" type="submit" name="btnSubmit" value="Configure simulator" class="btn btn-default btn-lg btn-block">
                         </div>
                     </div>
                 </form>
