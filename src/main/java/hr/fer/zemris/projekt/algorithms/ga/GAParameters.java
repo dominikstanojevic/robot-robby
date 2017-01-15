@@ -5,9 +5,8 @@ import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>Implementation of the {@link Parameters} interface for use with the
@@ -160,8 +159,8 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
     }
 
     @Override
-    public Set<Parameter> getParameters() {
-        return new HashSet<>(parametersMap.values());
+    public LinkedHashSet<Parameter> getParameters() {
+        return new LinkedHashSet<>(parametersMap.values());
     }
 
     /**

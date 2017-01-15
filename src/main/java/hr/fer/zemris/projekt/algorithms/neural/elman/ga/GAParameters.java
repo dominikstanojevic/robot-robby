@@ -5,6 +5,7 @@ import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -55,8 +56,8 @@ public class GAParameters implements Parameters<GA> {
     }
 
     @Override
-    public Set<Parameter> getParameters() {
-        return new HashSet<>(parameters);
+    public LinkedHashSet<Parameter> getParameters() {
+        return new LinkedHashSet<>(parameters);
     }
 
 }

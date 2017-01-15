@@ -5,8 +5,7 @@ import hr.fer.zemris.projekt.parameter.ParameterType;
 import hr.fer.zemris.projekt.parameter.Parameters;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -206,7 +205,7 @@ public class SASEGASAParameters implements Parameters<SASEGASA> {
     }
 
     @Override
-    public Set<Parameter> getParameters() {
-        return new HashSet<>(parameters.values());
+    public LinkedHashSet<Parameter> getParameters() {
+        return new LinkedHashSet<>(parameters.values());
     }
 }
