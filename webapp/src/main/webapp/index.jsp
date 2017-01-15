@@ -275,7 +275,7 @@
     }
 </script>
 
-<body onload="init()">
+<body onload="init()" onbeforeunload="stopAlgorithm()">
 
 <jsp:include page="about.jsp"/>
 
