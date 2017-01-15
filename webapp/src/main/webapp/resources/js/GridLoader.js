@@ -33,6 +33,8 @@ function GridLoader(canvas, width, height){
         if (imagesLoaded != 2){
             setTimeout(self.draw, 100);
         }
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
         var posX = 0;
         var posY = 0;
         for (var i = 0; i < grid.height; ++i){
