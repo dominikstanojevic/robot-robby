@@ -33,10 +33,7 @@ public enum ActivationFunction {
     /**
      * Hyperbolic tangent function
      */
-    HYP_TAN(x -> {
-        double exp = Math.pow(Math.E, 2 * x);
-        return (exp - 1) / (exp + 1);
-    });
+    HYP_TAN(Math::tanh);
 
     /**
      * Constructs new activation function.
