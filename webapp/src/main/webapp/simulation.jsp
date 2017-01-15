@@ -159,7 +159,7 @@
                 <br/>
 
                 <div id="sectionA" class="row">
-                    <form id="generateGridForm0" class="form-horizontal">
+                    <form id="generateGridForm" class="form-horizontal">
                         <div class="form-group">
                             <label class="control-label col-md-3 col-md-offset-1" for="width">Width</label>
                             <div class="col-md-8">
