@@ -19,6 +19,8 @@ public class FFANN implements Robot {
     private Layer[] layers;
     private int numberOfWeights;
 
+    private double standardizedFitness;
+
     public FFANN(int[] layout, ActivationFunction[] activationFunctions){
         Objects.requireNonNull(layout, "No layout given!");
         Objects.requireNonNull(activationFunctions, "No activation functions given!");
@@ -86,10 +88,13 @@ public class FFANN implements Robot {
         return mapper.decodeOutput(output);
     }
 
-    //TODO: Override fitness
+    public void setStandardizedFitness(double standardizedFitness){
+        this.standardizedFitness = standardizedFitness;
+    }
+
     @Override
     public double standardizedFitness() {
-        return 0;
+        return standardizedFitness;
     }
 
     private RealVector calculateOutput(RealVector input) {

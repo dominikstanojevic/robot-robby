@@ -289,4 +289,9 @@ public class GA extends ObservableAlgorithm {
             this.second = second;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Elman neural network";
+    }
 }

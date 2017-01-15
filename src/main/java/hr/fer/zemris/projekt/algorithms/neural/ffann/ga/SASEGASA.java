@@ -125,6 +125,16 @@ public class SASEGASA extends ObservableAlgorithm {
         return best;
     }
 
+    private double populationAverage(List<Chromosome> population) {
+        double fitnessSum = 0;
+
+        for (Chromosome chromosome : population){
+            fitnessSum += chromosome.getFitness();
+        }
+
+        return fitnessSum / population.size();
+    }
+
     private List<Chromosome> run(List<Chromosome> population) {
         int poolSize;
         int generation = 0;
@@ -200,6 +210,7 @@ public class SASEGASA extends ObservableAlgorithm {
             }
 
             population = new ArrayList<>(newPopulation);
+            network.setStandardizedFitness(bestOfPopulation(population).getFitness());
 
             if (generation % 10 == 0){
                 System.out.println("Generation: " + generation + "  - " + bestOfPopulation(population));
@@ -247,8 +258,8 @@ public class SASEGASA extends ObservableAlgorithm {
         }
 
         network = new FFANN(
-                new int[]{15, 7},
-                new ActivationFunction[] {SIGMOID, HYP_TAN}
+                new int[]{15, 7, 7},
+                new ActivationFunction[] {SIGMOID, SIGMOID, HYP_TAN}
         );
 
         chromosomeSize = network.getNumberOfWeights();
@@ -270,5 +281,10 @@ public class SASEGASA extends ObservableAlgorithm {
         crossover = new IntervalCrossover(alpha);
         mutation = new GausMutation(mutationRate, sigma);
         compFactor = new LinearCompFactor(maxGenerations);
+    }
+
+    @Override
+    public String toString() {
+        return "Feedforward neural network";
     }
 }
