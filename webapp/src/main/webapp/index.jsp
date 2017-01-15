@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
 
     <script type="text/javascript" src="resources/js/graph.js"></script>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css"/>
@@ -83,10 +83,10 @@
                         var inputDiv = document.createElement("div");
                         inputDiv.appendChild(input);
 
-                        label.setAttribute("class", "control-label col-md-6");
+                        label.setAttribute("class", "control-label col-sm-6");
                         input.setAttribute("class", "form-control");
 
-                        inputDiv.setAttribute("class", "col-md-6");
+                        inputDiv.setAttribute("class", "col-sm-6");
 
                         input.setAttribute("type", "number");
                         input.setAttribute("name", parameter.name);
@@ -103,8 +103,14 @@
                             input.setAttribute("step", 1);
                         }
 
+                        input.required = true;
+
+                        var errorDiv = document.createElement("div");
+                        errorDiv.setAttribute("class", "help-block with-errors col-xs-offset-1");
+
                         div.appendChild(label);
                         div.appendChild(inputDiv);
+                        div.appendChild(errorDiv);
 
                         inputs.appendChild(div);
 
@@ -126,7 +132,7 @@
         var inputs = form.getElementsByTagName("input");
 
         var params = "?";
-        var numberOfIterations = 1000; //TODO this is bad
+        var numberOfIterations = 1500; //default scale
 
         for (var i = 0; i < inputs.length; i++) {
             if (!inputs[i].checkValidity()) {
@@ -247,7 +253,7 @@
 
             <%-- Algorithm selection --%>
             <div class="row">
-                <div class="col-md-13">
+                <div class="col-sm-13">
                     <div class="form-group">
                         <select onchange="optionSelected(this)" id="algorithmSelection" class="selectpicker form-control">
                             <option value="ga">Genetic algorithm</option>
@@ -275,52 +281,58 @@
 
             <%-- Simulator config --%>
             <div class="row">
-                <form id="simulatorConfigForm" class="form-horizontal" onsubmit="return validateSimConfigForm(this);">
+                <form id="simulatorConfigForm" class="form-horizontal" onsubmit="return validateSimConfigForm(this);" data-toggle="validator" role="form">
 
                     <div class="form-group">
-                        <label class="control-label col-md-6" for="maxMoves">Max moves</label>
-                        <div class="col-md-6">
-                            <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300"/>
+                        <label class="control-label col-sm-6" for="maxMoves">Max moves</label>
+                        <div class="col-sm-6">
+                            <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300" value="200" required/>
                         </div>
+                        <div class="help-block with-errors col-xs-offset-1"></div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-md-6" for="gridHeight">Grid height</label>
-                        <div class="col-md-6">
-                            <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15"/>
+                        <label class="control-label col-sm-6" for="gridHeight">Grid height</label>
+                        <div class="col-sm-6">
+                            <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
                         </div>
+                        <div class="help-block with-errors col-xs-offset-1"></div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-md-6" for="gridWidth">Grid width</label>
-                        <div class="col-md-6">
-                            <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15"/>
+                        <label class="control-label col-sm-6" for="gridWidth">Grid width</label>
+                        <div class="col-sm-6">
+                            <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
                         </div>
+                        <div class="help-block with-errors col-xs-offset-1"></div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-md-6" for="numberOfGrids">Number of grids</label>
-                        <div class="col-md-6">
-                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200"/>
+                        <label class="control-label col-sm-6" for="numberOfGrids">Number of grids</label>
+                        <div class="col-sm-6">
+                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="200" required/>
                         </div>
+                        <div class="help-block with-errors col-xs-offset-1"></div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-md-6" for="numberOfBottles">Number of bottles</label>
-                        <div class="col-md-6">
-                            <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225"/>
+                        <label class="control-label col-sm-6" for="numberOfBottles">Number of bottles</label>
+                        <div class="col-sm-6">
+                            <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225" value="50" required/>
                         </div>
+                        <div class="help-block with-errors col-xs-offset-1"></div>
                     </div>
 
                     <div class="form-group">
-                        <label class="control-label col-md-6" for="mapRegenFrequency">Map regeneration frequency</label>
-                        <div class="col-md-6">
-                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000"/>
+                        <label class="control-label col-sm-6" for="mapRegenFrequency">Map regeneration frequency</label>
+                        <div class="col-sm-6">
+                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="50" required/>
                         </div>
+                        <div class="help-block with-errors col-xs-offset-1"></div>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-md-offset-6 col-md-10">
+                        <div class="col-sm-offset-6 col-sm-10">
                             <div class="checkbox">
                                 <label><input id="variableBottles" type="checkbox">Variable bottles</label>
                             </div>
@@ -328,7 +340,7 @@
                     </div>
 
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-sm-12">
                             <input type="submit" name="btnSubmit" value="Configure simulator" class="btn btn-default btn-lg btn-block">
                         </div>
                     </div>
