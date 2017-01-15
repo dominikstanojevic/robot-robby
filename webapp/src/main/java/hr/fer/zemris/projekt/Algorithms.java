@@ -18,18 +18,24 @@ public final class Algorithms {
     private static final Map<String, Supplier<ObservableAlgorithm>> ALGORITHM_SUPPLIERS = new HashMap<>();
     private static final Map<String, Algorithm> ALGORITHM_MAP = new HashMap<>();
 
-    static {
-        ALGORITHM_SUPPLIERS.put("ga", GeneticAlgorithm::new);
-        ALGORITHM_SUPPLIERS.put("elman", GA::new);
-        ALGORITHM_SUPPLIERS.put("nn", FFANNGA::new);
-        ALGORITHM_SUPPLIERS.put("gp", GeneticProgramming::new);
-        ALGORITHM_SUPPLIERS.put("reinforcement", ReinforcmentLearningAlgorithm::new);
+    private static final String GA_KEY = "ga";
+    private static final String ELMAN_KEY = "elman";
+    private static final String FFANN_KEY = "nn";
+    private static final String GP_KEY = "gp";
+    private static final String REINFORCEMENT_KEY = "reinforcement";
 
-        ALGORITHM_MAP.put("ga", new GeneticAlgorithm());
-        ALGORITHM_MAP.put("elman", new GA());
-        ALGORITHM_MAP.put("nn", new FFANNGA());
-        ALGORITHM_MAP.put("gp", new GeneticProgramming());
-        ALGORITHM_MAP.put("reinforcement", new ReinforcmentLearningAlgorithm());
+    static {
+        ALGORITHM_SUPPLIERS.put(GA_KEY, GeneticAlgorithm::new);
+        ALGORITHM_SUPPLIERS.put(ELMAN_KEY, GA::new);
+        ALGORITHM_SUPPLIERS.put(FFANN_KEY, FFANNGA::new);
+        ALGORITHM_SUPPLIERS.put(GP_KEY, GeneticProgramming::new);
+        ALGORITHM_SUPPLIERS.put(REINFORCEMENT_KEY, ReinforcmentLearningAlgorithm::new);
+
+        ALGORITHM_MAP.put(GA_KEY, new GeneticAlgorithm());
+        ALGORITHM_MAP.put(ELMAN_KEY, new GA());
+        ALGORITHM_MAP.put(FFANN_KEY, new FFANNGA());
+        ALGORITHM_MAP.put(GA_KEY, new GeneticProgramming());
+        ALGORITHM_MAP.put(REINFORCEMENT_KEY, new ReinforcmentLearningAlgorithm());
     }
 
     public static ObservableAlgorithm getAlgorithm(String id) {
