@@ -122,6 +122,8 @@ public class SimulationPanel extends JPanel {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						
+						map.enableEditing(false);
 
 						map.generateGrid();
 						createPanel.removeAll();
