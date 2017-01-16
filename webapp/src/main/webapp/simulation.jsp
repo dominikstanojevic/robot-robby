@@ -42,8 +42,36 @@
                 data: formData,
                 cache: false,
                 contentType: false,
-                processData: false
+                processData: false,
+                success: roboLoadSuccess,
+                error: roboLoadErr
             });
+        }
+
+        function roboLoadSuccess(){
+            $('#btnLoadRobot')
+                .popover({content: "Robot imported successfully!", placement: "top"})
+                .popover('show');
+
+            setTimeout(function () {
+                $('#btnLoadRobot').popover('hide');
+            }, 2000);
+        }
+
+        function roboLoadErr(){
+            $('#btnLoadRobot')
+                .popover({content: "Unable to import robot!", placement: "top"})
+                .popover('show');
+            $('.popover')
+                .css('background-color', '#d9534f')
+                .css('color', 'darkred');
+
+            setTimeout(function () {
+                $('#btnLoadRobot').popover('hide');
+                $('.popover')
+                    .css('background-color', 'white')
+                    .css('color', '#333');
+            }, 2000);
         }
 
         function generateMap(){
@@ -56,7 +84,14 @@
                 data: formData,
                 cache: false,
                 contentType: false,
-                processData: false
+                processData: false,
+                success: function (data) {
+                    $('#btnGenerate').popover({content: "Map generated successfully!", placement: "top"}).popover('show');
+
+                    setTimeout(function () {
+                        $('#btnGenerate').popover('hide');
+                    }, 2000);
+                }
             });
         }
 
@@ -70,7 +105,31 @@
                 data: formData,
                 cache: false,
                 contentType: false,
-                processData: false
+                processData: false,
+                success: function() {
+                    $('#btnImport')
+                        .popover({content: "Map imported successfully!", placement: "top"})
+                        .popover('show');
+
+                    setTimeout(function () {
+                        $('#btnImport').popover('hide');
+                    }, 2000);
+                },
+                error: function(){
+                    $('#btnImport')
+                        .popover({content: "Unable to import map!", placement: "top"})
+                        .popover('show');
+                    $('.popover')
+                        .css('background-color', '#d9534f')
+                        .css('color', 'darkred');
+
+                    setTimeout(function () {
+                        $('#btnImport').popover('hide');
+                        $('.popover')
+                            .css('background-color', 'white')
+                            .css('color', '#333');
+                    }, 2000);
+                }
             });
         }
 
@@ -90,7 +149,14 @@
                 data: formData,
                 cache: false,
                 contentType: false,
-                processData: false
+                processData: false,
+                success: function (data) {
+                    $('#btnCreate').popover({content: "Map generated successfully!", placement: "top"}).popover('show');
+
+                    setTimeout(function () {
+                        $('#btnCreate').popover('hide');
+                    }, 2000);
+                }
             });
         }
 
@@ -100,6 +166,21 @@
                 method: "POST",
                 dataType: "json",
                 success: loadSimulation,
+                error: function(){
+                    $('#btnSimulation')
+                        .popover({content: "Unable to load simulation! Create a map and robot first!", placement: "top"})
+                        .popover('show');
+                    $('.popover')
+                        .css('background-color', '#d9534f')
+                        .css('color', 'darkred');
+
+                    setTimeout(function () {
+                        $('#btnSimulation').popover('hide');
+                        $('.popover')
+                            .css('background-color', 'white')
+                            .css('color', '#333');
+                    }, 2000);
+                }
             });
         }
 
@@ -114,6 +195,12 @@
 
             simulation = new Simulation(canvas, grid, moves);
             simulation.draw();
+
+            $('#btnSimulation').popover({content: "Simulation prepared!", placement: "top"}).popover('show');
+
+            setTimeout(function () {
+                $('#btnSimulation').popover('hide');
+            }, 2000);
         }
 
         function setMapCreation(){
@@ -238,7 +325,7 @@
 
                 <div class="row">
                     <div class="col-md-3 col-md-offset-9">
-                        <button onclick="generateMap()" class="btn btn-default btn-block"> Generate map </button>
+                        <button id="btnGenerate" onclick="generateMap()" class="btn btn-default btn-block"> Generate map </button>
                     </div>
                 </div>
             </div>
@@ -259,7 +346,7 @@
 
                 <div class="row">
                     <div class="col-md-3 col-md-offset-8">
-                        <button onclick="importMap()" class="btn btn-default btn-block">Import map</button> <br/>
+                        <button id="btnImport" onclick="importMap()" class="btn btn-default btn-block">Import map</button> <br/>
                     </div>
                 </div>
             </div>
@@ -301,7 +388,7 @@
                     <br/>
                     <div class="row">
                         <div class="col-md-3 col-md-offset-9">
-                            <button onclick="createMap()" class="btn btn-default btn-block">Create map</button>
+                            <button id="btnCreate" onclick="createMap()" class="btn btn-default btn-block">Create map</button>
                         </div>
                     </div>
                 </div>
@@ -337,7 +424,7 @@
 
             <div class="row">
                 <div class="col-md-3 col-md-offset-8">
-                    <button onclick="loadRobot()" class="btn btn-default btn-block">Import robot</button>
+                    <button id="btnLoadRobot" onclick="loadRobot()" class="btn btn-default btn-block">Import robot</button>
                 </div>
             </div>
         </div>
@@ -349,7 +436,7 @@
 
     <div class="row">
         <div class="col-md-3 col-md-offset-1">
-            <button onclick="startSimulation()" class="btn btn-default btn-block">
+            <button id="btnSimulation" onclick="startSimulation()" class="btn btn-default btn-block">
                 Start simulation
             </button>
         </div>
