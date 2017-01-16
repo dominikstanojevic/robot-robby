@@ -81,86 +81,97 @@ public class GA extends ObservableAlgorithm {
             throw new IllegalStateException("Cannot pass non-GA parameters to GA class.");
         }
         this.simulator = simulator;
-        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
-        network = ThreadLocal.withInitial(() -> new ElmanNeuralNetwork(new int[] {
-                15, 7, 7 }, new ActivationFunction[] { ActivationFunction.HYP_TAN, ActivationFunction.HYP_TAN }));
-        int chromosomeSize = network.get().getNumberOfWeights();
+        ExecutorService pool = null;
 
-        //loading parameters
-        int populationSize = (int) parameters.getParameter(GAParameters.POPULATION_SIZE).getValue();
-        int maxGenerations = (int) parameters.getParameter(GAParameters.MAX_GENERATIONS).getValue();
-        int tournamentSize = (int) parameters.getParameter(GAParameters.TOURNAMENT_SIZE).getValue();
-        double alpha = parameters.getParameter(GAParameters.ALPHA).getValue();
-        double sigma = parameters.getParameter(GAParameters.SIGMA).getValue();
-        double stopCondition = parameters.getParameter(GAParameters.STOP_CONDITION).getValue();
-
-        List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
-
-        for (int i = 0; i < maxGenerations; i++) {
-
-            if (i % 100 == 0) {
-                simulator.generateGrids(30, 10, 10, false, ThreadLocalRandom.current());
-            }
-
-            evaluatePopulation(population, pool);
-            population = sortPopulation(population);
-            if (population.get(0).getFitness() > stopCondition) {
-                break;
-            }
-
-            ElmanNeuralNetwork best = prepareBest(population.get(0));
-            this.notifyListeners(best, getAverageFitness(population), i);
-
-            List<Chromosome> newPopulation = new ArrayList<>();
-
-            newPopulation.add(population.get(0));
-            newPopulation.add(population.get(1));
-
-            double steps = (populationSize - newPopulation.size()) / 2.;
-            List<Callable<Pair>> callables = new ArrayList<>();
-            List<Chromosome> old = population;
-            Callable<Pair> callable = () -> {
-                Pair parents = selectParents(old, tournamentSize);
-                Pair children = crossover(parents, alpha);
-
-                mutate(children.first, sigma);
-                mutate(children.second, sigma);
-
-                return children;
-            };
-
-            for (int j = 0; j < steps; j++) {
-                callables.add(callable);
-            }
-
-            try {
-                List<Future<Pair>> newPop = pool.invokeAll(callables);
-                for (Future<Pair> children : newPop) {
-                    Pair c = children.get();
-                    newPopulation.add(c.first);
-
-                    if (newPopulation.size() >= populationSize) {
-                        break;
+        try {
+            pool = Executors.newFixedThreadPool(
+                    Runtime.getRuntime().availableProcessors() + 1,
+                    r -> {
+                        Thread t = new Thread(r);
+                        t.setDaemon(true);
+                        return t;
                     }
-                    newPopulation.add(c.second);
+            );
+            network = ThreadLocal.withInitial(() -> new ElmanNeuralNetwork(new int[]{
+                    15, 7, 7}, new ActivationFunction[]{ActivationFunction.HYP_TAN, ActivationFunction.HYP_TAN}));
+            int chromosomeSize = network.get().getNumberOfWeights();
+
+            //loading parameters
+            int populationSize = (int) parameters.getParameter(GAParameters.POPULATION_SIZE).getValue();
+            int maxGenerations = (int) parameters.getParameter(GAParameters.MAX_GENERATIONS).getValue();
+            int tournamentSize = (int) parameters.getParameter(GAParameters.TOURNAMENT_SIZE).getValue();
+            double alpha = parameters.getParameter(GAParameters.ALPHA).getValue();
+            double sigma = parameters.getParameter(GAParameters.SIGMA).getValue();
+            double stopCondition = parameters.getParameter(GAParameters.STOP_CONDITION).getValue();
+
+            List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
+
+            for (int i = 0; i < maxGenerations; i++) {
+
+                if (i % 100 == 0) {
+                    simulator.generateGrids(30, 10, 10, false, ThreadLocalRandom.current());
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+
+                evaluatePopulation(population, pool);
+                population = sortPopulation(population);
+                if (population.get(0).getFitness() > stopCondition) {
+                    break;
+                }
+
+                ElmanNeuralNetwork best = prepareBest(population.get(0));
+                this.notifyListeners(best, getAverageFitness(population), i);
+
+                List<Chromosome> newPopulation = new ArrayList<>();
+
+                newPopulation.add(population.get(0));
+                newPopulation.add(population.get(1));
+
+                double steps = (populationSize - newPopulation.size()) / 2.;
+                List<Callable<Pair>> callables = new ArrayList<>();
+                List<Chromosome> old = population;
+                Callable<Pair> callable = () -> {
+                    Pair parents = selectParents(old, tournamentSize);
+                    Pair children = crossover(parents, alpha);
+
+                    mutate(children.first, sigma);
+                    mutate(children.second, sigma);
+
+                    return children;
+                };
+
+                for (int j = 0; j < steps; j++) {
+                    callables.add(callable);
+                }
+
+                try {
+                    List<Future<Pair>> newPop = pool.invokeAll(callables);
+                    for (Future<Pair> children : newPop) {
+                        Pair c = children.get();
+                        newPopulation.add(c.first);
+
+                        if (newPopulation.size() >= populationSize) {
+                            break;
+                        }
+                        newPopulation.add(c.second);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                population = newPopulation;
             }
 
-            population = newPopulation;
+            population = sortPopulation(population);
+            Chromosome best = population.get(0);
+
+            simulator.generateGrids(10000, 10, 10, false, ThreadLocalRandom.current());
+            evaluateSolution(best);
+            System.out.println(best);
+        } finally {
+            pool.shutdown();
         }
-
-        population = sortPopulation(population);
-        Chromosome best = population.get(0);
-
-        simulator.generateGrids(10000, 10, 10, false, ThreadLocalRandom.current());
-        evaluateSolution(best);
-        System.out.println(best);
-
-        pool.shutdown();
         return null;
     }
 
