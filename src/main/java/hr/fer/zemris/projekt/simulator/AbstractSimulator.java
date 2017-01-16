@@ -228,13 +228,13 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
             moveNumber++;
 
             Move nextMove = getNextMove(robot, grid, x, y);
-            moves.add(nextMove);
 
             int xMove = 0;
             int yMove = 0;
             if (nextMove == Move.RANDOM) {
                 nextMove = getRandomMove(rnd);
             }
+            moves.add(nextMove);
             switch (nextMove) {
                 case UP:
                     xMove = -1;
