@@ -17,6 +17,7 @@ import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.FunctionNode;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.Node;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.ParsingException;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.RandomNodeSelector;
+import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.TerminalNode;
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Stats;
@@ -33,6 +34,8 @@ public class GeneticProgramming extends ObservableAlgorithm {
 	// public static final int EMPTY_PICKUP_PENALTY = 1;
 	// public static final int HITTING_WALL_PENALTY = 5;
 	// public static final int PICKUP_PRIZE = 10;
+	
+	private double STOPPING_CONDITION = 1;
 
 	/**
 	 * Tournament size in tournament selection.
@@ -138,7 +141,7 @@ public class GeneticProgramming extends ObservableAlgorithm {
 			// }
 
 			notifyListeners(currBestIndividual, average, generation);
-			if(bestIndividual != null && bestIndividual.standardizedFitness() > 0.95){
+			if(bestIndividual != null && bestIndividual.standardizedFitness() >= STOPPING_CONDITION){
 				break;
 			}
 
@@ -289,7 +292,14 @@ public class GeneticProgramming extends ObservableAlgorithm {
 
 			double mutation = ThreadLocalRandom.current().nextDouble();
 			if (mutation < mutationRate) {
-				newIndividuals.set(0, mutate(newIndividuals.get(0), crossoverMaxDepth));
+				
+				double mutationKind = ThreadLocalRandom.current().nextDouble();
+				if(mutationKind < 0.7){
+					newIndividuals.set(0, mutate(newIndividuals.get(0), crossoverMaxDepth));
+				}else{
+					newIndividuals.set(0, mutatePoint(newIndividuals.get(0)));
+				}
+//				newIndividuals.set(0, mutate(newIndividuals.get(0), crossoverMaxDepth));
 			}
 
 			nextGeneration.addAll(newIndividuals);
@@ -311,7 +321,7 @@ public class GeneticProgramming extends ObservableAlgorithm {
 	 */
 	private Individual mutate(Individual individual, int maxDepth) {
 
-		Node tree = individual.getTree();
+		Node tree = individual.getTree().copy();
 
 		Node mutationPoint = selector.select(tree);
 
@@ -323,6 +333,35 @@ public class GeneticProgramming extends ObservableAlgorithm {
 
 		return new Individual(tree);
 
+	}
+	
+	private Individual mutatePoint(Individual individual){
+		
+		Node tree = individual.getTree().copy();
+		
+		Node mutationPoint = selector.select(tree);
+		
+		if(mutationPoint instanceof TerminalNode){
+			insertSubtree(tree, mutationPoint, TerminalNode.randomTerminalNode());
+		
+		}else{
+			double decision = ThreadLocalRandom.current().nextDouble();
+			
+			if(decision > 0.5){
+				insertSubtree(tree, mutationPoint, TerminalNode.randomTerminalNode());
+			}else{
+				FunctionNode oldNode = (FunctionNode) mutationPoint;
+				FunctionNode newNode = FunctionNode.randomFunctionNode();
+				
+				newNode.setIfTrue(oldNode.getIfTrue());
+				newNode.setIfFalse(oldNode.getIfFalse());
+				insertSubtree(tree, mutationPoint, newNode);
+			}
+			
+		}
+		
+		return new Individual(tree);
+		
 	}
 
 	/**
