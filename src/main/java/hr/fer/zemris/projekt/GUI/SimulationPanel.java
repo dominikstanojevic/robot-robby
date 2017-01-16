@@ -3,7 +3,11 @@ package hr.fer.zemris.projekt.GUI;
 import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.RobotFormatException;
+import hr.fer.zemris.projekt.algorithms.ga.GeneticAlgorithm;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
+import hr.fer.zemris.projekt.algorithms.neural.elman.ga.GA;
+import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANNGA;
+import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.ReinforcmentLearningAlgorithm;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
@@ -116,8 +120,8 @@ public class SimulationPanel extends JPanel {
                 disableSetupButtons();
 
                 createPanel
-                        .add(new JLabel(
-                                "Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
+                .add(new JLabel(
+                        "Press on the map field to add bottle. Whan you're done adding bottles, press the 'Done' button to generate map."));
                 JButton btnDone = new JButton("Done");
                 createPanel.add(btnDone);
                 btnDone.addActionListener(new ActionListener() {
@@ -208,7 +212,9 @@ public class SimulationPanel extends JPanel {
 
         // ADD ALL ALGORITHMS
         optionsPanel.add(new JLabel("Select algorithm for loading robot:"));
-        Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming() };
+        Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming(),
+                new ReinforcmentLearningAlgorithm(), new FFANNGA(), new GA(),
+                new GeneticAlgorithm() };
         JComboBox<Algorithm> cbAlgorithm = new JComboBox<>(algorithms);
         cbAlgorithm.setSelectedItem(algorithms[0]);
         optionsPanel.add(cbAlgorithm);
@@ -239,7 +245,7 @@ public class SimulationPanel extends JPanel {
                             }
                         } else {
                             lRobotStatus
-                                    .setText("Selected file is not a valid robot for the given algorithm.");
+                            .setText("Selected file is not a valid robot for the given algorithm.");
                             robot = null;
                             btnSimulate.setEnabled(false);
                         }
@@ -248,7 +254,7 @@ public class SimulationPanel extends JPanel {
                         lRobotStatus.setText("An error occured while loading robot.");
                     } catch (RobotFormatException e2) {
                         lRobotStatus
-                                .setText("Selected file is not a valid robot for the given algorithm.");
+                        .setText("Selected file is not a valid robot for the given algorithm.");
                     }
 
                 }

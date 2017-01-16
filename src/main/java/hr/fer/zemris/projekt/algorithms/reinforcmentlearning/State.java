@@ -30,7 +30,7 @@ public class State {
      * @author Domagoj Pluscec
      * @version v1.0, 15.1.2017.
      */
-    public static enum StateFields {
+    public enum StateFields {
         /**
          * Current field.
          */
@@ -137,6 +137,14 @@ public class State {
                 fieldFromString(fields[2]), fieldFromString(fields[3]), fieldFromString(fields[4]));
     }
 
+    /**
+     * Generates field from string. Field string should be in format "BOTTLE",
+     * "EMPTY" or "WALL".
+     *
+     * @param fieldString
+     *            string containing field. string should be trimmed
+     * @return initialized field
+     */
     private static Field fieldFromString(String fieldString) {
         for (Field field : Field.values()) {
             if (fieldString.equals(field.toString())) {

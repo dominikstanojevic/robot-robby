@@ -94,12 +94,12 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
     @Override
     public Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
 
-        if (currentQFunction == null) {
-            currentQFunction = new QFunction((ReinforcmentLearningParameters) parameters);
-        } else {
-            currentQFunction = new QFunction(currentQFunction,
-                    (ReinforcmentLearningParameters) parameters);
-        }
+        // if (currentQFunction == null) {
+        currentQFunction = new QFunction((ReinforcmentLearningParameters) parameters);
+        // } else {
+        // currentQFunction = new QFunction(currentQFunction,
+        // (ReinforcmentLearningParameters) parameters);
+        // }
         RewardFunction.setRewards((ReinforcmentLearningParameters) parameters);
 
         for (int i = 0, end = (int) parameters.getParameter(
@@ -108,6 +108,7 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
             Agent roby = new Agent(currentQFunction);
 
             List<Stats> statistics = simulator.playGames(roby);
+
             roby.setStandardFitness(AlgorithmUtils.calculateFitness(statistics));
             notifyListeners(roby, AlgorithmUtils.calculateFitness(statistics), i);
             if (i == end - 1 || i % 100 == 0) {
@@ -140,10 +141,10 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
     /**
      * Algorithm name.
      */
-    private static final String algorithmName = "Reinforcment Learning";
+    private static final String ALGORITHM_NAME = "Reinforcment Learning";
 
     @Override
     public String toString() {
-        return algorithmName;
+        return ALGORITHM_NAME;
     }
 }

@@ -38,14 +38,16 @@ public class FitnessChartPanel extends JPanel {
     }
 
     private JFreeChart createChart(final XYDataset dataset) {
-        final JFreeChart result = ChartFactory.createXYLineChart("Training progress", "Iterations",
+        final JFreeChart result = ChartFactory.createXYLineChart("Title", "Iterations",
                 "Standard fitness", dataset, PlotOrientation.VERTICAL, true, true, false);
         final XYPlot plot = result.getXYPlot();
         result.setBackgroundPaint(getBackground());
 
         ValueAxis axis = plot.getDomainAxis();
         axis.setAutoRange(true);
+
         axis.setRange(0, 200);
+        axis.setAutoRange(true);
         axis = plot.getRangeAxis();
         axis.setRange(-1, 1.0);
 
@@ -64,5 +66,6 @@ public class FitnessChartPanel extends JPanel {
         currIteration = 0;
         this.maxFitnessSeries.clear();
         this.avgFitnessSeries.clear();
+
     }
 }

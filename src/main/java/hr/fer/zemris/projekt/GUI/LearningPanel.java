@@ -2,15 +2,29 @@ package hr.fer.zemris.projekt.GUI;
 
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
+import hr.fer.zemris.projekt.algorithms.ga.GeneticAlgorithm;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
+import hr.fer.zemris.projekt.algorithms.neural.elman.ga.GA;
+import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANNGA;
 import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.ReinforcmentLearningAlgorithm;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
 import hr.fer.zemris.projekt.observer.observations.TrainingResult;
 import hr.fer.zemris.projekt.simulator.Simulator;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Hashtable;
+import java.util.concurrent.ThreadLocalRandom;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -67,8 +81,13 @@ public class LearningPanel extends JPanel {
         algorithmOptions.add(parameters, BorderLayout.CENTER);
 
         // ADD ALL ALGORITHMS
-        ObservableAlgorithm[] algoritms = new ObservableAlgorithm[] { new GeneticProgramming(),
-                new ReinforcmentLearningAlgorithm() };
+        ObservableAlgorithm[] algoritms = new ObservableAlgorithm[]{
+                new GeneticProgramming(),
+                new ReinforcmentLearningAlgorithm(),
+                new FFANNGA(),
+                new GA(),
+                new GeneticAlgorithm()
+        };
         JComboBox<ObservableAlgorithm> cbAlgoritms = new JComboBox<>(algoritms);
         add(cbAlgoritms, BorderLayout.PAGE_START);
 
@@ -167,8 +186,15 @@ public class LearningPanel extends JPanel {
 
             }
         });
+
         mapEditor.add(lBottlePercentage);
         mapEditor.add(slBottlePercentage);
+
+        JCheckBox cbRandomBottleNumber = new JCheckBox("Radnom number od bottles.");
+        cbRandomBottleNumber.addActionListener(e -> slBottlePercentage
+                .setEnabled(!cbRandomBottleNumber.isSelected()));
+
+        mapEditor.add(cbRandomBottleNumber);
 
         btnExportRobot.setEnabled(false);
         JLabel lExportResult = new JLabel("");
@@ -225,6 +251,7 @@ public class LearningPanel extends JPanel {
                 int mapNum = slMapNumber.getValue();
                 int mapRows = slMapRows.getValue();
                 int mapCols = slMapColumns.getValue();
+                boolean randomBottlesNumberFlag = cbRandomBottleNumber.isSelected();
                 int numOfBottles = (int) Math.round(slBottlePercentage.getValue() * 0.01 * mapRows
                         * mapCols);
 
@@ -235,13 +262,18 @@ public class LearningPanel extends JPanel {
 
                         simulator = new Simulator(2 * mapCols * mapRows);
 
-                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
+                        if (!randomBottlesNumberFlag) {
+                            simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
+                        } else {
+                            simulator.generateGrids(mapNum, mapCols, mapRows, false,
+                                    ThreadLocalRandom.current());
+                        }
 
                         algorithm.addObserver(new Observer<TrainingResult>() {
 
                             @Override
                             public void observationMade(Observable sender,
-                                    TrainingResult observation) {
+                                                        TrainingResult observation) {
                                 robot = observation.getBestResult();
                                 SwingUtilities.invokeLater(() -> graphicalPanel.addValue(
                                         robot.standardizedFitness(),
@@ -325,5 +357,4 @@ public class LearningPanel extends JPanel {
         });
 
     }
-
 }
