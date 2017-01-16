@@ -207,7 +207,7 @@
                 eventSource.close();
 
                 if (triggerPopover) {
-                    $('#btnStop').popover({content: "Training stopped", placement: "left"}).popover('show');
+                    $('#btnStop').popover({content: "Training stopped", placement: "right"}).popover('show');
 
                     setTimeout(function () {
                         $('#btnStop').popover('hide');
@@ -222,7 +222,7 @@
             url: "pauseTraining",
             method: "POST",
             success: function () {
-                $('#btnPause').popover({content: "Training paused", placement: "left"}).popover('show');
+                $('#btnPause').popover({content: "Training paused", placement: "right"}).popover('show');
 
                 setTimeout(function () {
                     $('#btnPause').popover('hide');
@@ -236,7 +236,7 @@
             url: "resumeTraining",
             method: "POST",
             success: function () {
-                $('#btnResume').popover({content: "Training resumed", placement: "left"}).popover('show');
+                $('#btnResume').popover({content: "Training resumed", placement: "right"}).popover('show');
 
                 setTimeout(function () {
                     $('#btnResume').popover('hide');
@@ -270,7 +270,7 @@
             success: function (data) {
                 refreshSimulatorConfig(data);
 
-                $('#btnSimConfig').popover({content: "Simulator configured", placement: "right"}).popover('show');
+                $('#btnSimConfig').popover({content: "Simulator configured", placement: "left"}).popover('show');
 
                 setTimeout(function () {
                     $('#btnSimConfig').popover('hide');
@@ -321,72 +321,12 @@
                     </form>
                 </div>
 
-                <%-- Simulator config --%>
+                <%-- Training control --%>
                 <div class="row">
-                    <form id="simulatorConfigForm" class="form-horizontal" onsubmit="return validateSimConfigForm(this);" data-toggle="validator" role="form">
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-6" for="maxMoves">Max moves</label>
-                            <div class="col-sm-6">
-                                <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300" value="200" required/>
-                            </div>
-                            <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-6" for="gridHeight">Grid height</label>
-                            <div class="col-sm-6">
-                                <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
-                            </div>
-                            <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-6" for="gridWidth">Grid width</label>
-                            <div class="col-sm-6">
-                                <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
-                            </div>
-                            <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-6" for="numberOfGrids">Number of grids</label>
-                            <div class="col-sm-6">
-                                <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="100" required/>
-                            </div>
-                            <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-6" for="numberOfBottles">Number of bottles</label>
-                            <div class="col-sm-6">
-                                <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225" value="50" required/>
-                            </div>
-                            <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-6" for="mapRegenFrequency">Map regen frequency</label>
-                            <div class="col-sm-6">
-                                <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="50" required/>
-                            </div>
-                            <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-sm-offset-6 col-sm-10">
-                                <div class="checkbox">
-                                    <label><input id="variableBottles" type="checkbox">Variable bottles</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <input id="btnSimConfig" type="submit" name="btnSubmit" value="Configure simulator" class="btn btn-default btn-lg btn-block">
-                            </div>
-                        </div>
-                    </form>
+                    <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm(true)">Stop training</button>
+                    <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm()">Pause training</button>
+                    <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm()">Resume training</button>
+                    <button id="btnExport" class="btn btn-default btn-lg btn-block" type="button" onclick="location.href='exportRobot'">Export robot</button>
                 </div>
             </div>
 
@@ -407,12 +347,72 @@
                 </div>
             </div>
 
-            <%-- Training control --%>
+            <%-- Simulator config --%>
             <div class="col-md-2">
-                <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm(true)">Stop training</button>
-                <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm()">Pause training</button>
-                <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm()">Resume training</button>
-                <button id="btnExport" class="btn btn-default btn-lg btn-block" type="button" onclick="location.href='exportRobot'">Export robot</button>
+                <form id="simulatorConfigForm" class="form-horizontal" onsubmit="return validateSimConfigForm(this);" data-toggle="validator" role="form">
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-6" for="maxMoves">Max moves</label>
+                        <div class="col-sm-6">
+                            <input id="maxMoves" class="form-control" type="number" step="1" min="1" max="300" value="200" required/>
+                        </div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-6" for="gridHeight">Grid height</label>
+                        <div class="col-sm-6">
+                            <input id="gridHeight" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
+                        </div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-6" for="gridWidth">Grid width</label>
+                        <div class="col-sm-6">
+                            <input id="gridWidth" class="form-control" type="number" step="1" min="1" max="15" value="10" required/>
+                        </div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-6" for="numberOfGrids">Number of grids</label>
+                        <div class="col-sm-6">
+                            <input id="numberOfGrids" class="form-control" type="number" step="1" min="1" max="200" value="100" required/>
+                        </div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-6" for="numberOfBottles">Number of bottles</label>
+                        <div class="col-sm-6">
+                            <input id="numberOfBottles" class="form-control" type="number" step="1" min="1" max="225" value="50" required/>
+                        </div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-6" for="mapRegenFrequency">Map regen frequency</label>
+                        <div class="col-sm-6">
+                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="50" required/>
+                        </div>
+                        <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-6 col-sm-10">
+                            <div class="checkbox">
+                                <label><input id="variableBottles" type="checkbox">Variable bottles</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input id="btnSimConfig" type="submit" name="btnSubmit" value="Configure simulator" class="btn btn-default btn-lg btn-block">
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
