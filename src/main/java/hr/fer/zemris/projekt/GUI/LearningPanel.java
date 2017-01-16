@@ -17,9 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Hashtable;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -168,8 +170,15 @@ public class LearningPanel extends JPanel {
 
             }
         });
+
         mapEditor.add(lBottlePercentage);
         mapEditor.add(slBottlePercentage);
+
+        JCheckBox cbRandomBottleNumber = new JCheckBox("Radnom number od bottles.");
+        cbRandomBottleNumber.addActionListener(e -> slBottlePercentage
+                .setEnabled(!cbRandomBottleNumber.isSelected()));
+
+        mapEditor.add(cbRandomBottleNumber);
 
         btnExportRobot.setEnabled(false);
         JLabel lExportResult = new JLabel("");
@@ -226,6 +235,7 @@ public class LearningPanel extends JPanel {
                 int mapNum = slMapNumber.getValue();
                 int mapRows = slMapRows.getValue();
                 int mapCols = slMapColumns.getValue();
+                boolean randomBottlesNumberFlag = cbRandomBottleNumber.isSelected();
                 int numOfBottles = (int) Math.round(slBottlePercentage.getValue() * 0.01 * mapRows
                         * mapCols);
 
@@ -235,7 +245,13 @@ public class LearningPanel extends JPanel {
                     protected Void doInBackground() throws Exception {
 
                         simulator = new Simulator(2 * mapCols * mapRows);
-                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
+
+                        if (!randomBottlesNumberFlag) {
+                            simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
+                        } else {
+                            simulator.generateGrids(mapNum, mapCols, mapRows, false,
+                                    ThreadLocalRandom.current());
+                        }
 
                         algorithm.addObserver(new Observer<TrainingResult>() {
 
