@@ -330,8 +330,6 @@
 
             simulation.reset();
         }
-
-
     </script>
 
 </head>
@@ -571,6 +569,15 @@
                     <div class="col-md-12">
                         <button id = "btn4" onclick="reset()" class="btn btn-default btn-block btn-block">
                             Reset
+                        </button>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button id = "btn5" onclick="location.href='./exportGrid'" class="btn btn-default btn-block btn-block">
+                            Export grid
                         </button>
                     </div>
                 </div>
