@@ -1,5 +1,6 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann;
 
+import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANGAParameters;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANNGA;
 import hr.fer.zemris.projekt.observer.Observable;
@@ -8,12 +9,16 @@ import hr.fer.zemris.projekt.observer.observations.TrainingResult;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Simulator;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * @author Kristijan Vulinovic
  * @version 1.0.0
  */
 public class FFANNTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         AbstractSimulator simulator = new Simulator(200);
         simulator.generateGrids(50, 50, 10, 10, false);
 

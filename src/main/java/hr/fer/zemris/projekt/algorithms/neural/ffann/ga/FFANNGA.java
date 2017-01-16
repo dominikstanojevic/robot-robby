@@ -131,22 +131,22 @@ public class FFANNGA extends ObservableAlgorithm {
         sb.append(ffann.getNumberOfLayers());
         sb.append("\n[");
         for(Layer layer : layers){
-            sb.append(layer.numberOfNeurons());
+            sb.append(layer.numberOfNeurons() + " ");
         }
         sb.append("]\n");
         sb.append("Activation: \n");
         sb.append(ffann.getNumberOfLayers());
         sb.append("\n[");
         for(Layer layer : layers){
-            sb.append(layer.getActivationFunction());
+            sb.append(layer.getActivationFunction() + " ");
         }
-        sb.append("]");
+        sb.append("]\n");
 
         sb.append("Weights: \n");
         sb.append(ffann.getNumberOfWeights());
         sb.append("\n[");
         for(double weight : weights){
-            sb.append(weight);
+            sb.append(weight + " ");
         }
         sb.append("]\n");
 
@@ -204,7 +204,10 @@ public class FFANNGA extends ObservableAlgorithm {
                 network.get().setStandardizedFitness(bestChromosome.getFitness());
 
                 FFANN ffann = network.get().copy();
-                ffann.setWeights(bestChromosome.getWeights());
+                double[] bestWeights = bestChromosome.getWeights();
+                double[] weights = new double[bestWeights.length];
+                System.arraycopy(bestWeights, 0, weights, 0, bestWeights.length);
+                ffann.setWeights(weights);
                 ffann.setStandardizedFitness(bestChromosome.getFitness());
                 this.notifyListeners(ffann, populationAverage(population), generation);
             }

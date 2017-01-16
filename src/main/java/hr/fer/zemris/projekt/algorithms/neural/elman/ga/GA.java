@@ -107,11 +107,6 @@ public class GA extends ObservableAlgorithm {
             List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
 
             for (int i = 0; i < maxGenerations; i++) {
-
-                if (i % 100 == 0) {
-                    simulator.generateGrids(30, 10, 10, false, ThreadLocalRandom.current());
-                }
-
                 evaluatePopulation(population, pool);
                 population = sortPopulation(population);
                 if (population.get(0).getFitness() > stopCondition) {
@@ -176,7 +171,7 @@ public class GA extends ObservableAlgorithm {
     }
 
     private ElmanNeuralNetwork prepareBest(Chromosome best) {
-        ElmanNeuralNetwork robot = network.get();
+        ElmanNeuralNetwork robot = network.get().copy();
         robot.setWeights(best.getWeights());
         robot.setStandardizedFitness(best.getFitness());
         return robot;
