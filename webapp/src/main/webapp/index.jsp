@@ -209,11 +209,11 @@
                 eventSource.close();
 
                 if (triggerPopover) {
-                    $('#btnStop').popover({content: "Training stopped", placement: "right"}).popover('show');
+                    $('#btnStop').popover({content: "Training stopped", placement: "top"}).popover('show');
 
                     setTimeout(function () {
                         $('#btnStop').popover('hide');
-                    }, 2000);
+                    }, 1500);
                 }
             }
         });
@@ -225,11 +225,11 @@
             method: "POST",
             success: function () {
                 if (triggerPopover) {
-                    $('#btnPause').popover({content: "Training paused", placement: "right"}).popover('show');
+                    $('#btnPause').popover({content: "Training paused", placement: "top"}).popover('show');
 
                     setTimeout(function () {
                         $('#btnPause').popover('hide');
-                    }, 2000);
+                    }, 1500);
                 }
             }
         });
@@ -241,11 +241,11 @@
             method: "POST",
             success: function () {
                 if (triggerPopover) {
-                    $('#btnResume').popover({content: "Training resumed", placement: "right"}).popover('show');
+                    $('#btnResume').popover({content: "Training resumed", placement: "top"}).popover('show');
 
                     setTimeout(function () {
                         $('#btnResume').popover('hide');
-                    }, 2000);
+                    }, 1500);
                 }
             }
         });
@@ -276,11 +276,11 @@
             success: function (data) {
                 refreshSimulatorConfig(data);
 
-                $('#btnSimConfig').popover({content: "Simulator configured", placement: "left"}).popover('show');
+                $('#btnSimConfig').popover({content: "Simulator configured", placement: "top"}).popover('show');
 
                 setTimeout(function () {
                     $('#btnSimConfig').popover('hide');
-                }, 2000);
+                }, 1500);
             }
         });
 
