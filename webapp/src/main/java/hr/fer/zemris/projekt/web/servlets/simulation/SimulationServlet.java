@@ -2,6 +2,7 @@ package hr.fer.zemris.projekt.web.servlets.simulation;
 
 import com.google.gson.Gson;
 import hr.fer.zemris.projekt.Algorithms;
+import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.simulator.Simulator;
@@ -37,6 +38,7 @@ public class SimulationServlet extends HttpServlet {
 
         Robot robot = (Robot) req.getSession().getAttribute(Constants.SESSION_KEY_ROBOT);
         Grid grid = (Grid) req.getSession().getAttribute(Constants.SESSION_KEY_GRID);
+        String algorithmName = req.getSession().getAttribute(Constants.SESSION_KEY_ALGORITHM).toString();
 
         simulator.setGrid(grid);
         robot.initialize();
@@ -50,6 +52,8 @@ public class SimulationServlet extends HttpServlet {
                 GSON.toJson(stats.getMoves()) +
                 ", \"maxMove\": " +
                 GSON.toJson(maxMoves) +
+                ", \"algorithmName\": " +
+                GSON.toJson(algorithmName) +
                 "}";
 
         resp.getWriter().write(jsonObject);

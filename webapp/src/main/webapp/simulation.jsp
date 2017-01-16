@@ -242,10 +242,9 @@
             var grid = data.gridObject;
             var moves = data.moves;
             var maxMove = data.maxMove;
+            var algorithmName = data.algorithmName;
 
-            console.log(grid);
-            console.log(moves);
-
+            document.getElementById("algorithmName").innerHTML = algorithmName;
             document.getElementById("simulationDiv").className = "row";
             var display = document.getElementById("moveDisplay");
 
@@ -470,7 +469,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-3 col-md-offset-1">
                     <button id="btnLoadDefault" onclick="loadDefaultRobot()" class="btn btn-default btn-block">Default robot</button>
                 </div>
             </div>
@@ -534,6 +533,9 @@
 
             <div class="col-md-3">
                 <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="text-center" id="algorithmName">/</h4>
+                    </div>
                     <div class="col-md-12">
                         <h4 class="text-center" id="moveDisplay">/</h4>
                     </div>
