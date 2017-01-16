@@ -43,15 +43,15 @@ public class QFunction {
     /**
      * Initial q value.
      */
-    private final static double initialQValue = 0;
+    private static final double initialQValue = 0;
     /**
      * Initial state count value.
      */
-    private final static int initialCountValue = 0;
+    private static final int initialCountValue = 0;
     /**
      * Initial optimal future reward value.
      */
-    private final static double initialOptimalFutureReward = 0;
+    private static final double initialOptimalFutureReward = 0;
 
     public QFunction(Map<State, Map<Move, Double>> qValues,
             Map<State, Map<Move, Integer>> stateActionCount, ReinforcmentLearningParameters params) {

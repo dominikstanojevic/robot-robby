@@ -205,12 +205,15 @@ public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLe
 
     @Override
     public LinkedHashSet<Parameter> getParameters() {
-        LinkedHashSet<Parameter> parameterCopy = new LinkedHashSet<Parameter>();
-        for (Parameter param : parameterMap.values()) {
-            parameterCopy.add(new Parameter(param.getName(), param.getType(), param.getMinValue(),
-                    param.getMaxValue(), param.getValue()));
-        }
-        return parameterCopy;
+        // LinkedHashSet<Parameter> parameterCopy = new
+        // LinkedHashSet<Parameter>();
+        // for (Parameter param : parameterMap.values()) {
+        // parameterCopy.add(new Parameter(param.getName(), param.getType(),
+        // param.getMinValue(),
+        // param.getMaxValue(), param.getValue()));
+        // }
+        // return parameterCopy;
+        return new LinkedHashSet<Parameter>(parameterMap.values());
     }
 
 }

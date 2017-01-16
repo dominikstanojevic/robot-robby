@@ -9,9 +9,9 @@ import java.util.List;
 
 /**
  * An implementation of the {@link Algorithm} interface, which adds the
- * functionality for this algorithm to be used as the subject in the
- * observer design pattern. The observers will be notified of the
- * best result from the latest complete iteration of the algorithm.
+ * functionality for this algorithm to be used as the subject in the observer
+ * design pattern. The observers will be notified of the best result from the
+ * latest complete iteration of the algorithm.
  *
  * @author Leon Luttenberger
  * @version 1.0.1
@@ -34,12 +34,15 @@ public abstract class ObservableAlgorithm implements Observable<TrainingResult>,
     }
 
     /**
-     * Notifies the listeners with a {@link TrainingResult}
-     * object only if somebody is observing this object.
+     * Notifies the listeners with a {@link TrainingResult} object only if
+     * somebody is observing this object.
      *
-     * @param best           best result of the iteration
-     * @param averageFitness average fitness of the iteration
-     * @param iteration      current iteration
+     * @param best
+     *            best result of the iteration
+     * @param averageFitness
+     *            average fitness of the iteration
+     * @param iteration
+     *            current iteration
      */
     protected void notifyListeners(Robot best, double averageFitness, int iteration) {
         if (observers == null || observers.isEmpty()) {
@@ -63,6 +66,13 @@ public abstract class ObservableAlgorithm implements Observable<TrainingResult>,
             for (Observer<TrainingResult> observer : observers) {
                 observer.observationMade(this, observation);
             }
+        }
+    }
+
+    @Override
+    public void clearObservers() {
+        if (observers != null) {
+            observers.clear();
         }
     }
 }
