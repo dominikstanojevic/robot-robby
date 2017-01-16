@@ -6,6 +6,8 @@
 
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css"/>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
+
     <script type="text/javascript" src="resources/js/simulation.js"></script>
     <script type="text/javascript" src="resources/js/GridLoader.js"> </script>
     <script type="text/javascript" src="resources/js/bootstrap-filestyle.min.js"> </script>
@@ -30,6 +32,48 @@
             var selected = algorithmSelection.options[algorithmSelection.selectedIndex].value;
 
             document.getElementById("algorithmID").setAttribute("value", selected);
+        }
+
+        function loadDefaultRobot(){
+            var form = document.forms["robotForm"];
+            var formData = new FormData(form);
+
+            $.ajax({
+                url: "./loadRobot",
+                method: "POST",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: roboDefaultSuccess,
+                error: roboDefaultErr
+            });
+        }
+
+        function roboDefaultSuccess(){
+            $('#btnLoadDefault')
+                .popover({content: "Robot imported successfully!", placement: "top"})
+                .popover('show');
+
+            setTimeout(function () {
+                $('#btnLoadDefault').popover('hide');
+            }, 2000);
+        }
+
+        function roboDefaultErr(){
+            $('#btnLoadDefault')
+                .popover({content: "Unable to import robot!", placement: "top"})
+                .popover('show');
+            $('.popover')
+                .css('background-color', '#d9534f')
+                .css('color', 'darkred');
+
+            setTimeout(function () {
+                $('#btnLoadDefault').popover('hide');
+                $('.popover')
+                    .css('background-color', 'white')
+                    .css('color', '#333');
+            }, 2000);
         }
 
         function loadRobot(){
@@ -75,6 +119,7 @@
         }
 
         function generateMap(){
+            $('#generateGridForm').validator('validate');
             var form = document.forms["generateGridForm"];
             var formData = new FormData(form);
 
@@ -161,10 +206,18 @@
         }
 
         function startSimulation(){
+            $('#simulationForm').validator('validate');
+            var form = document.forms["simulationForm"];
+            var formData = new FormData(form);
+
             $.ajax({
                 url: "./simulation",
                 method: "POST",
                 dataType: "json",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
                 success: loadSimulation,
                 error: function(){
                     $('#btnSimulation')
@@ -185,8 +238,10 @@
         }
 
         function loadSimulation(data){
+            if (simulation != undefined && simulation != null) reset();
             var grid = data.gridObject;
             var moves = data.moves;
+            var maxMove = data.maxMove;
 
             console.log(grid);
             console.log(moves);
@@ -194,7 +249,7 @@
             document.getElementById("simulationDiv").className = "row";
             var display = document.getElementById("moveDisplay");
 
-            simulation = new Simulation(canvas, grid, moves, display);
+            simulation = new Simulation(canvas, grid, moves, display, maxMove);
             simulation.draw();
 
             $('#btnSimulation').popover({content: "Simulation prepared!", placement: "top"}).popover('show');
@@ -205,6 +260,7 @@
         }
 
         function setMapCreation(){
+            $('#createGridForm').validator('validate');
             var form = document.forms["createGridForm"];
 
             var width = form.elements["width"].value;
@@ -267,14 +323,14 @@
             }
         };
 
-        var reset = function(){
+        function reset(){
             isPaused = true;
             document.getElementById("btn1").disabled = false;
             document.getElementById("btn2").innerHTML = "Play";
             document.getElementById("btn3").disabled = false;
 
             simulation.reset();
-        };
+        }
 
 
     </script>
@@ -302,26 +358,29 @@
             <br/>
 
             <div id="sectionA" class="row">
-                <form id="generateGridForm" class="form-horizontal">
+                <form id="generateGridForm" class="form-horizontal" data-toggle="validator" role="form">
                     <div class="form-group">
                         <label class="control-label col-md-3 col-md-offset-1" for="width">Width</label>
                         <div class="col-md-8">
-                            <input type="text" name="width" id="width" value="10" class="form-control">
+                            <input type="number" min="3" max="25" required step="1" name="width" id="width" value="10" class="form-control">
                         </div>
+                        <div class="help-block with-errors col-md-8 col-md-offset-4"></div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-md-3 col-md-offset-1" for="height">Height</label>
                         <div class="col-md-8">
-                            <input type="text" name="height" id="height" value="10" class="form-control">
+                            <input type="number" min="3" max="25" required step="1" name="height" id="height" value="10" class="form-control">
                         </div>
+                        <div class="help-block with-errors col-md-8 col-md-offset-4"></div>
                     </div>
 
                     <div class="form-group">
                         <label class="control-label col-md-3 col-md-offset-1" for="percent">% bottles</label>
                         <div class="col-md-8">
-                            <input type="text" name="percentage" id="percent" value="0.5" class="form-control">
+                            <input type="number" min="0" max="100" required step="0.1" name="percentage" id="percent" value="50" class="form-control">
                         </div>
+                        <div class="help-block with-errors col-md-8 col-md-offset-4"></div>
                     </div>
 
                 </form>
@@ -357,19 +416,21 @@
             <div id="sectionC" class="row">
                 <div id="sectionC1">
                     <div class="row">
-                        <form id="createGridForm" class="form-horizontal">
+                        <form id="createGridForm" class="form-horizontal" data-toggle="validator" role="form">
                             <div class="form-group col-md-6">
                                 <label class="control-label col-md-3 col-md-offset-2" for="widthCreate">Width</label>
                                 <div class="col-md-7">
-                                    <input type="text" name="width" id="widthCreate" value="10" class="form-control">
+                                    <input type="number" min="3" max="25" required step="1" name="width" id="widthCreate" value="10" class="form-control">
                                 </div>
+                                <div class="help-block with-errors col-md-7 col-md-offset-5"></div>
                             </div>
 
                             <div class="form-group col-md-6">
                                 <label class="control-label col-md-3 col-md-offset-1" for="heightCreate">Height</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="height" id="heightCreate" value="10" class="form-control">
+                                    <input type="number" min="3" max="25" required step="1" name="height" id="heightCreate" value="10" class="form-control">
                                 </div>
+                                <div class="help-block with-errors col-md-8 col-md-offset-4"></div>
                             </div>
                         </form>
                     </div>
@@ -408,6 +469,10 @@
                         </c:forEach>
                     </select>
                 </div>
+
+                <div class="col-md-3">
+                    <button id="btnLoadDefault" onclick="loadDefaultRobot()" class="btn btn-default btn-block">Default robot</button>
+                </div>
             </div>
             <br/>
 
@@ -438,7 +503,19 @@
     <br/>
 
     <div class="row">
-        <div class="col-md-3 col-md-offset-1">
+        <div class=" col-md-4 col-md-offset-1">
+            <form id="simulationForm" class="form-horizontal" data-toggle="validator" role="form">
+                <div class="form-group">
+                    <label class="control-label col-md-5" for="maxMoves">Max moves</label>
+                    <div class="col-md-7">
+                        <input type="number" min="20" max="1000" required step="1" name="maxMoves" id="maxMoves" value="200" class="form-control">
+                    </div>
+                    <div class="help-block with-errors col-md-7 col-md-offset-5"></div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-3">
             <button id="btnSimulation" onclick="startSimulation()" class="btn btn-default btn-block">
                 Start simulation
             </button>

@@ -1,4 +1,4 @@
-function Simulation(canvas, grid, moves, moveListener){
+function Simulation(canvas, grid, moves, moveListener, maxMoves){
     var self = this;
 
     this.delay = 500;
@@ -249,7 +249,8 @@ function Simulation(canvas, grid, moves, moveListener){
         var moveString = "";
         moveString += Math.min(moveIndex, moves.length - 1);
         moveString += "/";
-        moveString += (moves.length - 1);
+        //moveString += (moves.length - 1);
+        moveString += maxMoves;
 
         moveListener.innerHTML = moveString;
     };

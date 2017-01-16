@@ -1,6 +1,7 @@
-package hr.fer.zemris.projekt.web.servlets;
+package hr.fer.zemris.projekt.web.servlets.training;
 
 import com.google.gson.Gson;
+import hr.fer.zemris.projekt.web.servlets.Constants;
 import hr.fer.zemris.projekt.web.utils.SimulatorConfiguration;
 
 import javax.servlet.ServletException;

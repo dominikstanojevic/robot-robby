@@ -23,6 +23,7 @@ public class GenerateGridServlet extends HttpServlet {
         int width = Integer.parseInt(req.getParameter("width"));
         int height = Integer.parseInt(req.getParameter("height"));
         double bottlePercentage = Double.parseDouble(req.getParameter("percentage"));
+        bottlePercentage /= 100;
 
         int bottleCount = (int)(width * height * bottlePercentage);
 
