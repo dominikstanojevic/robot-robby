@@ -352,6 +352,7 @@
                     <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm(true)">Stop training</button>
                     <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm(true)">Pause training</button>
                     <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm(true)">Resume training</button>
+                    <br>
                     <button id="btnExport" class="btn btn-default btn-lg btn-block" type="button" onclick="location.href='exportRobot'">Export robot</button>
                 </div>
             </div>
