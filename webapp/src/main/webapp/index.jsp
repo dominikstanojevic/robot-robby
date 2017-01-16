@@ -217,30 +217,34 @@
         });
     }
 
-    function pauseAlgorithm() {
+    function pauseAlgorithm(triggerPopover) {
         $.ajax({
             url: "pauseTraining",
             method: "POST",
             success: function () {
-                $('#btnPause').popover({content: "Training paused", placement: "right"}).popover('show');
+                if (triggerPopover) {
+                    $('#btnPause').popover({content: "Training paused", placement: "right"}).popover('show');
 
-                setTimeout(function () {
-                    $('#btnPause').popover('hide');
-                }, 2000);
+                    setTimeout(function () {
+                        $('#btnPause').popover('hide');
+                    }, 2000);
+                }
             }
         });
     }
 
-    function resumeAlgorithm() {
+    function resumeAlgorithm(triggerPopover) {
         $.ajax({
             url: "resumeTraining",
             method: "POST",
             success: function () {
-                $('#btnResume').popover({content: "Training resumed", placement: "right"}).popover('show');
+                if (triggerPopover) {
+                    $('#btnResume').popover({content: "Training resumed", placement: "right"}).popover('show');
 
-                setTimeout(function () {
-                    $('#btnResume').popover('hide');
-                }, 2000);
+                    setTimeout(function () {
+                        $('#btnResume').popover('hide');
+                    }, 2000);
+                }
             }
         });
     }
@@ -280,9 +284,14 @@
 
         return false;
     }
+
+    function leavePage() {
+        resumeAlgorithm(false);
+        stopAlgorithm(false);
+    }
 </script>
 
-<body onload="init()" onbeforeunload="stopAlgorithm(false)">
+<body onload="init()" onbeforeunload="leavePage()">
 
 <jsp:include page="navbar.jsp"/>
 
@@ -324,8 +333,8 @@
                 <%-- Training control --%>
                 <div class="row">
                     <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm(true)">Stop training</button>
-                    <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm()">Pause training</button>
-                    <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm()">Resume training</button>
+                    <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm(true)">Pause training</button>
+                    <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm(true)">Resume training</button>
                     <button id="btnExport" class="btn btn-default btn-lg btn-block" type="button" onclick="location.href='exportRobot'">Export robot</button>
                 </div>
             </div>
