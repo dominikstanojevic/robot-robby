@@ -160,14 +160,11 @@ public class GA extends ObservableAlgorithm {
 
             population = sortPopulation(population);
             Chromosome best = population.get(0);
+            return prepareBest(best);
 
-            simulator.generateGrids(10000, 10, 10, false, ThreadLocalRandom.current());
-            evaluateSolution(best);
-            System.out.println(best);
         } finally {
             pool.shutdown();
         }
-        return null;
     }
 
     private ElmanNeuralNetwork prepareBest(Chromosome best) {
