@@ -4,6 +4,7 @@ import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.RobotFormatException;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
+import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.ReinforcmentLearningAlgorithm;
 import hr.fer.zemris.projekt.grid.Grid;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
@@ -208,7 +209,8 @@ public class SimulationPanel extends JPanel {
 
         // ADD ALL ALGORITHMS
         optionsPanel.add(new JLabel("Select algorithm for loading robot:"));
-        Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming() };
+        Algorithm[] algorithms = new Algorithm[] { new GeneticProgramming(),
+                new ReinforcmentLearningAlgorithm() };
         JComboBox<Algorithm> cbAlgorithm = new JComboBox<>(algorithms);
         cbAlgorithm.setSelectedItem(algorithms[0]);
         optionsPanel.add(cbAlgorithm);

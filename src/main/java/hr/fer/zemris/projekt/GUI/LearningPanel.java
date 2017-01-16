@@ -235,9 +235,7 @@ public class LearningPanel extends JPanel {
                     protected Void doInBackground() throws Exception {
 
                         simulator = new Simulator(2 * mapCols * mapRows);
-
-                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false,
-                                false);
+                        simulator.generateGrids(mapNum, numOfBottles, mapCols, mapRows, false);
 
                         algorithm.addObserver(new Observer<TrainingResult>() {
 
