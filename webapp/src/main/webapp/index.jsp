@@ -190,7 +190,7 @@
             var result = JSON.parse(event.data);
             var iteration = result["iteration"];
 
-            if (iteration == 0 || iteration == 1 || iteration % 5 == 0) {
+            if (iteration <= 1 || iteration % 5 == 0 || iteration >= (numberOfIterations - 1)) {
                 graph.addPoint([
                     new Point(iteration, result["best"]),
                     new Point(iteration, result["average"])
