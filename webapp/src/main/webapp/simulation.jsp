@@ -192,8 +192,9 @@
             console.log(moves);
 
             document.getElementById("simulationDiv").className = "row";
+            var display = document.getElementById("moveDisplay");
 
-            simulation = new Simulation(canvas, grid, moves);
+            simulation = new Simulation(canvas, grid, moves, display);
             simulation.draw();
 
             $('#btnSimulation').popover({content: "Simulation prepared!", placement: "top"}).popover('show');
@@ -274,6 +275,8 @@
 
             simulation.reset();
         };
+
+
     </script>
 
 </head>
@@ -455,12 +458,20 @@
             <div class="col-md-3">
                 <div class="row">
                     <div class="col-md-12">
+                        <h4 class="text-center" id="moveDisplay">/</h4>
+                    </div>
+                </div>
+
+                <br/>
+                <br/>
+                <div class="row">
+                    <div class="col-md-12">
                         <button id = "btn1" onclick="simulation.previous()" class="btn btn-default btn-block">
                             Previous
                         </button>
                     </div>
                 </div>
-
+                <br/>
                 <div class="row">
                     <div class="col-md-12">
                         <button id = "btn2" onclick="toggle()" class="btn btn-default btn-block">
@@ -468,7 +479,7 @@
                         </button>
                     </div>
                 </div>
-
+                <br/>
                 <div class="row">
                     <div class="col-md-12">
                         <button id = "btn3" onclick="simulation.next()" class="btn btn-default btn-block">
@@ -476,7 +487,7 @@
                         </button>
                     </div>
                 </div>
-
+                <br/>
                 <div class="row">
                     <div class="col-md-12">
                         <button id = "btn4" onclick="reset()" class="btn btn-default btn-block btn-block">
@@ -488,8 +499,5 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-
-</script>
 </body>
 </html>

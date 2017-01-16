@@ -1,7 +1,8 @@
-function Simulation(canvas, grid, moves){
+function Simulation(canvas, grid, moves, moveListener){
     var self = this;
 
     this.delay = 500;
+    moves.push("SKIP_TURN");
 
     var context = canvas.getContext("2d");
     var grids = [];
@@ -127,6 +128,8 @@ function Simulation(canvas, grid, moves){
             context.rect(0, 0, canvas.width, canvas.height);
             context.stroke();
         }
+
+        updateMoves();
     };
 
     var toDo = null;
@@ -236,5 +239,18 @@ function Simulation(canvas, grid, moves){
         robyX = grid.startX;
         robyY = grid.startY;
         self.draw();
+    };
+
+    var updateMoves = function(){
+        if (moveListener == null){
+            return;
+        }
+
+        var moveString = "";
+        moveString += Math.min(moveIndex, moves.length - 1);
+        moveString += "/";
+        moveString += (moves.length - 1);
+
+        moveListener.innerHTML = moveString;
     };
 }
