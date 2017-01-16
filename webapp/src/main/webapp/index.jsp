@@ -312,8 +312,8 @@
 
 <jsp:include page="navbar.jsp"/>
 
-<div class="container-container">
-    <div class="container-fluid">
+<div class="container-fluid">
+    <div class="margin-container">
         <div class="row">
             <div class="col-md-2">
 
