@@ -304,7 +304,6 @@
     }
 
     function leavePage() {
-        resumeAlgorithm(false);
         stopAlgorithm(false);
     }
 </script>
