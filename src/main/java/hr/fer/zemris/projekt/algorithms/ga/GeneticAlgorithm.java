@@ -24,12 +24,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
- * <p>A generational genetic algorithm which is used to trained Robby the Robot,
+ * <p>
+ * A generational genetic algorithm which is used to trained Robby the Robot,
  * which uses elitism, single-point crossovers along with guaranteed mutations
- * for each child.</p>
+ * for each child.
+ * </p>
  *
- * <p>This class is also an {@link ObservableAlgorithm}, which allow it's generational
- * results to be accessible by the caller.</p>
+ * <p>
+ * This class is also an {@link ObservableAlgorithm}, which allow it's
+ * generational results to be accessible by the caller.
+ * </p>
  *
  * @author Leon Luttenberger
  */
@@ -62,7 +66,8 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
     @Override
     public void writeSolutionToFile(Path filePath, Robot robot) throws IOException {
         if (!(robot instanceof Chromosome)) {
-            throw new IllegalArgumentException("Robot not supported by this algorithm: " + robot.getClass().getName());
+            throw new IllegalArgumentException("Robot not supported by this algorithm: "
+                    + robot.getClass().getName());
         }
 
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
@@ -88,14 +93,11 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
 
         ExecutorService pool = null;
         try {
-            pool = Executors.newFixedThreadPool(
-                    Runtime.getRuntime().availableProcessors(),
-                    r -> {
-                        Thread t = new Thread(r);
-                        t.setDaemon(true);
-                        return t;
-                    }
-            );
+            pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), r -> {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            });
 
             // load parameters
             int populationSize = (int) gaParameters.populationSize.getValue();
@@ -130,13 +132,16 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
     }
 
     /**
-     * Iterates through the population and calculates the fitness for each individual. After the evaluation
-     * is done, the list is then sorted.
+     * Iterates through the population and calculates the fitness for each
+     * individual. After the evaluation is done, the list is then sorted.
      *
-     * @param simulator simulator for evaluating the individuals
-     * @param population population to evaluate
+     * @param simulator
+     *            simulator for evaluating the individuals
+     * @param population
+     *            population to evaluate
      */
-    private void evaluatePopulation(AbstractSimulator simulator, Population population, ExecutorService pool) {
+    private void evaluatePopulation(AbstractSimulator simulator, Population population,
+            ExecutorService pool) {
         List<Future<List<Stats>>> results = new ArrayList<>();
         for (Chromosome chromosome : population) {
             Callable<List<Stats>> job = () -> simulator.playGames(chromosome);
@@ -161,9 +166,11 @@ public class GeneticAlgorithm extends ObservableAlgorithm {
     }
 
     /**
-     * Calculates the fitness of an individual based on the {@link Stats} for each
-     * cleaning sessions.
-     * @param stats list of {@link Stats} for each cleaning session
+     * Calculates the fitness of an individual based on the {@link Stats} for
+     * each cleaning sessions.
+     *
+     * @param stats
+     *            list of {@link Stats} for each cleaning session
      * @return fitness of the individual in question
      */
     public static double calculateFitness(List<Stats> stats) {

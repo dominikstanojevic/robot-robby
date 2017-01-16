@@ -165,8 +165,8 @@ public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLe
                 ParameterType.INTEGER, MIN_ITERATIONS_NUMBER, MAX_ITERATIONS_NUMBER,
                 DEFAULT_ITERATIONS_NUMBER));
         parameterMap
-        .put(LIVING_REWARD_NAME, new Parameter(LIVING_REWARD_NAME, ParameterType.INTEGER,
-                MIN_LIVING_REWARD, MAX_LIVING_REWARD, DEFAULT_LIVING_REWARD));
+                .put(LIVING_REWARD_NAME, new Parameter(LIVING_REWARD_NAME, ParameterType.INTEGER,
+                        MIN_LIVING_REWARD, MAX_LIVING_REWARD, DEFAULT_LIVING_REWARD));
         parameterMap.put(PICKED_BOTTLE_REWARD_NAME, new Parameter(PICKED_BOTTLE_REWARD_NAME,
                 ParameterType.INTEGER, MIN_PICKED_BOTTLE_REWARD, MAX_PICKED_BOTTLE_REWARD,
                 DEFAULT_PICKED_BOTTLE_REWARD));

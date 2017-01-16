@@ -244,6 +244,7 @@ public class LearningPanel extends JPanel {
                         * mapCols);
 
                 worker = new SwingWorker<Void, Integer>() {
+                    int count = 0;
 
                     @Override
                     protected Void doInBackground() throws Exception {
@@ -256,13 +257,14 @@ public class LearningPanel extends JPanel {
                             simulator.generateGrids(mapNum, mapCols, mapRows, false,
                                     ThreadLocalRandom.current());
                         }
-
+                        algorithm.clearObservers();
                         algorithm.addObserver(new Observer<TrainingResult>() {
 
                             @Override
                             public void observationMade(Observable sender,
                                     TrainingResult observation) {
                                 robot = observation.getBestResult();
+
                                 SwingUtilities.invokeLater(() -> graphicalPanel.addValue(
                                         robot.standardizedFitness(),
                                         observation.getAverageFitness()));
