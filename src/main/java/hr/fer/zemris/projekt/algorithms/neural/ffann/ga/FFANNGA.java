@@ -4,6 +4,8 @@ import hr.fer.zemris.projekt.algorithms.Algorithm;
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.neural.ActivationFunction;
+import hr.fer.zemris.projekt.algorithms.neural.Layer;
+import hr.fer.zemris.projekt.algorithms.neural.NeuralNetworkException;
 import hr.fer.zemris.projekt.algorithms.neural.elman.ga.Chromosome;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.FFANN;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.crossover.ICrossover;
@@ -15,8 +17,11 @@ import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.selection.TournamentSele
 import hr.fer.zemris.projekt.parameter.Parameters;
 import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Stats;
+import org.omg.CORBA.Environment;
 
+import java.awt.*;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,16 +59,98 @@ public class FFANNGA extends ObservableAlgorithm {
     private ICrossover crossover;
     private IMutation mutation;
 
-    //TODO
     @Override
     public Robot readSolutionFromFile(Path filePath) throws IOException {
-        return null;
+        List<String> lines = Files.readAllLines(filePath);
+        if (lines.size() != 10 || !lines.get(0).trim().equals("[FFANN]")){
+            throw new NeuralNetworkException("Unable to read the file!");
+        }
+
+        int n = Integer.parseInt(lines.get(2).trim());
+        int[] layout = readLayout(lines.get(3).trim(), n);
+        ActivationFunction[] activationFunctions = readActivation(lines.get(6).trim(), n);
+
+        FFANN robot = new FFANN(layout, activationFunctions);
+
+        n = Integer.parseInt(lines.get(8).trim());
+        double[] weights = readWeights(lines.get(9).trim(), n);
+        robot.setWeights(weights);
+
+        return robot;
     }
 
-    //TODO
+    private double[] readWeights(String weightString, int n) {
+        double[] weights = new double[n];
+
+        weightString = weightString.substring(1, weightString.length() - 1);
+        String[] weight = weightString.split(" ");
+        for (int i = 0; i < n; ++i){
+            weights[i] = Double.parseDouble(weight[i]);
+        }
+
+        return weights;
+    }
+
+    private int[] readLayout(String layoutString, int n) {
+        int[] layout = new int[n];
+
+        layoutString = layoutString.substring(1, layoutString.length() - 1);
+        String[] layouts = layoutString.split(" ");
+        for (int i = 0; i < n; ++i){
+            layout[i] = Integer.parseInt(layouts[i]);
+        }
+
+        return layout;
+    }
+
+    private ActivationFunction[] readActivation(String activationString, int n) {
+        ActivationFunction[] activationFunctions = new ActivationFunction[n];
+
+        activationString = activationString.substring(1, activationString.length() - 1);
+        String[] activations = activationString.split(" ");
+        for (int i = 0; i < n; ++i){
+            activationFunctions[i] = ActivationFunction.valueOf(activations[i]);
+        }
+
+        return activationFunctions;
+    }
+
     @Override
     public void writeSolutionToFile(Path filePath, Robot robot) throws IOException {
+        if (!(robot instanceof FFANN)){
+            throw new NeuralNetworkException("The given robot is not a FFANN robot.");
+        }
 
+        FFANN ffann = (FFANN)robot;
+        double[] weights = ffann.getWeights();
+        Layer[] layers = ffann.getLayers();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("[FFANN]\n");
+        sb.append("Layout: \n");
+        sb.append(ffann.getNumberOfLayers());
+        sb.append("\n[");
+        for(Layer layer : layers){
+            sb.append(layer.numberOfNeurons());
+        }
+        sb.append("]\n");
+        sb.append("Activation: \n");
+        sb.append(ffann.getNumberOfLayers());
+        sb.append("\n[");
+        for(Layer layer : layers){
+            sb.append(layer.getActivationFunction());
+        }
+        sb.append("]");
+
+        sb.append("Weights: \n");
+        sb.append(ffann.getNumberOfWeights());
+        sb.append("\n[");
+        for(double weight : weights){
+            sb.append(weight);
+        }
+        sb.append("]\n");
+
+        Files.write(filePath, sb.toString().getBytes());
     }
 
     @Override
@@ -75,53 +162,56 @@ public class FFANNGA extends ObservableAlgorithm {
     public Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters) {
         this.simulator = simulator;
         initialize(parameters);
-        ExecutorService pool = Executors.newFixedThreadPool(
-                Runtime.getRuntime().availableProcessors(),
-                r -> {
-                    Thread t = new Thread(r);
-                    t.setDaemon(true);
-                    return t;
-                });
+        List<Chromosome> population = null;
+        ExecutorService pool = null;
 
-        List<Chromosome> population = generatePopulation();
-        evaluate(population, pool);
+        try {
+            pool = Executors.newFixedThreadPool(
+                    Runtime.getRuntime().availableProcessors(),
+                    r -> {
+                        Thread t = new Thread(r);
+                        t.setDaemon(true);
+                        return t;
+                    });
 
-        int generation = 0;
-        while (generation < maxGenerations){
-            generation++;
-            if (generation % 100 == 0){
-                simulator.generateGrids(50, 10, 10, false, ThreadLocalRandom.current());
-            }
+            population = generatePopulation();
+            evaluate(population, pool);
 
-            List<Chromosome> newPopulation = new ArrayList<>();
-            newPopulation.add(bestOfPopulation(population));
+            int generation = 0;
+            while (generation < maxGenerations){
+                generation++;
 
-            while (newPopulation.size() < populationSize){
-                Chromosome firstParent = firstSelection.select(population);
-                Chromosome secondParent = secondSelection.select(population);
-                while (secondParent.equals(firstParent)){
-                    secondParent = secondSelection.select(population);
+                List<Chromosome> newPopulation = new ArrayList<>();
+                newPopulation.add(bestOfPopulation(population));
+
+                while (newPopulation.size() < populationSize){
+                    Chromosome firstParent = firstSelection.select(population);
+                    Chromosome secondParent = secondSelection.select(population);
+                    while (secondParent.equals(firstParent)){
+                        secondParent = secondSelection.select(population);
+                    }
+
+                    Chromosome child = crossover.crossover(firstParent, secondParent);
+                    mutation.mutate(child);
+
+                    newPopulation.add(child);
                 }
 
-                Chromosome child = crossover.crossover(firstParent, secondParent);
-                mutation.mutate(child);
+                evaluate(newPopulation, pool);
+                population = newPopulation;
 
-                newPopulation.add(child);
+                Chromosome bestChromosome = bestOfPopulation(population);
+                network.get().setStandardizedFitness(bestChromosome.getFitness());
+
+                FFANN ffann = network.get().copy();
+                ffann.setWeights(bestChromosome.getWeights());
+                ffann.setStandardizedFitness(bestChromosome.getFitness());
+                this.notifyListeners(ffann, populationAverage(population), generation);
             }
-
-            evaluate(newPopulation, pool);
-            population = newPopulation;
-
-            Chromosome bestChromosome = bestOfPopulation(population);
-            network.get().setStandardizedFitness(bestChromosome.getFitness());
-
-            FFANN ffann = network.get().copy();
-            ffann.setWeights(bestChromosome.getWeights());
-            ffann.setStandardizedFitness(bestChromosome.getFitness());
-            this.notifyListeners(ffann, populationAverage(population), generation);
+        } finally {
+            pool.shutdown();
         }
 
-        pool.shutdown();
         Chromosome bestChromosome = bestOfPopulation(population);
         network.get().setWeights(bestChromosome.getWeights());
         return network.get();

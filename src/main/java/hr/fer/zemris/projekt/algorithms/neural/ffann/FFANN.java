@@ -60,6 +60,14 @@ public class FFANN implements Robot {
         return weights;
     }
 
+    public int getNumberOfLayers(){
+        return layers.length;
+    }
+
+    public Layer[] getLayers(){
+        return layers;
+    }
+
     public void setWeights(double[] weights){
         if (weights.length != getNumberOfWeights()){
             throw new NeuralNetworkException("Invalid number of widths given!");
