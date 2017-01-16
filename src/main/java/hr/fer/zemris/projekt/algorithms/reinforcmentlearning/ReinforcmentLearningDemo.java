@@ -9,13 +9,27 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Method demonstrates function of reinforcment learning algorithm.
+ * Method demonstrates function of reinforcement learning algorithm.
  *
  * @author Domagoj Pluscec
  * @version v1.0, 15.1.2017.
  */
 public class ReinforcmentLearningDemo {
 
+    /**
+     * Utility class private constructor.
+     */
+    private ReinforcmentLearningDemo() {
+    }
+
+    /**
+     * Method starts with program run.
+     *
+     * @param args
+     *            command line arguments are ignored
+     * @throws IOException
+     *             if there was an exception
+     */
     public static void main(String[] args) throws IOException {
 
         final int numberOfGrids = 3000;

@@ -221,6 +221,15 @@ public class QFunction {
 
     }
 
+    /**
+     * MEthod initializes QFunction from string.
+     *
+     * @param description
+     *            qfunction description
+     * @param params
+     *            reinforcement learning parameters contex
+     * @return initialized qfunction
+     */
     public static QFunction fromString(String description, ReinforcmentLearningParameters params) {
         int qValuesStartIndex = description.indexOf("Q");
         int qValuesEndIndex = description.indexOf("N{", qValuesStartIndex) - 1;
@@ -268,6 +277,15 @@ public class QFunction {
         return values;
     }
 
+    /**
+     * Method extracts map from a map in string q function description. It is
+     * used for q values where it maps move to q value and for state action
+     * count where it maps move to count.
+     *
+     * @param mapString
+     *            inner map string
+     * @return mapper which maps move to value
+     */
     private static <T extends Number> Map<Move, T> extractInnerValueMap(String mapString) {
         String[] entries = mapString.split(",");
         Map<Move, T> innerMap = new HashMap<>();

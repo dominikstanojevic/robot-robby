@@ -2,7 +2,10 @@ package hr.fer.zemris.projekt.GUI;
 
 import hr.fer.zemris.projekt.algorithms.ObservableAlgorithm;
 import hr.fer.zemris.projekt.algorithms.Robot;
+import hr.fer.zemris.projekt.algorithms.ga.GeneticAlgorithm;
 import hr.fer.zemris.projekt.algorithms.geneticProgramming.GeneticProgramming;
+import hr.fer.zemris.projekt.algorithms.neural.elman.ga.GA;
+import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANNGA;
 import hr.fer.zemris.projekt.algorithms.reinforcmentlearning.ReinforcmentLearningAlgorithm;
 import hr.fer.zemris.projekt.observer.Observable;
 import hr.fer.zemris.projekt.observer.Observer;
@@ -71,7 +74,8 @@ public class LearningPanel extends JPanel {
 
         // ADD ALL ALGORITHMS
         ObservableAlgorithm[] algoritms = new ObservableAlgorithm[] { new GeneticProgramming(),
-                new ReinforcmentLearningAlgorithm() };
+                new ReinforcmentLearningAlgorithm(), new FFANNGA(), new GA(),
+                new GeneticAlgorithm() };
         JComboBox<ObservableAlgorithm> cbAlgoritms = new JComboBox<>(algoritms);
         add(cbAlgoritms, BorderLayout.PAGE_START);
 

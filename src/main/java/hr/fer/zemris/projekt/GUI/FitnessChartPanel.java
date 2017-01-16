@@ -45,7 +45,9 @@ public class FitnessChartPanel extends JPanel {
 
         ValueAxis axis = plot.getDomainAxis();
         axis.setAutoRange(true);
+
         axis.setRange(0, 200);
+        axis.setAutoRange(true);
         axis = plot.getRangeAxis();
         axis.setRange(-1, 1.0);
 
@@ -64,5 +66,6 @@ public class FitnessChartPanel extends JPanel {
         currIteration = 0;
         this.maxFitnessSeries.clear();
         this.avgFitnessSeries.clear();
+
     }
 }
