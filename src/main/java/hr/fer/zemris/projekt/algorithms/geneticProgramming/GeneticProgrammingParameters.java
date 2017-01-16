@@ -75,7 +75,7 @@ public class GeneticProgrammingParameters implements Parameters<GeneticProgrammi
 	/**
 	 * Maximum value of the parameter.
 	 */
-	private static final double MAX_GENERATION_NUM = 100000;
+	private static final double MAX_GENERATION_NUM = 10000;
 	/**
 	 * Minimum value of the parameter.
 	 */
@@ -83,7 +83,7 @@ public class GeneticProgrammingParameters implements Parameters<GeneticProgrammi
 	/**
 	 * Default value of the parameter.
 	 */
-	private static final double DEFAULT_GENERATION_NUM = 10000;
+	private static final double DEFAULT_GENERATION_NUM = 3000;
 
 	/**
 	 * Name of the parameter.
