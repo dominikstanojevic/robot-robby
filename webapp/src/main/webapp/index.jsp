@@ -40,6 +40,8 @@
         // make the navigation show the selected page
         var link = document.getElementById("navItemIndex");
         link.setAttribute("class", "active");
+
+        displayRobot();
     }
 
     var refreshSimulatorConfig = function (data) {
@@ -194,7 +196,7 @@
                     new Point(iteration, result["average"])
                 ]);
 
-                document.getElementById("fitnessDisplay").innerHTML = result["best"];
+                displayRobot(result["best"], $("#algorithmSelection").find("option:selected").text());
             }
         };
     }
@@ -285,6 +287,22 @@
         return false;
     }
 
+    function displayRobot(fitness, algorithm) {
+        if (fitness != undefined || algorithm || undefined) {
+            $("#robotDisplay").html(algorithm + ": " + fitness);
+            return;
+        }
+
+        $.ajax({
+            url: "getRobot",
+            method: "GET",
+            dataType: "json",
+            success : function (data) {
+                $("#robotDisplay").html(data["algorithm"] + ": " + data["fitness"]);
+            }
+        });
+    }
+
     function leavePage() {
         resumeAlgorithm(false);
         stopAlgorithm(false);
@@ -295,7 +313,7 @@
 
 <jsp:include page="navbar.jsp"/>
 
-<div style="margin-left: 1%; margin-right: 1%">
+<div class="container-container">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2">
@@ -342,7 +360,7 @@
             <%-- Canvas --%>
             <div class="col-md-8">
                 <div class="row">
-                    <canvas id="plotCanvas" class="img-responsive" style="padding-left: 1%;" width="1200" height="600">
+                    <canvas id="plotCanvas" class="img-responsive train-canvas" width="1200" height="600">
                         Sorry, your browser does not support the canvas tag.
                     </canvas>
                 </div>
@@ -350,7 +368,7 @@
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1">
                         <div class="well">
-                            <h4 class="text-center" id="fitnessDisplay">-</h4>
+                            <h4 class="text-center" id="robotDisplay">-</h4>
                         </div>
                     </div>
                 </div>
@@ -403,7 +421,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-6" for="mapRegenFrequency">Map regen frequency</label>
                         <div class="col-sm-6">
-                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="50" required/>
+                            <input id="mapRegenFrequency" class="form-control" type="number" step="1" min="0" max="10000" value="100" required/>
                         </div>
                         <div class="help-block with-errors col-md-offset-1 col-xs-offset-6"></div>
                     </div>

@@ -1,6 +1,7 @@
 package hr.fer.zemris.projekt.web.servlets.training;
 
 import hr.fer.zemris.projekt.algorithms.Robot;
+import hr.fer.zemris.projekt.simulator.Simulator;
 import hr.fer.zemris.projekt.web.servlets.Constants;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,9 @@ public class StopTrainingServlet extends HttpServlet {
             resp.setStatus(400);
             return;
         }
+
+        Simulator simulator = (Simulator) req.getSession().getAttribute(Constants.SESSION_KEY_SIMULATOR);
+        simulator.resume();
 
         FutureTask<Robot> task = (FutureTask<Robot>) req.getSession().getAttribute(Constants.SESSION_KET_TRAINING_TASK);
 
