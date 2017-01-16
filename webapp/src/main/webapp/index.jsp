@@ -61,7 +61,7 @@
         if (inputName == 'Max generations') return true;
         if (inputName == 'Max iterations') return true;
         if (inputName == 'Number of generations') return true;
-        if (inputName == "Max. iterations") return true;
+        if (inputName == "Max. generations") return true;
         if (inputName == 'Number of iterations') return true;
 
         return false;

@@ -8,7 +8,6 @@ import hr.fer.zemris.projekt.simulator.Simulator;
 import hr.fer.zemris.projekt.simulator.Stats;
 import hr.fer.zemris.projekt.web.servlets.Constants;
 import hr.fer.zemris.projekt.web.utils.SimulatorConfiguration;
-import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,6 +36,7 @@ public class SimulationServlet extends HttpServlet {
         Grid grid = (Grid)req.getSession().getAttribute(Constants.SESSION_KEY_GRID);
 
         simulator.setGrid(grid);
+        robot.initialize();
         Stats stats = simulator.playGames(robot).get(0);
 
         resp.setContentType("application/json;charset=UTF-8");
