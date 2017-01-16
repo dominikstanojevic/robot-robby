@@ -15,7 +15,7 @@ public class SimulatorConfiguration {
     private boolean variableBottles = true;
     private int numberOfBottles = 50;
 
-    private int mapRegenFrequency = 50;
+    private int mapRegenFrequency = 100;
 
     public Simulator getSimulator() {
         if (simulator == null) {
