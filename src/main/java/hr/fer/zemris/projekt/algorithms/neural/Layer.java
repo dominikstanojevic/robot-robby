@@ -180,6 +180,9 @@ public class Layer {
 
     public double[] getWeights() {
         double[] weights = new double[numberOfWeights()];
+        if (weights.length == 0){
+            return weights;
+        }
 
         int m = this.weights.getRowDimension();
         int n = this.weights.getColumnDimension();

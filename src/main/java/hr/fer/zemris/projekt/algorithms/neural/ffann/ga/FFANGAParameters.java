@@ -19,7 +19,7 @@ public class FFANGAParameters implements Parameters<FFANNGA> {
     private static final int MAX_POPULATION_SIZE = 250;
 
     public static final String MAX_GENERATIONS = "Max. generations";
-    private static final int DEFAULT_MAX_GENERATIONS = 1_500;
+    private static final int DEFAULT_MAX_GENERATIONS = 100;
     private static final int MIN_MAX_GENERATIONS = 100;
     private static final int MAX_MAX_GENERATIONS = 50_000;
 

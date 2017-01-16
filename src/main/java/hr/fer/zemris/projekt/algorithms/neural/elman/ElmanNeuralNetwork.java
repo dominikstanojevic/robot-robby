@@ -140,4 +140,18 @@ public class ElmanNeuralNetwork implements Robot {
         }
         return sj.toString();
     }
+
+    public ElmanNeuralNetwork copy() {
+        int[] layout = new int[layers.length];
+        ActivationFunction[] activationFunctions = new ActivationFunction[layers.length];
+
+        for (int i = 0; i < layers.length; ++i){
+            layout[i] = layers[i].numberOfNeurons();
+            activationFunctions[i] = layers[i].getActivationFunction();
+        }
+
+        ElmanNeuralNetwork copy = new ElmanNeuralNetwork(layout, activationFunctions);
+
+        return copy;
+    }
 }
