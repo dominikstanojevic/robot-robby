@@ -35,14 +35,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Hashtable;
 
 public class LearningPanel extends JPanel {
 
@@ -274,7 +266,8 @@ public class LearningPanel extends JPanel {
 
                             @Override
                             public void observationMade(Observable sender,
-                                                        TrainingResult observation) {
+                                    TrainingResult observation) {
+
                                 robot = observation.getBestResult();
 
                                 SwingUtilities.invokeLater(() -> graphicalPanel.addValue(
@@ -359,4 +352,5 @@ public class LearningPanel extends JPanel {
         });
 
     }
+
 }

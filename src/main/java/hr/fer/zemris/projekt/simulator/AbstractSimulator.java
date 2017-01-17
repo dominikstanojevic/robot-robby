@@ -266,6 +266,7 @@ public abstract class AbstractSimulator implements Observable<RobotActionTaken> 
                 nextMove = getRandomMove(rnd);
             }
             moves.add(nextMove);
+
             switch (nextMove) {
             case UP:
                 xMove = -1;
