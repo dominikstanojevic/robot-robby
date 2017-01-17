@@ -217,6 +217,8 @@
                     setTimeout(function () {
                         $('#btnStop').popover('hide');
                     }, 1500);
+
+                    displayRobot();
                 }
             }
         });
@@ -233,6 +235,8 @@
                     setTimeout(function () {
                         $('#btnPause').popover('hide');
                     }, 1500);
+
+                    displayRobot();
                 }
             }
         });
