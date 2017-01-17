@@ -103,8 +103,10 @@ public class GA extends ObservableAlgorithm {
             double alpha = parameters.getParameter(GAParameters.ALPHA).getValue();
             double sigma = parameters.getParameter(GAParameters.SIGMA).getValue();
             double stopCondition = parameters.getParameter(GAParameters.STOP_CONDITION).getValue();
+            double minStartingWeight = parameters.getParameter(GAParameters.MIN_STARTING_VALUE).getValue();
+            double maxStartingWeight = parameters.getParameter(GAParameters.MAX_STARTING_VALUE).getValue();
 
-            List<Chromosome> population = initializePopulation(populationSize, chromosomeSize);
+            List<Chromosome> population = initializePopulation(populationSize, chromosomeSize, minStartingWeight, maxStartingWeight);
 
             for (int i = 0; i < maxGenerations; i++) {
                 evaluatePopulation(population, pool);
@@ -149,9 +151,7 @@ public class GA extends ObservableAlgorithm {
                         }
                         newPopulation.add(c.second);
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
 
@@ -163,7 +163,9 @@ public class GA extends ObservableAlgorithm {
             return prepareBest(best);
 
         } finally {
-            pool.shutdown();
+            if (pool != null) {
+                pool.shutdown();
+            }
         }
     }
 
@@ -244,9 +246,7 @@ public class GA extends ObservableAlgorithm {
             for (Future<Void> result : results) {
                 result.get();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
@@ -263,24 +263,25 @@ public class GA extends ObservableAlgorithm {
     private double processStats(List<Stats> stats) {
         double total = 0;
         for (Stats stat : stats) {
-            total += (10. * stat.getBottlesCollected() - 1 * stat.getEmptyPickups() - 5 * stat.getWallsHit()) /
+            total += (10. * stat.getBottlesCollected() - stat.getEmptyPickups() - 5 * stat.getWallsHit()) /
                      (10 * (stat.getBottlesCollected() + stat.getBottlesLeft()));
         }
 
         return total / stats.size();
     }
 
-    private List<Chromosome> initializePopulation(int populationSize, int chromosomeSize) {
+    private List<Chromosome> initializePopulation(
+            int populationSize, int chromosomeSize, double minStartingWeight, double maxStartingWeight) {
         List<Chromosome> population = new ArrayList<>();
         for (int i = 0; i < populationSize; i++) {
-            population.add(new Chromosome(chromosomeSize));
+            population.add(new Chromosome(chromosomeSize, minStartingWeight, maxStartingWeight));
         }
 
         return population;
     }
 
     private double getAverageFitness(List<Chromosome> population) {
-        return population.stream().mapToDouble(c -> c.getFitness()).average().getAsDouble();
+        return population.stream().mapToDouble(Chromosome::getFitness).average().getAsDouble();
     }
 
     private static class Pair {
