@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Represents the parameters for an algorithm. Objects implementing
  * this interface are in charge of keeping track of the parameters
- * for a given algorithm, and implemented the functionality of
+ * for a given algorithm, and of implementing the functionality of
  * retrieving and setting a {@link Parameter} by it's name.
  *
  * @param <T> {@link Algorithm} implementation

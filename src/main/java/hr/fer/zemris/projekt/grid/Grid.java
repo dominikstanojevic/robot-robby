@@ -1,5 +1,7 @@
 package hr.fer.zemris.projekt.grid;
 
+import hr.fer.zemris.projekt.Move;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,10 +10,15 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * Represents a 2 dimensional matrix of {@link Field}s that form a grid where the
+ * robot can walk and perform defined {@link Move}s.
+ *
  * @author Kristijan Vulinovic
  * @version 1.2.0
  */
 public class Grid implements IGrid {
+
+    private static final Random RANDOM = new Random();
 
     /**
      * 2D array representing the field.
@@ -138,12 +145,11 @@ public class Grid implements IGrid {
 
         this.numberOfBottles = numberOfBottles;
 
-        Random rnd = new Random();
         int bottlesPlaced = 0;
 
         while (bottlesPlaced < numberOfBottles){
-            int row = rnd.nextInt(height);
-            int column = rnd.nextInt(width);
+            int row = RANDOM.nextInt(height);
+            int column = RANDOM.nextInt(width);
 
             if (grid[row][column] == Field.EMPTY){
                 grid[row][column] = Field.BOTTLE;

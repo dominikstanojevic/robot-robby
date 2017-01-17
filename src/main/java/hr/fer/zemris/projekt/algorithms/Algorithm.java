@@ -49,7 +49,7 @@ public interface Algorithm {
 
     /**
      * Returns the default {@link Parameters parameters} for this algorithm.
-     * Note that this method should return a copy of the parameters,
+     * Note that this method should return a deep copy of the parameters,
      * as the default values should not be changed.
      *
      * @return the default {@link Parameters parameters} for this algorithm
@@ -61,15 +61,17 @@ public interface Algorithm {
      *
      * @param simulator  simulator to test the results on
      * @param parameters parameters to run the algorithm with
+     * @return {@link Robot} which was trained by the algorithm
      */
-    void run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters);
+    Robot run(AbstractSimulator simulator, Parameters<? extends Algorithm> parameters);
 
     /**
      * Runs the algorithm with the default parameters.
      *
      * @param simulator simulator to test the results on
+     * @return {@link Robot} which was trained by the algorithm
      */
-    default void run(AbstractSimulator simulator) {
-        this.run(simulator, getDefaultParameters());
+    default Robot run(AbstractSimulator simulator) {
+        return this.run(simulator, getDefaultParameters());
     }
 }
