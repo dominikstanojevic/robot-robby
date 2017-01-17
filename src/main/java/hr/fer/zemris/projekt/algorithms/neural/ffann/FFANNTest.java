@@ -1,6 +1,5 @@
 package hr.fer.zemris.projekt.algorithms.neural.ffann;
 
-import hr.fer.zemris.projekt.algorithms.Robot;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANGAParameters;
 import hr.fer.zemris.projekt.algorithms.neural.ffann.ga.FFANNGA;
 import hr.fer.zemris.projekt.observer.Observable;
@@ -10,8 +9,6 @@ import hr.fer.zemris.projekt.simulator.AbstractSimulator;
 import hr.fer.zemris.projekt.simulator.Simulator;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Kristijan Vulinovic

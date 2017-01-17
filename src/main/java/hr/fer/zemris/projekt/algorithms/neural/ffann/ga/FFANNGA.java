@@ -53,6 +53,7 @@ public class FFANNGA extends ObservableAlgorithm {
 
     private double startingIntervalMin;
     private double startingIntervalMax;
+    private double stopCondition;
 
     private ISelection firstSelection;
     private ISelection secondSelection;
@@ -178,11 +179,12 @@ public class FFANNGA extends ObservableAlgorithm {
             evaluate(population, pool);
 
             int generation = 0;
-            while (generation < maxGenerations){
+            Chromosome best = bestOfPopulation(population);
+            while (generation < maxGenerations && best.getFitness() < stopCondition){
                 generation++;
 
                 List<Chromosome> newPopulation = new ArrayList<>();
-                newPopulation.add(bestOfPopulation(population));
+                newPopulation.add(best);
 
                 while (newPopulation.size() < populationSize){
                     Chromosome firstParent = firstSelection.select(population);
@@ -200,15 +202,15 @@ public class FFANNGA extends ObservableAlgorithm {
                 evaluate(newPopulation, pool);
                 population = newPopulation;
 
-                Chromosome bestChromosome = bestOfPopulation(population);
-                network.get().setStandardizedFitness(bestChromosome.getFitness());
+                best = bestOfPopulation(population);
+                network.get().setStandardizedFitness(best.getFitness());
 
                 FFANN ffann = network.get().copy();
-                double[] bestWeights = bestChromosome.getWeights();
+                double[] bestWeights = best.getWeights();
                 double[] weights = new double[bestWeights.length];
                 System.arraycopy(bestWeights, 0, weights, 0, bestWeights.length);
                 ffann.setWeights(weights);
-                ffann.setStandardizedFitness(bestChromosome.getFitness());
+                ffann.setStandardizedFitness(best.getFitness());
                 this.notifyListeners(ffann, populationAverage(population), generation);
             }
         } finally {
@@ -310,6 +312,7 @@ public class FFANNGA extends ObservableAlgorithm {
         sigma = parameters.getParameter(SIGMA).getValue();
         startingIntervalMin = parameters.getParameter(STARTING_INTERVAL_MIN).getValue();
         startingIntervalMax = parameters.getParameter(STARTING_INTERVAL_MAX).getValue();
+        stopCondition = parameters.getParameter(STOP_CONDITION).getValue();
         alpha = parameters.getParameter(ALPHA).getValue();
 
         firstSelection = new TournamentSelection(tournamentSize);
