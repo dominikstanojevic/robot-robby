@@ -71,7 +71,7 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
     /**
      * Default value of the {@code tournament size} parameter.
      */
-    public static final int DEFAULT_TOURNAMENT_SIZE = 3;
+    public static final int DEFAULT_TOURNAMENT_SIZE = 5;
 
     /**
      * Default value of the ${code stop threshold} parameter.
@@ -109,9 +109,9 @@ public class GAParameters implements Parameters<GeneticAlgorithm> {
      * Constructs a {@link GAParameters} object with the default parameters.
      */
     GAParameters() {
-        Parameter maxGenerations = new Parameter(MAX_GEN_ID, ParameterType.INTEGER, 0, 100_000, DEFAULT_MAX_GENERATIONS);
-        Parameter populationSize = new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 0, 1_000, DEFAULT_POPULATION_SIZE);
-        Parameter elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 0.2, DEFAULT_ELITISM_RATIO);
+        Parameter maxGenerations = new Parameter(MAX_GEN_ID, ParameterType.INTEGER, 10, 10_000, DEFAULT_MAX_GENERATIONS);
+        Parameter populationSize = new Parameter(POP_SIZE_ID, ParameterType.INTEGER, 10, 1_000, DEFAULT_POPULATION_SIZE);
+        Parameter elitismRatio = new Parameter(ELITISM_RATIO_ID, ParameterType.DOUBLE, 0, 0.5, DEFAULT_ELITISM_RATIO);
         Parameter tournamentSize = new Parameter(TOURNAMENT_SIZE_ID, ParameterType.INTEGER, 1, 10, DEFAULT_TOURNAMENT_SIZE);
         Parameter stopThreshold = new Parameter(STOP_THRESHOLD_ID, ParameterType.DOUBLE, 0, 1, DEFAULT_THRESHOLD);
 
