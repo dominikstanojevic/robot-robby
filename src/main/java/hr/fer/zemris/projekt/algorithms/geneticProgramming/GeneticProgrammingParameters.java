@@ -171,6 +171,40 @@ public class GeneticProgrammingParameters implements Parameters<GeneticProgrammi
 	private static final double DEFAULT_BOTTLE_PICKUP_PRIZE = 10;
 
 	/**
+	 * Name of the parameter.
+	 */
+	public static final String STOP_CONDITION = "Stop condition";
+	/**
+	 * Maximum value of the parameter.
+	 */
+	private static final double MAX_STOP_CONDITION = 1;
+	/**
+	 * Minimum value of the parameter.
+	 */
+	private static final double MIN_STOP_CONDITION = 0;
+	/**
+	 * Default value of the parameter.
+	 */
+	private static final double DEFAULT_STOP_CONDITION = 0.98;
+
+	/**
+	 * Name of the parameter.
+	 */
+	public static final String TOURNAMENT_SIZE = "Tournament size";
+	/**
+	 * Maximum value of the parameter.
+	 */
+	private static final int MAX_TOURNAMENT_SIZE = 7;
+	/**
+	 * Minimum value of the parameter.
+	 */
+	private static final int MIN_TOURNAMENT_SIZE = 1;
+	/**
+	 * Default value of the parameter.
+	 */
+	private static final int DEFAULT_TOURNAMENT_SIZE = 2;
+
+	/**
 	 * Map of parameter names and values.
 	 */
 	private Map<String, Parameter> parameters;
@@ -201,7 +235,10 @@ public class GeneticProgrammingParameters implements Parameters<GeneticProgrammi
 				MIN_HITTING_WALL_PENALTY, MAX_HITTING_WALL_PENALTY, DEFAULT_HITTING_WALL_PENALTY));
 		parameters.put(BOTTLE_PICKUP_PRIZE, new Parameter(BOTTLE_PICKUP_PRIZE, ParameterType.INTEGER,
 				MIN_BOTTLE_PICKUP_PRIZE, MAX_BOTTLE_PICKUP_PRIZE, DEFAULT_BOTTLE_PICKUP_PRIZE));
-
+		parameters.put(STOP_CONDITION, new Parameter(STOP_CONDITION, ParameterType.DOUBLE,
+				MIN_STOP_CONDITION, MAX_STOP_CONDITION, DEFAULT_STOP_CONDITION));
+		parameters.put(TOURNAMENT_SIZE, new Parameter(TOURNAMENT_SIZE, ParameterType.INTEGER,
+				MIN_TOURNAMENT_SIZE, MAX_TOURNAMENT_SIZE, DEFAULT_TOURNAMENT_SIZE));
 	}
 
 	@Override
@@ -223,7 +260,7 @@ public class GeneticProgrammingParameters implements Parameters<GeneticProgrammi
 //			paramSet.add(new Parameter(p.getName(), p.getType(), p.getMinValue(), p.getMaxValue(), p.getValue()));
 //		}
 //		return paramSet;
-		return new LinkedHashSet<Parameter>(parameters.values());
+		return new LinkedHashSet<>(parameters.values());
 	}
 
 }
