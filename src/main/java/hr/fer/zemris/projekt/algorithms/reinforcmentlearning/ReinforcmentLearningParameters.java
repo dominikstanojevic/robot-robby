@@ -16,6 +16,16 @@ import java.util.LinkedHashSet;
 public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLearningAlgorithm> {
 
     /**
+     * ID of the ${code stop threshold} parameter.
+     */
+    public static final String STOP_THRESHOLD_ID = "Stop threshold";
+
+    /**
+     * Default value of the ${code stop threshold} parameter.
+     */
+    public static final int DEFAULT_THRESHOLD = 1;
+
+    /**
      * Living reward parameter name.
      */
     public static final String LIVING_REWARD_NAME = "Leaving reward";
@@ -161,6 +171,8 @@ public class ReinforcmentLearningParameters implements Parameters<ReinforcmentLe
      */
     public ReinforcmentLearningParameters() {
         parameterMap = new HashMap<String, Parameter>();
+        parameterMap.put(STOP_THRESHOLD_ID, new Parameter(STOP_THRESHOLD_ID, ParameterType.DOUBLE,
+                0, 1.0, 1.0));
         parameterMap.put(ITERATIONS_NUMBER_NAME, new Parameter(ITERATIONS_NUMBER_NAME,
                 ParameterType.INTEGER, MIN_ITERATIONS_NUMBER, MAX_ITERATIONS_NUMBER,
                 DEFAULT_ITERATIONS_NUMBER));

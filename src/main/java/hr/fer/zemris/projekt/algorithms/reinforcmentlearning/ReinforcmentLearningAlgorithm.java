@@ -108,9 +108,13 @@ public class ReinforcmentLearningAlgorithm extends ObservableAlgorithm {
             Agent roby = new Agent(currentQFunction);
 
             List<Stats> statistics = simulator.playGames(roby);
-
-            roby.setStandardFitness(AlgorithmUtils.calculateFitness(statistics));
+            double currentFitness = AlgorithmUtils.calculateFitness(statistics);
+            roby.setStandardFitness(currentFitness);
             notifyListeners(roby, AlgorithmUtils.calculateFitness(statistics), i);
+            if (currentFitness >= parameters.getParameter(
+                    ReinforcmentLearningParameters.STOP_THRESHOLD_ID).getValue()) {
+                break;
+            }
             if (i == end - 1 || i % 100 == 0) {
                 double averageBottlePickUp = statistics.stream()
                         .mapToInt(x -> x.getBottlesCollected()).average().getAsDouble();

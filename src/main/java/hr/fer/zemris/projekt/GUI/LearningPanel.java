@@ -263,6 +263,7 @@ public class LearningPanel extends JPanel {
                             @Override
                             public void observationMade(Observable sender,
                                     TrainingResult observation) {
+
                                 robot = observation.getBestResult();
 
                                 SwingUtilities.invokeLater(() -> graphicalPanel.addValue(
