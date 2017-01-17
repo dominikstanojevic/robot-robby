@@ -17,17 +17,10 @@ public class TrainingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        //content type must be set to text/event-stream
-        resp.setContentType("text/event-stream");
-
-        //encoding must be set to UTF-8
-        resp.setCharacterEncoding("UTF-8");
-
         synchronized (trainingLock) {
             if (isRunning) {
                 System.out.println("Training already running.");
-                resp.getWriter().write("data: finished\n\n");
-                resp.getWriter().flush();
+                req.setAttribute("isBusy", true);
                 return;
             }
 

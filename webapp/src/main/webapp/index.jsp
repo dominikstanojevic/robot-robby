@@ -76,7 +76,7 @@
 
         document.getElementById("algorithmID").setAttribute("value", selected);
 
-        stopAlgorithm(true);
+        stopAlgorithm(true, false);
 
         $.ajax(
             {
@@ -176,6 +176,8 @@
     }
 
     function startAlgorithm(params, numberOfIterations) {
+        stopAlgorithm(false, false);
+
         graph.xMax = numberOfIterations;
         graph.draw();
 
@@ -201,10 +203,11 @@
         };
     }
 
-    function stopAlgorithm(triggerPopover) {
+    function stopAlgorithm(triggerPopover, async) {
         $.ajax({
             url: "stopTraining",
             method: "POST",
+            async: async,
             success: function () {
                 eventSource.close();
 
@@ -304,7 +307,7 @@
     }
 
     function leavePage() {
-        stopAlgorithm(false);
+        stopAlgorithm(false, true);
     }
 </script>
 
@@ -349,7 +352,7 @@
 
                 <%-- Training control --%>
                 <div class="row">
-                    <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm(true)">Stop training</button>
+                    <button id="btnStop" class="btn btn-default btn-lg btn-block" type="button" onclick="stopAlgorithm(true, true)">Stop training</button>
                     <button id="btnPause" class="btn btn-default btn-lg btn-block" type="button" onclick="pauseAlgorithm(true)">Pause training</button>
                     <button id="btnResume" class="btn btn-default btn-lg btn-block" type="button" onclick="resumeAlgorithm(true)">Resume training</button>
                     <br>

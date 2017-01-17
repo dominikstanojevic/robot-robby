@@ -35,6 +35,16 @@ public class TrainServlet extends HttpServlet {
     private static final int FLUSH_FREQUENCY = 5;
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        //content type must be set to text/event-stream
+        resp.setContentType("text/event-stream");
+
+        //encoding must be set to UTF-8
+        resp.setCharacterEncoding("UTF-8");
+
+        if (req.getAttribute("isBusy") != null) {
+            resp.setStatus(400);
+            return;
+        }
 
         //read the parameters and generate grids
         String algorithmID = req.getParameter("algorithmID");
