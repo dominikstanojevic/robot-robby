@@ -12,7 +12,7 @@ import hr.fer.zemris.projekt.algorithms.geneticProgramming.nodes.TerminalNode;
 import hr.fer.zemris.projekt.grid.Field;
 
 /**
- * An implementation of {@link Robot} used in {@link GeneticProgrammin} algorithm.
+ * An implementation of {@link Robot} used in {@link GeneticProgramming} algorithm.
  * 
  * @author Dunja Vesinger
  * @version 1.0.0

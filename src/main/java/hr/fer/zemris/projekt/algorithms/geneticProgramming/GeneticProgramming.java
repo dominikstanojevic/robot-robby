@@ -35,12 +35,12 @@ public class GeneticProgramming extends ObservableAlgorithm {
 	// public static final int HITTING_WALL_PENALTY = 5;
 	// public static final int PICKUP_PRIZE = 10;
 	
-	private double STOPPING_CONDITION = 1;
+	private double STOPPING_CONDITION;
 
 	/**
 	 * Tournament size in tournament selection.
 	 */
-	private static final int TOURNAMENT_SIZE = 2;
+	private static int TOURNAMENT_SIZE;
 	/**
 	 * Current population.
 	 */
@@ -111,6 +111,8 @@ public class GeneticProgramming extends ObservableAlgorithm {
 				.round(parameters.getParameter(GeneticProgrammingParameters.CROSSOVER_TREE_DEPTH).getValue());
 
 		double mutationRate = parameters.getParameter(GeneticProgrammingParameters.MUTATION_RATE).getValue();
+		STOPPING_CONDITION = parameters.getParameter(GeneticProgrammingParameters.STOP_CONDITION).getValue();
+		TOURNAMENT_SIZE = (int)parameters.getParameter(GeneticProgrammingParameters.TOURNAMENT_SIZE).getValue();
 
 		population = getRandomPopulation(initialTreeDepth, populationSize);
 		bestIndividual = null;
