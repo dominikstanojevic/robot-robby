@@ -1,13 +1,13 @@
 package hr.fer.zemris.projekt.parameter;
 
-import hr.fer.zemris.projekt.algorithms.Algorithm;
+import java.util.LinkedHashSet;
 
-import java.util.Set;
+import hr.fer.zemris.projekt.algorithms.Algorithm;
 
 /**
  * Represents the parameters for an algorithm. Objects implementing
  * this interface are in charge of keeping track of the parameters
- * for a given algorithm, and implemented the functionality of
+ * for a given algorithm, and of implementing the functionality of
  * retrieving and setting a {@link Parameter} by it's name.
  *
  * @param <T> {@link Algorithm} implementation
@@ -38,5 +38,5 @@ public interface Parameters<T extends Algorithm> {
      *
      * @return a set of {@link Parameter} objects
      */
-    Set<Parameter> getParameters();
+    LinkedHashSet<Parameter> getParameters();
 }

@@ -1,8 +1,8 @@
 package hr.fer.zemris.projekt.parameter;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 @SuppressWarnings("javadoc")
 public class ParameterTest {
@@ -69,7 +69,6 @@ public class ParameterTest {
         Parameter p = new Parameter("PopulationSize", ParameterType.INTEGER, 0, 100, 0);
         p.setValue(110);
     }
-
 
     @Test
     public void testSetMinValue() {

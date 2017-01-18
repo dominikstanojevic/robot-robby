@@ -40,19 +40,25 @@ public class Parameter {
     /**
      * Creates a new parameter with the data given in the arguments.
      *
-     * @param name The name of this parameter.
-     * @param type The type of this parameter.
-     * @param minValue The minimal allowed value for this parameter.
-     * @param maxValue The maximal allowed value for this parameter.
-     * @param value The value of this parameter.
+     * @param name
+     *            The name of this parameter.
+     * @param type
+     *            The type of this parameter.
+     * @param minValue
+     *            The minimal allowed value for this parameter.
+     * @param maxValue
+     *            The maximal allowed value for this parameter.
+     * @param value
+     *            The value of this parameter.
      *
-     * @throws IllegalArgumentException if the given value is not acceptable.
+     * @throws IllegalArgumentException
+     *             if the given value is not acceptable.
      */
     public Parameter(String name, ParameterType type, double minValue, double maxValue, double value) {
-        if (name == null){
+        if (name == null) {
             throw new IllegalArgumentException("The parameter name is not allowed to be null.");
         }
-        if (type == null){
+        if (type == null) {
             throw new IllegalArgumentException("The parameter type is not allowed to be null.");
         }
 
@@ -67,8 +73,10 @@ public class Parameter {
     /**
      * Creates a new parameter with default values.
      *
-     * @param name The name of this parameter.
-     * @param type The type of this parameter.
+     * @param name
+     *            The name of this parameter.
+     * @param type
+     *            The type of this parameter.
      */
     public Parameter(String name, ParameterType type) {
         this(name, type, DEFAULT_MIN_VALUE, DEFAULT_MAX_VALUE, DEFAULT_MIN_VALUE);
@@ -102,25 +110,25 @@ public class Parameter {
     }
 
     /**
-     * Sets the minimal allowed value for this parameter to the one given in
-     * the argument.
+     * Sets the minimal allowed value for this parameter to the one given in the
+     * argument.
      *
-     * @param minValue the new minimal allowed value of the parameter.
+     * @param minValue
+     *            the new minimal allowed value of the parameter.
      *
-     * @throws IllegalArgumentException if it is not possible to use the new minimal value.
+     * @throws IllegalArgumentException
+     *             if it is not possible to use the new minimal value.
      */
     public void setMinValue(double minValue) {
-        if (minValue > value){
+        if (minValue > value) {
             throw new IllegalArgumentException(
                     "The given minimal value is greater than the current value. The current value is "
-                            + value + " but you provided " + minValue
-            );
+                            + value + " but you provided " + minValue);
         }
-        if (minValue > maxValue){
+        if (minValue > maxValue) {
             throw new IllegalArgumentException(
                     "The given minimal value is greater than the current maximal value. The current maximal value is "
-                            + maxValue + " but you provided " + minValue
-            );
+                            + maxValue + " but you provided " + minValue);
         }
 
         this.minValue = minValue;
@@ -136,25 +144,25 @@ public class Parameter {
     }
 
     /**
-     * Sets the maximal allowed value for this parameter to the one given in
-     * the argument.
+     * Sets the maximal allowed value for this parameter to the one given in the
+     * argument.
      *
-     * @param maxValue the new maximal allowed value of the parameter.
+     * @param maxValue
+     *            the new maximal allowed value of the parameter.
      *
-     * @throws IllegalArgumentException if it is not possible to use the new maximal value.
+     * @throws IllegalArgumentException
+     *             if it is not possible to use the new maximal value.
      */
     public void setMaxValue(double maxValue) {
-        if (maxValue < value){
+        if (maxValue < value) {
             throw new IllegalArgumentException(
                     "The given maximal value is smaller than the current value. The current value is "
-                    + value + " but you provided " + maxValue
-            );
+                            + value + " but you provided " + maxValue);
         }
-        if (maxValue < minValue){
+        if (maxValue < minValue) {
             throw new IllegalArgumentException(
                     "The given maximal value is smaller than the current minimal value. The current minimal value is "
-                            + minValue + " but you provided " + maxValue
-            );
+                            + minValue + " but you provided " + maxValue);
         }
 
         this.maxValue = maxValue;
@@ -172,21 +180,29 @@ public class Parameter {
     /**
      * Sets the value of the parameter to the one given in the argument.
      *
-     * @param value The new value of the parameter.
+     * @param value
+     *            The new value of the parameter.
      *
-     * @throws IllegalArgumentException if the given value is not inside the
-     * allowed interval.
+     * @throws IllegalArgumentException
+     *             if the given value is not inside the allowed interval.
      */
     public void setValue(double value) {
-        if (value < minValue){
-            throw new IllegalArgumentException("The given value is too small! The minimal allowed value is " +
-                    minValue + " but the given value was " + value);
+        if (value < minValue) {
+            throw new IllegalArgumentException(
+                    "The given value is too small! The minimal allowed value is " + minValue
+                    + " but the given value was " + value);
         }
-        if (value > maxValue){
-            throw new IllegalArgumentException("The given value is too big! The maximal allowed value is " +
-                    maxValue + " but the given value was " + value);
+        if (value > maxValue) {
+            throw new IllegalArgumentException(
+                    "The given value is too big! The maximal allowed value is " + maxValue
+                    + " but the given value was " + value);
         }
 
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "PARAMETER - name: " + name + ", value: " + value;
     }
 }
