@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -78,7 +79,7 @@ public class MapField extends JComponent {
 
 	private Image loadImage(String path) {
 
-		File file = new File(path);
+		URL file = getClass().getClassLoader().getResource(path);
 		try {
 			Image image = ImageIO.read(file);
 			return image;
